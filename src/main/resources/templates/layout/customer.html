@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html lang="vi" th:fragment="layout(content)" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(title=${title})}"></head>
+<body>
+    <header th:replace="~{fragments/customer/header :: header}"></header>
+    <div th:replace="${content}"></div>
+    <footer th:replace="~{fragments/customer/footer :: footer}"></footer>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(title=${title})}"></head>
+<body class="bg-gray-100">
+<div class="container mx-auto">
+    <div class="flex justify-center">
+        <div class="w-full max-w-md mt-12">
+            <div class="bg-white p-10 rounded-lg shadow-md">
+                <div class="text-2xl font-bold text-center text-gray-800 mb-5">Đăng Nhập</div>
+                <div class="form-signup">
+                    <form method="post" role="form" th:action="@{/auth/sign-in}">
+                        <div class="mb-4">
+                            <input
+                                    class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-600"
+                                    type="email"
+                                    placeholder="Email"
+                                    id="email"
+                                    name="username"
+                                    required
+                            />
+                            <div class="text-red-500 text-xs mt-1" id="emailError"></div>
+                        </div>
+                        <div class="mb-4">
+                            <input
+                                    class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-600"
+                                    type="password"
+                                    placeholder="Mật khẩu"
+                                    id="password"
+                                    name="password"
+                                    required
+                            />
+                            <div class="text-red-500 text-xs mt-1" id="passwordError"></div>
+                        </div>
+
+                        <button class="w-full bg-orange-600 text-white font-bold py-2 rounded hover:bg-orange-500 transition duration-300" type="submit">Đăng Nhập</button>
+
+                        <div class="flex justify-between items-center mt-4">
+                            <div>
+                                <input type="checkbox" id="remember-me" name="remember-me" class="mr-2"/>
+                                <label for="remember-me" class="text-gray-700">Lưu đăng nhập</label>
+                            </div>
+                            <a th:href="@{/auth/forgot-password}" class="text-orange-600">Quên mật khẩu?</a>
+                        </div>
+
+                        <div class="mt-5 text-center">
+                            Bạn chưa có tài khoản?
+                            <a th:href="@{/auth/sign-up}" class="text-orange-600">Đăng Ký</a>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Toast Message -->
+<div th:if="${param.error}">
+    <div class="fixed top-0 right-0 p-3">
+        <div id="errorToast" class="toast show border border-red-600 bg-light text-red-600 shadow-lg" role="alert"
+             aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-red-600 text-light">
+                <strong class="mr-auto">
+                    <i class="bi bi-exclamation-triangle-fill mr-2"></i> Lỗi
+                </strong>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"
+                        aria-label="Close"></button>
+            </div>
+            <div class="toast-body font-bold">
+                <i class="bi bi-exclamation-circle-fill mr-1"></i> Email hoặc mật khẩu không chính xác.
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
