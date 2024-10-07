@@ -1,3 +1,94 @@
-<header th:fragment="header">
-    <h1>Header</h1>
+<header class="flex flex-col" th:fragment="header">
+    <!-- Top Bar -->
+    <div class="header-top bg-[#2e2929] text-white">
+        <div class="container">
+            <div class="border-b-[1px] border-solid border-[#444]">
+                <ul class="flex items-center justify-end gap-x-8 px-0 py-2.5 text-sm">
+                    <li>
+                        <a class="flex items-center gap-x-2 hover:text-[#e7511a] transition-colors duration-300"
+                           href="tel:#">
+                            <i class="fa-solid fa-phone"></i>Liên hệ: +84 123 456 789
+                        </a>
+                    </li>
+                    <li>
+                        <a class="flex items-center gap-x-2 hover:text-[#e7511a] transition-colors duration-300"
+                           href="wishlist.html">
+                            <i class="fa-regular fa-heart"></i> Yêu thích <span>(3)</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="flex items-center gap-x-2 hover:text-[#e7511a] transition-colors duration-300"
+                           th:href="@{/auth/sign-in}">
+                            <i class="fa-regular fa-user"></i> Đăng nhập
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Middle Header -->
+    <div class="header-middle sticky-header bg-white shadow-md py-4">
+        <div class="container flex items-center justify-between">
+            <!-- Logo & Navigation -->
+            <div class="flex items-center gap-x-16">
+                <a th:href="@{/}" class="text-4xl font-bold text-[#e7511a] tracking-wide">
+                    SiuuStore
+                </a>
+                <nav>
+                    <ul class="flex items-center gap-x-8">
+                        <li>
+                            <a class="block py-4 text-[#333] hover:text-[#e7511a] uppercase text-lg transition-colors duration-300"
+                               th:href="@{/}">Trang Chủ</a>
+                        </li>
+                        <li>
+                            <a class="block py-4 text-[#333] hover:text-[#e7511a] uppercase text-lg transition-colors duration-300"
+                               href="category.html">Cửa Hàng</a>
+                        </li>
+                        <li>
+                            <a class="block py-4 text-[#333] hover:text-[#e7511a] uppercase text-lg transition-colors duration-300"
+                               href="product.html">Nam</a>
+                        </li>
+                        <li>
+                            <a class="block py-4 text-[#333] hover:text-[#e7511a] uppercase text-lg transition-colors duration-300"
+                               href="product.html">Nữ</a>
+                        </li>
+                        <li>
+                            <a class="block py-4 text-[#333] hover:text-[#e7511a] uppercase text-lg transition-colors duration-300"
+                               href="product.html">Sale</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+
+            <!-- Search & Cart -->
+            <div class="flex items-center gap-x-6">
+                <!-- Search Bar -->
+                <div class="relative border-[1px] border-solid border-gray-300 px-4 py-2 rounded-full transition-all focus-within:border-[#e7511a]">
+                    <form action="#" method="get" class="flex items-center">
+                        <div class="flex-grow">
+                            <label for="q" class="sr-only">Search</label>
+                            <input type="search"
+                                   class="border-none w-full focus:outline-none"
+                                   name="q"
+                                   id="q"
+                                   placeholder="Tìm kiếm..."
+                                   required>
+                        </div>
+                        <button class="text-xl text-gray-700 hover:text-[#e7511a] transition-colors duration-300"
+                                type="submit">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </button>
+                    </form>
+                </div>
+                <!-- Cart Icon -->
+                <a href="#" class="relative text-2xl text-gray-700 hover:text-[#e7511a] transition-colors duration-300">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="absolute top-[-8px] right-[-10px] rounded-full bg-[#e7511a] text-white text-xs font-bold px-2 py-0.5">
+                        2
+                    </span>
+                </a>
+            </div>
+        </div>
+    </div>
 </header>
