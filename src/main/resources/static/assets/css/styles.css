@@ -3,3 +3,37 @@
 body {
     font-family: "Poppins", sans-serif;
 }
+/* Starting footer */
+.main-footer {
+    background-color: #FFFFFF;
+    color: #000000;
+}
+
+.footer-title {
+    font-weight:600;
+    padding-bottom:16px;
+}
+
+.footer-content {
+    font-size: 17px;
+    color: #777777;
+    padding-bottom: 5px;
+}
+
+.footer-content a:hover {
+    color: #E7511A;
+}
+
+.mb-0 {
+    padding-top: 20px;
+}
+
+.footer-icon {
+    color: #000000;
+}
+
+.footer-icon:hover {
+    color: #E7511A;
+}
+
+/* end footer*/

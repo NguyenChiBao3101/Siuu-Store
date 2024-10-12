@@ -2,14 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org" th:replace="~{/layout/customer :: layout(~{::section})}">
 <body>
 <section>
-    <div class="owl-carousel">
-        <div> Your Content </div>
-        <div> Your Content </div>
-        <div> Your Content </div>
-        <div> Your Content </div>
-        <div> Your Content </div>
-        <div> Your Content </div>
-        <div> Your Content </div>
+    <div class="container">
+        <div class="owl-carousel">
+            <div> <img th:src="@{./assets/images/slide-1.jpg}"> </div>
+            <div> <img th:src="@{./assets/images/slide-2.jpg}"> </div>
+            <div> <img th:src="@{./assets/images/slide-3.jpg}"> </div>
+        </div>
     </div>
 </section>
 </body>
