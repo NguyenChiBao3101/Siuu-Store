@@ -1,0 +1,309 @@
+.card-title{
+    font-size: 13px;    
+    text-align: center;
+}
+.card-text{
+    font-weight: 400;
+    padding-left: 10px;
+    font-size:20px;
+    text-align: center;
+}
+
+.card-price{
+    text-align: center;
+    color:orange;
+    font-size: 25px;
+}
+
+#button-add{
+    width: 100%;
+}
+
+.container-path{
+    width: inherit;
+    height: 50px;
+    
+}
+
+.container-shop{
+    display: flex;
+    width: inherit;
+    height: 100vn;
+    padding-left: 20px;
+    /* padding-right: 30px; */
+}
+
+.container-category-shop{
+    flex: 0 0 25%; /* Chiếm 2 ô trong tổng 12 ô */
+}
+.fitler{
+    position: relative;
+    height: 80px;
+    max-height: 80px;
+    padding-top:20px;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    border-bottom: .1rem solid #ebebeb;
+}
+
+.fitler label{
+    color: inherit;
+    font-size: 1.1rem;
+    letter-spacing: -0,1rem;
+    margin: 0;
+}
+
+.fitler a{
+    position: absolute;
+    text-align: right;
+    right: 20px;
+    color: #cc9966;
+    font-size: 0.9rem;
+    
+}
+
+.filter-item{
+    margin-top: 20px;
+    
+}
+
+.filter-items-count {
+position: relative; /* Để phần tử con có thể sử dụng position: absolute */
+}
+
+.item-count {
+    position: absolute; /* Đẩy số lượng về bên phải */
+    right:10px;
+    background-color: #f8f8f8; /* Màu nền cho số lượng */
+    border-radius: .6rem; /* Bo góc cho số lượng */
+    padding: 0.2rem 0.5rem; /* Padding cho số lượng */
+    color: #777; /* Màu chữ */
+    font-weight: 300; /* Độ đậm chữ */
+    font-size: 1.0rem; /* Kích thước chữ */
+    line-height: 1; /* Chiều cao dòng */
+ }
+
+.searh{
+    height: 60px;
+    max-height: 80px;
+    padding:20px 20px;
+    margin-bottom:20px;
+}
+.container-product-shop{
+    flex: 0 0 75%; /* Chiếm 9 ô trong tổng 12 ô */
+}
+
+.category{
+    height: calc(373px + 20px);
+    border-bottom: .1rem solid #ebebeb;
+
+}
+
+.size{
+    height: calc(283px + 20px);
+    border-bottom: .1rem solid #ebebeb;
+    margin-top: 20px;
+    
+}
+
+.colour{
+    margin-top: 20px;
+    border-bottom: .1rem solid #ebebeb;
+}
+
+.price{
+    margin-top: 20px;
+}
+
+.filter-price {
+    padding-top: .2rem;
+    padding-bottom: 3rem;
+}
+
+.filter-price-text {
+    margin-bottom: 2rem;
+    letter-spacing: -.01em;
+}
+
+#filter-price-range {
+    color: #c96;
+}
+
+.filter-colors a {
+    display: inline-block; /* Đặt chế độ hiển thị cho thẻ <a> */
+    width: 30px; /* Thiết lập chiều rộng */
+    height: 30px; /* Thiết lập chiều cao */
+    margin-right: 5px; /* Khoảng cách giữa các ô màu */
+    border-radius: 50%; /* Làm cho các ô màu hình tròn */
+}
+.filter-colors a.selected {
+    border: 2px solid #000; /* Viền cho ô màu đã chọn */
+}
+
+.widget-title{
+    color : #333;
+    font-weight: 400;
+    font-size: 1.4rem;
+    line-height: 1.1;
+    letter-spacing: -0.1rem;
+    margin-bottom: 2rem;
+}
+
+.searh{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.toolbox-info {
+    color: #ccc;
+}
+
+.toolbox-info span {
+    color: #333333;
+}
+
+.toolbox-right{
+    display: flex;
+    padding-top: 27px;
+    margin-right: 100px;
+}
+
+.toolbox-right label{
+    padding-top: 5px;
+}
+
+.select-custom {
+    position: relative;
+    margin-bottom: 1rem;
+    margin-left: 10px;
+}
+
+.form-control {
+    height: 40px;
+    width: 200px;
+    line-height: 1.5;
+    border: 1px solid #ebebeb;
+    border-radius: 0;
+    transition: all 0.3s;
+    box-shadow: none; 
+    position: relative;
+    color: #ccc;
+}
+
+.form-control::after {
+  content: "\f0d7"; /* Mã Unicode cho biểu tượng mũi tên xuống (Chevron Down) */
+  font-family: "Font Awesome 6 Free"; /* Đảm bảo sử dụng font từ Font Awesome */
+  font-weight: 900; /* Để mũi tên hiển thị đậm */
+  font-size: 18px;
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  pointer-events: none; /* Để mũi tên không ảnh hưởng đến thao tác người dùng */
+}
+option {
+    font-weight: normal;
+    display: block;
+    font-size: 15px;
+    padding-block-start: 0px;
+    padding-block-end: 1px;
+    min-block-size: 1.2em;
+    padding-inline: 2px;
+    white-space: nowrap;
+    color: #ccc;
+}
+
+
+figure {
+    margin: 0 0 1rem;
+}
+
+.text-center {
+    text-align: center !important;
+}
+
+.product-media {
+    position: relative;
+    display: block;
+    background: #eeeeee;
+    margin-bottom: 0;
+    overflow: hidden;
+    /* border: 2px solid #d7d7d7;  */
+}
+.product-body {
+    position: relative;
+    padding: 1.6rem 2rem;
+    transition: all .35s ease;
+    background-color: #eeeeee;
+}
+
+.product-title {
+    font-weight: 400;
+    font-size: 1.2rem;
+    line-height: 1.25;
+    letter-spacing: -.01em;
+    color: #333333;
+    margin-bottom: .2rem;
+}
+
+.product-price {
+    flex-flow: wrap;
+    font-weight: 400;
+    font-size: 1.0rem;
+    line-height: 1.25;
+    color: #c96;
+    margin-bottom: 1.3rem;
+}
+
+ #button-add{
+    background: #E7511A;
+    border: none; 
+ }
+
+ .product-body #button-add{
+    white-space: nowrap; /* Ngăn không cho các phần tử xuống dòng */
+    text-align: center;
+}
+
+.product-title h3 a{
+    text-align: center;
+}
+
+
+.home-product__pagination{
+    margin: 48px 0 32px 0;
+
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    list-style: none;
+}
+
+.pagiantion-item{
+    margin: 0 12px;
+}
+
+.pagination-item--active .pagination-item__link{
+    background-color: #E7511A;
+    color: white;
+}
+
+.pagination-item__link{
+    display: block;
+    text-decoration: none;
+    font-size: 1.2rem;
+    color: #939393;
+    min-width: 40px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    border-radius: 2px;
+}
+
+.pagiantion-item__icon{
+
+}

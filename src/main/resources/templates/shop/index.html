@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{/layout/customer :: layout(~{::section})}">
+
+<body>
+    <section>
+        <!-- <div class="container-path">
+            <nav aria-label="breadcrumb" class="breadcrumb-nav mb-2">
+                <div class="container">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#">Trang chủ</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><a href="#">Cửa hàng</a></li>
+
+                    </ol>
+                </div>
+            </nav>
+        </div> -->
+       <div class="container-shop">
+        <div class="container-category-shop">
+            <div class="fitler">
+                <label>Lọc:</label>
+                <a href="">Xoá tất cả   </a>
+            </div>
+            <div class="category">
+                <h3 class="widget-title">Danh mục</h3>
+                <div class="widget-body">
+                    <div class="filter-items filter-items-count">
+                        <div class="filter-item">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="cat-1">
+                                <label class="form-check-label" for="cat-1">Váy</label>
+                                <span class="item-count">3</span>
+                            </div><!-- End .form-check -->
+                        </div><!-- End .filter-item -->
+                        <div class="filter-item">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="cat-2">
+                                <label class="form-check-label" for="cat-2">Áo phông</label>
+                                <span class="item-count">2</span>
+                            </div><!-- End .form-check -->
+                        </div><!-- End .filter-item -->
+                        <div class="filter-item">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="cat-3">
+                                <label class="form-check-label" for="cat-3">Túi sách</label>
+                                <span class="item-count">2</span>
+                            </div><!-- End .form-check -->
+                        </div><!-- End .filter-item -->
+                        <div class="filter-item">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="cat-4">
+                                <label class="form-check-label" for="cat-4">Áo khoác</label>
+                                <span class="item-count">2</span>
+                            </div><!-- End .form-check -->
+                        </div><!-- End .filter-item -->
+                        <div class="filter-item">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="cat-5">
+                                <label class="form-check-label" for="cat-5">Giày</label>
+                                <span class="item-count">2</span>
+                            </div><!-- End .form-check -->
+                        </div><!-- End .filter-item -->
+                        <div class="filter-item">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="cat-6">
+                                <label class="form-check-label" for="cat-6">Áo len</label>
+                                <span class="item-count">2</span>
+                            </div><!-- End .form-check -->
+                        </div><!-- End .filter-item -->
+                        <div class="filter-item">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="cat-7">
+                                <label class="form-check-label" for="cat-7">Quần jean</label>
+                                <span class="item-count">2</span>
+                            </div><!-- End .form-check -->
+                        </div><!-- End .filter-item -->
+                        <div class="filter-item">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="cat-8">
+                                <label class="form-check-label" for="cat-8">Quần áo thể thao</label>
+                                <span class="item-count">2</span>
+                            </div><!-- End .form-check -->
+                        </div><!-- End .filter-item -->
+                        
+                    </div><!-- End .filter-items -->
+                </div> <!-- End .widget-body -->
+            </div>
+
+            <div class="size">
+                <h3 class="widget-title">Kích cỡ</h3>
+                <div class="widget-body">
+                    <div class="filter-items">
+                        <div class="filter-item">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="size-xs">
+                                <label class="form-check-label" for="size-xs">XS</label>
+                            </div><!-- End .form-check -->
+                        </div><!-- End .filter-item -->
+                        <div class="filter-item">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="size-s">
+                                <label class="form-check-label" for="size-s">S</label>
+                            </div><!-- End .form-check -->
+                        </div><!-- End .filter-item -->
+                        <div class="filter-item">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="size-m">
+                                <label class="form-check-label" for="size-m">M</label>
+                            </div>
+                        </div>
+                        <div class="filter-item">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="size-l">
+                                <label class="form-check-label" for="size-l">L</label>
+                            </div>
+                        </div>
+                        <div class="filter-item">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="size-xl">
+                                <label class="form-check-label" for="size-xl">XL</label>
+                            </div>
+                        </div>
+                        <div class="filter-item">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="size-xxl">
+                                <label class="form-check-label" for="size-xxl">XXL</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="colour">
+                <h3 class="widget-title">Màu</h3>
+                <div class="widget-body">
+                    <div class="filter-colors">
+                        <a href="#" style="background: #b87145;"><span class="sr-only">Color Name</span></a>
+                        <a href="#" style="background: #f0c04a;"><span class="sr-only">Color Name</span></a>
+                        <a href="#" style="background: #333333;"><span class="sr-only">Color Name</span></a>
+                        <a href="#" class="selected" style="background: #cc3333;"><span class="sr-only">Color Name</span></a>
+                        <a href="#" style="background: #3399cc;"><span class="sr-only">Color Name</span></a>
+                        <a href="#" style="background: #669933;"><span class="sr-only">Color Name</span></a>
+                        <a href="#" style="background: #f2719c;"><span class="sr-only">Color Name</span></a>
+                        <a href="#" style="background: #ebebeb;"><span class="sr-only">Color Name</span></a>
+                    </div><!-- End .filter-colors -->
+                </div><!-- End .widget-body -->
+            </div>
+
+            <div class="price">
+                <h3 class="widget-title">Giá</h3>
+                <div class="widget-body">
+                    <div class="filter-items filter-items-count">
+                        <div class="filter-item">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="cat-1">
+                                <label class="form-check-label" for="cat-1">100,000đ - 200,000đ</label>
+                            </div><!-- End .form-check -->
+                        </div><!-- End .filter-item -->
+                        <div class="filter-item">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="cat-2">
+                                <label class="form-check-label" for="cat-2">200,000đ - 300,000đ</label>
+                            </div><!-- End .form-check -->
+                        </div><!-- End .filter-item -->
+                        <div class="filter-item">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="cat-3">
+                                <label class="form-check-label" for="cat-3">300,000đ - 400,000đ</label>
+                            </div><!-- End .form-check -->
+                        </div><!-- End .filter-item -->
+                        <div class="filter-item">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="cat-4">
+                                <label class="form-check-label" for="cat-4">400,000đ - 500,000đ</label>
+                            </div><!-- End .form-check -->
+                        </div><!-- End .filter-item -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="container-product-shop">
+            <div class="searh">
+                    <div class="toolbox-left">
+                        <div class="toolbox-info">
+                            Hiển thị
+                            <span>12 trong 56</span>
+                            sản phẩm
+                        </div>
+                    </div>
+                    <div class="toolbox-right">
+                            <label>Sắp xếp:</label>
+                        <div class="select-custom">
+                            <select name="orderby" class="form-control">
+                                <option value="popularity" selected="selected">Nổi tiếng nhất</option>
+                                <option value="rating">Đánh giá cao nhất</option>
+                                <option value="date">Ngày</option>
+                            </select>
+                        </div>
+                    </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="products mb-3">
+                        <div class="row justify-content-start">
+                            <div class ="col-6 col-md-4 col-lg-4 col-xl-3">
+                                <div class="product product-7 text-center">
+                                    <figure class="product-media"> 
+                                        <a href="#">
+                                            <img th:src="@{/assets/image/shop/sh.jpg}" alt="">
+                                        </a>
+                                    </figure>
+                                    <div class="product-body">
+                                        <h3 class="product-title">
+                                            <a href="#">Giày nike Air Max 270</a>
+                                        </h3>
+                                        <div class="product-price">
+                                            200,000đ
+                                        </div>
+                                        <a href="#" class="btn btn-primary"  id="button-add">Thêm vào giỏ hàng</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class ="col-6 col-md-4 col-lg-4 col-xl-3">
+                                <div class="product product-7 text-center">
+                                    <figure class="product-media"> 
+                                        <a href="#">
+                                            <img th:src="@{/assets/image/shop/sh.jpg}" alt="">
+                                        </a>
+                                    </figure>
+                                    <div class="product-body">
+                                        <h3 class="product-title">
+                                            <a href="#">Giày nike Air Max 270</a>
+                                        </h3>
+                                        <div class="product-price">
+                                            200,000đ
+                                        </div>
+                                        <a href="#" class="btn btn-primary"  id="button-add">Thêm vào giỏ hàng</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class ="col-6 col-md-4 col-lg-4 col-xl-3">
+                                <div class="product product-7 text-center">
+                                    <figure class="product-media"> 
+                                        <a href="#">
+                                            <img th:src="@{/assets/image/shop/sh.jpg}" alt="">
+                                        </a>
+                                    </figure>
+                                    <div class="product-body">
+                                        <h3 class="product-title">
+                                            <a href="#">Giày nike Air Max 270</a>
+                                        </h3>
+                                        <div class="product-price">
+                                            200,000đ
+                                        </div>
+                                        <a href="#" class="btn btn-primary"  id="button-add">Thêm vào giỏ hàng</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class ="col-6 col-md-4 col-lg-4 col-xl-3">
+                                <div class="product product-7 text-center">
+                                    <figure class="product-media"> 
+                                        <a href="#">
+                                            <img th:src="@{/assets/image/shop/sh.jpg}" alt="">
+                                        </a>
+                                    </figure>
+                                    <div class="product-body">
+                                        <h3 class="product-title">
+                                            <a href="#">Giày nike Air Max 270</a>
+                                        </h3>
+                                        <div class="product-price">
+                                            200,000đ
+                                        </div>
+                                        <a href="#" class="btn btn-primary"  id="button-add">Thêm vào giỏ hàng</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class ="col-6 col-md-4 col-lg-4 col-xl-3"> 
+                                <div class="product product-7 text-center">
+                                    <figure class="product-media"> 
+                                        <a href="#">
+                                            <img th:src="@{/assets/image/shop/sh.jpg}" alt="">
+                                        </a>
+                                    </figure>
+                                    <div class="product-body">
+                                        <h3 class="product-title">
+                                            <a href="#">Giày Nike Air Max 270</a>
+                                        </h3>
+                                        <div class="product-price">
+                                            200,000đ
+                                        </div>
+                                        <a href="#" class="btn btn-primary"  id="button-add">Them vao giay</a>
+                                    </div>
+                                </div>
+                            </div> 
+                            <div class ="col-6 col-md-4 col-lg-4 col-xl-3"> 
+                                <div class="product product-7 text-center">
+                                    <figure class="product-media"> 
+                                        <a href="#">
+                                            <img th:src="@{/assets/image/shop/sh.jpg}" alt="">
+                                        </a>
+                                    </figure>
+                                    <div class="product-body">
+                                        <h3 class="product-title">
+                                            <a href="#">Giày Nike Air Max 270</a>
+                                        </h3>
+                                        <div class="product-price">
+                                            200,000đ
+                                        </div>
+                                        <a href="#" class="btn btn-primary"  id="button-add">Them vao giay</a>
+                                    </div>
+                                </div>
+                            </div> 
+                            <div class ="col-6 col-md-4 col-lg-4 col-xl-3"> 
+                                <div class="product product-7 text-center">
+                                    <figure class="product-media"> 
+                                        <a href="#">
+                                            <img th:src="@{/assets/image/shop/sh.jpg}" alt="">
+                                        </a>
+                                    </figure>
+                                    <div class="product-body">
+                                        <h3 class="product-title">
+                                            <a href="#">Giày Nike Air Max 270</a>
+                                        </h3>
+                                        <div class="product-price">
+                                            200,000đ
+                                        </div>
+                                        <a href="#" class="btn btn-primary"  id="button-add">Them vao giay</a>
+                                    </div>
+                                </div>
+                            </div> 
+                            <div class ="col-6 col-md-4 col-lg-4 col-xl-3"> 
+                                <div class="product product-7 text-center">
+                                    <figure class="product-media"> 
+                                        <a href="#">
+                                            <img th:src="@{/assets/image/shop/sh.jpg}" alt="">
+                                        </a>
+                                    </figure>
+                                    <div class="product-body">
+                                        <h3 class="product-title">
+                                            <a href="#">Giày Nike Air Max 270</a>
+                                        </h3>
+                                        <div class="product-price">
+                                            200,000đ
+                                        </div>
+                                        <a href="#" class="btn btn-primary"  id="button-add">Them vao giay</a>
+                                    </div>
+                                </div>
+                            </div> 
+                            <div class ="col-6 col-md-4 col-lg-4 col-xl-3"> 
+                                <div class="product product-7 text-center">
+                                    <figure class="product-media"> 
+                                        <a href="#">
+                                            <img th:src="@{/assets/image/shop/sh.jpg}" alt="">
+                                        </a>
+                                    </figure>
+                                    <div class="product-body">
+                                        <h3 class="product-title">
+                                            <a href="#">Giày Nike Air Max 270</a>
+                                        </h3>
+                                        <div class="product-price">
+                                            200,000đ
+                                        </div>
+                                        <a href="#" class="btn btn-primary"  id="button-add">Them vao giay</a>
+                                    </div>
+                                </div>
+                            </div> 
+                            <div class ="col-6 col-md-4 col-lg-4 col-xl-3"> 
+                                <div class="product product-7 text-center">
+                                    <figure class="product-media"> 
+                                        <a href="#">
+                                            <img th:src="@{/assets/image/shop/sh.jpg}" alt="">
+                                        </a>
+                                    </figure>
+                                    <div class="product-body">
+                                        <h3 class="product-title">
+                                            <a href="#">Giày Nike Air Max 270</a>
+                                        </h3>
+                                        <div class="product-price">
+                                            200,000đ
+                                        </div>
+                                        <a href="#" class="btn btn-primary"  id="button-add">Them vao giay</a>
+                                    </div>
+                                </div>
+                            </div> 
+                            <div class ="col-6 col-md-4 col-lg-4 col-xl-3"> 
+                                <div class="product product-7 text-center">
+                                    <figure class="product-media"> 
+                                        <a href="#">
+                                            <img th:src="@{/assets/image/shop/sh.jpg}" alt="">
+                                        </a>
+                                    </figure>
+                                    <div class="product-body">
+                                        <h3 class="product-title">
+                                            <a href="#">Giày Nike Air Max 270</a>
+                                        </h3>
+                                        <div class="product-price">
+                                            200,000đ
+                                        </div>
+                                        <a href="#" class="btn btn-primary"  id="button-add">Them vao giay</a>
+                                    </div>
+                                </div>
+                            </div> 
+                            <div class ="col-6 col-md-4 col-lg-4 col-xl-3"> 
+                                <div class="product product-7 text-center">
+                                    <figure class="product-media"> 
+                                        <a href="#">
+                                            <img th:src="@{/assets/image/shop/sh.jpg}" alt="">
+                                        </a>
+                                    </figure>
+                                    <div class="product-body">
+                                        <h3 class="product-title">
+                                            <a href="#">Giày Nike Air Max 270</a>
+                                        </h3>
+                                        <div class="product-price">
+                                            200,000đ
+                                        </div>
+                                        <a href="#" class="btn btn-primary"  id="button-add">Them vao giay</a>
+                                    </div>
+                                </div>
+                            </div> 
+                        </div>
+                    </div>
+                </div>
+                <ul class="pagination home-product__pagination">
+                    <li class="pagination-item">
+                        <a href="" class="pagination-item__link">
+                            <i class="pagination-item__icon fas fa-angle-left"></i>
+                        </a>
+                    </li>
+
+                    <li class="pagination-item pagination-item--active">
+                        <a href="" class="pagination-item__link">1</a>
+                    </li>
+                    <li class="pagination-item">
+                        <a href="" class="pagination-item__link">2</a>
+                    </li>
+                    <li class="pagination-item">
+                        <a href="" class="pagination-item__link">3</a>
+                    </li>
+                    <li class="pagination-item">
+                        <a href="" class="pagination-item__link">4</a>
+                    </li>
+                    <li class="pagination-item">
+                        <a href="" class="pagination-item__link">...</a>
+                    </li>
+                    <li class="pagination-item">
+                        <a href="" class="pagination-item__link">12</a>
+                    </li>
+                    <li class="pagination-item">
+                        <a href="" class="pagination-item__link">
+                            <i class="pagination-item__icon fas fa-angle-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+       </div>
+    </section> 
+
+</body>
+</html>
