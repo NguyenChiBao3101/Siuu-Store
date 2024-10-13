@@ -3,10 +3,42 @@
 body {
     font-family: "Poppins", sans-serif;
 }
+.header-top {
+    transition: all 0.3s ease;
+}
+
+.header-middle {
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.header-middle.sticky {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    animation: slideDown  0.5s ease-in-out;
+}
+
+.hidden-top-bar {
+    transform: translateY(-100%);
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
 /* Starting footer */
-.main-footer {
-    background-color: #FFFFFF;
-    color: #000000;
+footer {
+    background-color: #262626;
+    color: #FFFFFF;
+    border-top: 2px solid #ff4400;
 }
 
 .footer-title {
@@ -29,7 +61,7 @@ body {
 }
 
 .footer-icon {
-    color: #000000;
+    color: #FFFFFF;
 }
 
 .footer-icon:hover {

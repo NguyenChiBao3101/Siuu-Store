@@ -8,24 +8,4 @@
             crossorigin="anonymous"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script th:src="@{/assets/js/owl.carousel.min.js}"></script>
-    <script>
-        $(document).ready(function(){
-            $(".owl-carousel").owlCarousel({
-                loop: true,             // Enables infinite loop
-                margin: 10,             // Space between items
-                nav: true,              // Show navigation arrows
-                responsive: {           // Number of items shown based on screen width
-                    0: {
-                        items: 1
-                    },
-                    600: {
-                        items: 2
-                    },
-                    1000: {
-                        items: 3
-                    }
-                }
-            });
-        });
-    </script>
 </div>

@@ -50,7 +50,7 @@
                         </li>
                         <li>
                             <a class="block py-4 text-[#333] hover:text-[#e7511a] uppercase text-lg transition-colors duration-300"
-                               href="category.html">Cửa Hàng</a>
+                               th:href="@{/shop}">Cửa Hàng</a>
                         </li>
                         <li>
                             <a class="block py-4 text-[#333] hover:text-[#e7511a] uppercase text-lg transition-colors duration-300"
@@ -98,4 +98,23 @@
             </div>
         </div>
     </div>
+    <script>
+        window.onscroll = function() {
+            handleScroll();
+        };
+
+        function handleScroll() {
+            const topBar = document.querySelector('.header-top');
+            const middleHeader = document.querySelector('.header-middle');
+
+
+            if (window.scrollY > 300) {
+                topBar.classList.add('hidden-top-bar');
+                middleHeader.classList.add('sticky');
+            } else {
+                topBar.classList.remove('hidden-top-bar');
+                middleHeader.classList.remove('sticky');
+            }
+        }
+    </script>
 </header>
