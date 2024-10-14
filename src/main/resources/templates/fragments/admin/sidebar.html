@@ -1,8 +1,9 @@
-<div th:fragment="sidebar" class="pb-3 w-60 bg-white font-semibold text-gray-700 h-screen min-h-fit">
+<div th:fragment="sidebar" class="pb-3 w-60 bg-[#001529] text-white h-screen min-h-fit">
     <div class="mb-1.5 pb-2.5 text-center border-b-2 border-slate-300">
         <div class="flex justify-center">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7vWHjatimRMCENuZGo1-EAb5-Vs8QWHuVgg&s" alt="Avatar"
-                class="rounded-full w-36 my-2"
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7vWHjatimRMCENuZGo1-EAb5-Vs8QWHuVgg&s"
+                 alt="Avatar"
+                 class="rounded-full w-36 my-2"
             >
         </div>
         <h2 class="text-xl font-bold my-2">Admin's Name</h2>
@@ -10,29 +11,35 @@
     </div>
     <div>
         <ul>
-            <li><a class="border-l-4 focus:border-red-500 focus:bg-red-50 focus:text-red-500 block px-3.5 py-2.5 cursor-pointer hover:bg-red-50 hover:text-red-500" th:href="@{#}"><i class="mr-2 fa-solid fa-table-columns"></i> Tổng quan</a></li>
+            <li>
+                <a class="sidebar-item border-l-4 focus:border-red-500 focus:bg-red-50 focus:text-red-500 block px-3.5 py-2.5 cursor-pointer hover:bg-red-50 hover:text-red-500"
+                   th:href="@{/admin}"><i class="mr-2 fa-solid fa-table-columns"></i> Tổng quan</a></li>
             <li class="hr">Quản lý</li>
-            <li class="px-3.5 py-2.5 flex justify-between items-center sidebar-item cursor-pointer hover:bg-red-50 hover:text-red-500">Danh mục<i class="fa-solid fa-angle-up transform transition-transform duration-500 ease-in-out"></i></li>
-            <li class="sub-sidebar-item hidden opacity-0 transform -translate-y-10 transition-all duration-500">
-                <a class="border-l-4 focus:border-red-500 focus:bg-red-50 focus:text-red-500 block px-4 py-2.5 cursor-pointer hover:bg-red-50 hover:text-red-500" th:href="@{#}">Giày thể thao</a>
-                <a class="border-l-4 focus:border-red-500 focus:bg-red-50 focus:text-red-500 block px-4 py-2.5 cursor-pointer hover:bg-red-50 hover:text-red-500" th:href="@{#}">Giày </a>
-                <a class="border-l-4 focus:border-red-500 focus:bg-red-50 focus:text-red-500 block px-4 py-2.5 cursor-pointer hover:bg-red-50 hover:text-red-500" th:href="@{#}">Hàng xuất</a>
+            <li>
+                <a class="sidebar-item border-l-4 focus:border-red-500 focus:bg-red-50 focus:text-red-500 block px-3.5 py-2.5 cursor-pointer hover:bg-red-50 hover:text-red-500"
+                   th:href="@{/admin/category}">Danh Mục</a>
             </li>
-            <li class="px-3.5 py-2.5 flex justify-between items-center sidebar-item cursor-pointer hover:bg-red-50 hover:text-red-500">Sản phẩm<i class="fa-solid fa-angle-up transform transition-transform duration-500 ease-in-out"></i></li>
-            <li class="sub-sidebar-item hidden opacity-0 transform -translate-y-10 transition-all duration-500">
-                <a class="border-l-4 focus:border-red-500 focus:bg-red-50 focus:text-red-500 block px-4 py-2.5 cursor-pointer hover:bg-red-50 hover:text-red-500" th:href="@{#}">Giày thể thao</a>
-                <a class="border-l-4 focus:border-red-500 focus:bg-red-50 focus:text-red-500 block px-4 py-2.5 cursor-pointer hover:bg-red-50 hover:text-red-500" th:href="@{#}">Giày </a>
-                <a class="border-l-4 focus:border-red-500 focus:bg-red-50 focus:text-red-500 block px-4 py-2.5 cursor-pointer hover:bg-red-50 hover:text-red-500" th:href="@{#}">Hàng xuất</a>
-            </li>
-            <li class="px-3.5 py-2.5 flex justify-between items-center sidebar-item cursor-pointer hover:bg-red-50 hover:text-red-500">Nhân viên<i class="fa-solid fa-angle-up transform transition-transform duration-500 ease-in-out"></i></li>
-            <li class="sub-sidebar-item hidden opacity-0 transform -translate-y-10 transition-all duration-500">
-                <a class="border-l-4 focus:border-red-500 focus:bg-red-50 focus:text-red-500 block px-4 py-2.5 cursor-pointer hover:bg-red-50 hover:text-red-500" th:href="@{#}">Nhân viên</a>
-                <a class="border-l-4 focus:border-red-500 focus:bg-red-50 focus:text-red-500 block px-4 py-2.5 cursor-pointer hover:bg-red-50 hover:text-red-500" th:href="@{#}">Hàng nhập</a>
-                <a class="border-l-4 focus:border-red-500 focus:bg-red-50 focus:text-red-500 block px-4 py-2.5 cursor-pointer hover:bg-red-50 hover:text-red-500" th:href="@{#}">Hàng </a>
-            </li>
+            <!--            <li class="px-3.5 py-2.5 flex justify-between items-center sidebar-item cursor-pointer hover:bg-red-50 hover:text-red-500">-->
+            <!--                Quản lý sản phẩm<i-->
+            <!--                    class="fa-solid fa-angle-up transform transition-transform duration-500 ease-in-out"></i>-->
+            <!--            </li>-->
+            <!--            <li class="sub-sidebar-item hidden opacity-0 transform -translate-y-10 transition-all duration-500">-->
+            <!--                <a class="border-l-4 focus:border-red-500 focus:bg-red-50 focus:text-red-500 block px-4 py-2.5 cursor-pointer hover:bg-red-50 hover:text-red-500"-->
+            <!--                   th:href="@{/admin/category}">Danh Mục</a>-->
+            <!--            </li>-->
+
             <li class="hr">Tài khoản</li>
-            <li><a class="border-l-4 focus:border-red-500 focus:bg-red-50 focus:text-red-500 block px-3.5 py-2.5 cursor-pointer hover:bg-red-50 hover:text-red-500" th:href="@{#}"><i class="mr-2 fa-regular fa-comment"></i> Phản hồi</a></li>
-            <li><a class="border-l-4 focus:border-red-500 focus:bg-red-50 focus:text-red-500 block px-3.5 py-2.5 cursor-pointer hover:bg-red-50 hover:text-red-500" th:href="@{#}"><i class="mr-2 fa-regular fa-user"></i> Hồ sơ</a></li>
+            <li>
+                <a class="border-l-4 focus:border-red-500 focus:bg-red-50 focus:text-red-500 block px-3.5 py-2.5 cursor-pointer hover:bg-red-50 hover:text-red-500"
+                   th:href="@{#}"><i class="mr-2 fa-regular fa-comment"></i> Phản hồi</a></li>
+            <li>
+                <a class="border-l-4 focus:border-red-500 focus:bg-red-50 focus:text-red-500 block px-3.5 py-2.5 cursor-pointer hover:bg-red-50 hover:text-red-500"
+                   th:href="@{#}"><i class="mr-2 fa-regular fa-user"></i> Hồ sơ</a>
+            </li>
+            <li>
+                <a class="border-l-4 focus:border-red-500 focus:bg-red-50 focus:text-red-500 block px-3.5 py-2.5 cursor-pointer hover:bg-red-50 hover:text-red-500"
+                   th:href="@{/auth/sign-out}"><i class="fa-solid fa-right-from-bracket"></i></i> Đăng xuất</a>
+            </li>
         </ul>
     </div>
 
@@ -58,5 +65,19 @@
         hrs.forEach(item => {
             item.classList.add("text-xs", "my-2", "border-b-2", "border-slate-300", "opacity-60", "font-semibold", "mx-2");
         });
+
+
+        // Highlight the current page in the sidebar
+        let currentPath = window.location.pathname;
+        let sidebarItems = document.querySelectorAll(".sidebar-item");
+        sidebarItems.forEach(item => {
+            let href = item.getAttribute("href");
+            console.log(href)
+            if (href === currentPath) {
+                item.classList.add("sidebar-link-active");
+            }
+        });
+
+
     </script>
 </div>

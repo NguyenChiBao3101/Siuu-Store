@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.util.stream.Collectors;
 
@@ -67,8 +68,12 @@ public class SecurityConfiguration {
                 )
                 // Configure logout settings
                 .logout((logout) -> logout
-                        .logoutUrl("/auth/sign-out")                            // URL for logging out
-                        .permitAll()                                            // Allow everyone to log out
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/auth/sign-out", "GET")) // Allow GET for logout                                           // URL for logging out
+                        .logoutSuccessUrl("/auth/sign-in")                                          // Redirect to home page after logout
+                        .deleteCookies("JSESSIONID", ".APPAUTH")                // Delete cookies on logout
+                        .invalidateHttpSession(true)                                               // Invalidate session on logout
+                        .clearAuthentication(true)                                                  // Clear authentication on logout
+                        .permitAll()                                                                // Allow everyone to log out
                 )
                 // Configure handling of access denied exceptions
                 .exceptionHandling((exception) -> exception

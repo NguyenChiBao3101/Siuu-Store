@@ -3,6 +3,7 @@
 body {
     font-family: "Poppins", sans-serif;
 }
+
 .header-top {
     transition: all 0.3s ease;
 }
@@ -18,7 +19,7 @@ body {
     left: 0;
     right: 0;
     z-index: 1000;
-    animation: slideDown  0.5s ease-in-out;
+    animation: slideDown 0.5s ease-in-out;
 }
 
 .hidden-top-bar {
@@ -35,15 +36,15 @@ body {
 }
 
 /* Starting footer */
-footer {
+.customer-footer {
     background-color: #262626;
     color: #FFFFFF;
     border-top: 2px solid #ff4400;
 }
 
 .footer-title {
-    font-weight:600;
-    padding-bottom:16px;
+    font-weight: 600;
+    padding-bottom: 16px;
 }
 
 .footer-content {
@@ -69,3 +70,10 @@ footer {
 }
 
 /* end footer*/
+
+/* Admin sidebar */
+.sidebar-link-active {
+    border-left-color: #ef4444;
+    background-color: #fef2f2;
+    color: #ef4444;
+}
