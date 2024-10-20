@@ -33,7 +33,8 @@ public class SecurityConfiguration {
             "/auth/sign-in",       // Sign-in page
             "/auth/sign-up",       // Sign-up page
             "assets/**",
-            "/shop/**"            // Static assets like CSS, JS, etc.
+            "/shop/**",            // Static assets like CSS, JS, etc.
+            "/category/**"
     };
 
     /**

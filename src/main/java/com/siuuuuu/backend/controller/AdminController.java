@@ -15,9 +15,9 @@ public class AdminController {
         return "admin/index";
     }
 
-    @GetMapping("/category")
-    public String category(HttpServletRequest request, Model model) {
-        model.addAttribute("title", "Quản Lý Danh Mục");
-        return "admin/category";
-    }
+//    @GetMapping("/category")
+//    public String category(HttpServletRequest request, Model model) {
+//        model.addAttribute("title", "Quản Lý Danh Mục");
+//        return "admin/category";
+//    }
 }
