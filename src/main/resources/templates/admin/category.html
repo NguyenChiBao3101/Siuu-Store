@@ -48,11 +48,11 @@
                 <i class="fa-solid fa-table-list"></i>
                 <p>Danh Sách Danh Mục</p>
             </div>
-            <a href="#"
-               class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <button class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                data-bs-toggle="modal" data-bs-target="#addCategoryModal">
                 <i class="fa-solid fa-plus"></i>
                 <span>Thêm Mới</span>
-            </a>
+            </button>
         </div>
         <hr class="mb-4">
         <table class="w-full table-auto border-collapse">
@@ -65,59 +65,104 @@
             </tr>
             </thead>
             <tbody>
-            <tr class="bg-white hover:bg-gray-50">
-                <td class="py-3 px-4 border-b">1</td>
-                <td class="py-3 px-4 border-b">Giày sneaker</td>
-                <td class="py-3 px-4 border-b">
-                    <span class="bg-green-500 text-white px-3 py-1 rounded-full text-xs">Hoạt Động</span>
-                </td>
+            <tr th:each="category, iterStat : ${categories}">
+                <td th:text="${iterStat.index + 1}" class="py-3 px-4 border-b"></td>
+                <td th:text="${category.name}" class="py-3 px-4 border-b"></td>
+                <td th:text="${category.status ? 'Đang hoạt động' : 'Ngừng hoạt động'}" class="py-3 px-4 border-b"></td>
                 <td class="py-3 px-4 border-b flex gap-2">
-                    <a href="#"
-                       class="bg-blue-500 text-white px-2 py-1 rounded-lg shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <a class="bg-blue-500 text-white px-2 py-1 rounded-lg shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 edit-category"
+                       data-bs-toggle="modal" data-bs-target="#updateCategoryModal">
                         <i class="fa-solid fa-edit"></i>
                     </a>
-                    <a href="#"
-                       class="bg-red-500 text-white px-2 py-1 rounded-lg shadow hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500">
+                    <a class="bg-red-500 text-white px-2 py-1 rounded-lg shadow hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
                         <i class="fa-solid fa-trash"></i>
                     </a>
+
                 </td>
             </tr>
-            <tr class="bg-gray-50 hover:bg-gray-100">
-                <td class="py-3 px-4 border-b">2</td>
-                <td class="py-3 px-4 border-b">Giày đá bóng</td>
-                <td class="py-3 px-4 border-b">
-                    <span class="bg-green-500 text-white px-3 py-1 rounded-full text-xs">Hoạt Động</span>
-                </td>
-                <td class="py-3 px-4 border-b flex gap-2">
-                    <a href="#"
-                       class="bg-blue-500 text-white px-2 py-1 rounded-lg shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <i class="fa-solid fa-edit"></i>
-                    </a>
-                    <a href="#"
-                       class="bg-red-500 text-white px-2 py-1 rounded-lg shadow hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500">
-                        <i class="fa-solid fa-trash"></i>
-                    </a>
-                </td>
-            </tr>
-            <tr class="bg-white hover:bg-gray-50">
-                <td class="py-3 px-4 border-b">3</td>
-                <td class="py-3 px-4 border-b">Dép</td>
-                <td class="py-3 px-4 border-b">
-                    <span class="bg-red-500 text-white px-3 py-1 rounded-full text-xs">Không Hoạt Động</span>
-                </td>
-                <td class="py-3 px-4 border-b flex gap-2">
-                    <a href="#"
-                       class="bg-blue-500 text-white px-2 py-1 rounded-lg shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <i class="fa-solid fa-edit"></i>
-                    </a>
-                    <a href="#"
-                       class="bg-red-500 text-white px-2 py-1 rounded-lg shadow hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500">
-                        <i class="fa-solid fa-trash"></i>
-                    </a>
-                </td>
+            <tr th:if="${#lists.isEmpty(categories)}">
+                <td colspan="4" class="py-3 px-4 text-center">Không có dữ liệu để hiển thị.</td>
             </tr>
             </tbody>
         </table>
+
+        <!-- Modal Add Category-->
+        <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title fw-bold" id="addCategoryModalLabel">Thêm danh mục</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <!-- Form them danh mục -->
+                    <form id="categoryForm" th:action="@{/admin/category}" method="post">
+                        <div class="modal-body">
+                            <!-- Tên danh mục -->
+                            <div class="mb-3">
+                                <label for="categoryName" class="form-label fw-bold">
+                                    <span class="text-danger">*</span> Tên danh mục
+                                </label>
+                                <input type="text" class="form-control w-100" id="categoryName" name="name"
+                                       placeholder="Tên danh mục sản phẩm" required>
+                            </div>
+
+                            <!-- Trạng thái -->
+                            <div class="mb-3">
+                                <label for="categoryStatus" class="form-label fw-bold">
+                                    <span class="text-danger">*</span> Trạng thái
+                                </label>
+                                <select class="form-select" id="categoryStatus" name="statusString" required>
+                                    <option value="active">Đang hoạt động</option>
+                                    <option value="inactive">Ngừng hoạt động</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                            <button type="submit" class="btn btn-primary">Thêm</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Modal Update Category -->
+        <div class="modal fade" id="updateCategoryModal" tabindex="-1" aria-labelledby="updateCategoryModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title fw-bold" id="updateCategoryModalLabel">Cập Nhật Danh Mục</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="updateCategoryForm">
+                            <div class="mb-3">
+                                <label for="updateCategoryName" class="form-label fw-bold">
+                                    <span class="text-danger">*</span> Tên danh mục
+                                </label>
+                                <input type="text" class="form-control w-100" id="updateCategoryName" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="updateCategoryStatus" class="form-label fw-bold">
+                                    <span class="text-danger">*</span> Trạng thái
+                                </label>
+                                <select class="form-select" id="updateCategoryStatus" required>
+                                    <option value="active">Đang hoạt động</option>
+                                    <option value="inactive">Ngừng hoạt động</option>
+                                </select>
+                            </div>
+                            <input type="hidden" id="updateCategoryId">
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-primary" id="btnUpdateCategory">Cập Nhật</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Pagination controls -->
         <div class="flex items-center justify-between mt-4">
@@ -153,6 +198,8 @@
 
             </div>
         </div>
+    </div>
 </section>
+
 </body>
 </html>
