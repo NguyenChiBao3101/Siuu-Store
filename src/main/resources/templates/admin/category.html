@@ -49,7 +49,7 @@
                 <p>Danh Sách Danh Mục</p>
             </div>
             <button class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+                    data-bs-toggle="modal" data-bs-target="#addCategoryModal">
                 <i class="fa-solid fa-plus"></i>
                 <span>Thêm Mới</span>
             </button>
@@ -58,10 +58,14 @@
         <table class="w-full table-auto border-collapse">
             <thead class="bg-gray-100">
             <tr>
-                <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#e4641a] rounded-tl-lg">STT</th>
+                <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#e4641a] rounded-tl-lg">
+                    STT
+                </th>
                 <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#e4641a]">Tên Danh Mục</th>
                 <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#e4641a]">Trạng Thái</th>
-                <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#e4641a] rounded-tr-lg">Hành Động</th>
+                <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#e4641a] rounded-tr-lg">
+                    Hành Động
+                </th>
             </tr>
             </thead>
             <tbody>
@@ -75,6 +79,7 @@
                         <i class="fa-solid fa-edit"></i>
                     </a>
                     <a class="bg-red-500 text-white px-2 py-1 rounded-lg shadow hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+                       href="#">
                         <i class="fa-solid fa-trash"></i>
                     </a>
 
@@ -87,7 +92,8 @@
         </table>
 
         <!-- Modal Add Category-->
-        <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
+        <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel"
+             aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -129,7 +135,8 @@
 
 
         <!-- Modal Update Category -->
-        <div class="modal fade" id="updateCategoryModal" tabindex="-1" aria-labelledby="updateCategoryModalLabel" aria-hidden="true">
+        <div class="modal fade" id="updateCategoryModal" tabindex="-1" aria-labelledby="updateCategoryModalLabel"
+             aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">

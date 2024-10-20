@@ -77,3 +77,69 @@ body {
     background-color: #fef2f2;
     color: #ef4444;
 }
+
+.owl-carousel {
+    position: relative;
+}
+
+.owl-dots {
+    margin-top: 10px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 10px;
+}
+
+/* Định dạng cho item */
+.owl-carousel .item {
+    position: relative;
+}
+
+.owl-carousel .item img {
+    width: 100%;
+    height: auto;
+}
+
+
+.owl-carousel .item .content {
+    position: absolute;
+    width: 50%;
+    top: 50%;
+    left: 80px;
+    transform: translateY(-50%);
+    color: white;
+    text-align: left;
+}
+
+
+.owl-carousel .item .content h2 {
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
+.owl-carousel .item .content p {
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+
+
+.owl-carousel .item .content .btn {
+    color: #000000;
+    background-color: #ffffff;
+    padding: 15px 25px;
+    text-decoration: none;
+    border-radius: 10px;
+}
+
+.owl-carousel .item .content .btn:hover {
+    color: #ffffff;
+    background-color: #E7511A;
+}
+
+.hover-opacity img {
+    transition: opacity 0.3s ease;
+}
+
+.hover-opacity:hover img {
+    opacity: 0.8;
+}

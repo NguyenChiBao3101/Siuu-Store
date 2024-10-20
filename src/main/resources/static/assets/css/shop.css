@@ -248,7 +248,7 @@ figure {
 .product-body {
     position: relative;
     transition: all .35s ease;
-    padding: 20px 0;
+    padding: 20px 10px;
 }
 
 .product-title {

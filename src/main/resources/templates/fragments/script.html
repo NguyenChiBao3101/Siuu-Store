@@ -8,4 +8,16 @@
             crossorigin="anonymous"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script th:src="@{/assets/js/owl.carousel.min.js}"></script>
+    <script>
+        $(document).ready(function(){
+            $(".owl-carousel").owlCarousel({
+                items : 1,
+                loop : true,
+                autoplay : true,
+                autoplayTimeout : 3000,
+                autoplayHoverPause : true,
+                dots : true,
+            });
+        });
+    </script>
 </div>

@@ -3,11 +3,89 @@
 <body>
 <section>
     <div class="container">
-        <!--        <div class="owl-carousel">-->
-        <!--            <div> <img th:src="@{./assets/images/slide-1.jpg}"> </div>-->
-        <!--            <div> <img th:src="@{./assets/images/slide-2.jpg}"> </div>-->
-        <!--            <div> <img th:src="@{./assets/images/slide-3.jpg}"> </div>-->
-        <!--        </div>-->
+        <div class="owl-carousel owl-theme">
+            <div class="item">
+                <img th:src="@{/assets/image/slider/img.png}" alt="Hàng Mới Về">
+                <div class="content">
+                    <h2>Những Đôi Giày <span class="highlight">Mới Nhất!</span></h2>
+                    <p>Khám phá những mẫu giày mới nhất và nâng tầm phong cách của bạn. Bộ sưu tập sneaker vừa cập
+                        bến!</p>
+                    <a th:href="@{/shop}" class="btn">Mua Ngay</a>
+                </div>
+            </div>
+            <div class="item">
+                <img th:src="@{/assets/image/slider/img_1.png}" alt="Phiên Bản Giới Hạn">
+                <div class="content">
+                    <h2><span class="highlight">Độc Quyền & Giới Hạn!</span></h2>
+                    <p>Đừng bỏ lỡ những đôi giày phiên bản giới hạn. Hết là không còn
+                        nữa!</p>
+                    <a th:href="@{/shop}" class="btn">Mua Ngay</a>
+                </div>
+            </div>
+            <div class="item">
+                <img th:src="@{/assets/image/slider/img_2.png}" alt="Khuyến Mãi">
+                <div class="content">
+                    <h2><span class="highlight">Giảm Giá Đến 50%!</span></h2>
+                    <p>Những đôi sneaker yêu thích của bạn với mức giá không thể tốt hơn.
+                        Nhanh tay trước khi hết hàng!</p>
+                    <a th:href="@{/shop}" class="btn">Mua Ngay</a>
+                </div>
+            </div>
+        </div>
+        <div class="mt-4">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="row h-full">
+                        <div class="col-lg-6">
+                            <div class="relative hover-opacity">
+                                <img class="w-full h-full object-cover" th:src="@{/assets/image/banner/img.png}">
+                                <div class="absolute w-1/2 top-1/2 right-[28px] transform -translate-y-1/2">
+                                    <h2 class="text-white text-[24px] font-semibold">Sneakers & Athletic Shoes</h2>
+                                    <a th:href="@{/shop}"
+                                       class="inline-block text-white bg-transparent border-white border-solid border-[1px] px-[30px] py-[8px] rounded-3xl mt-3">Khám
+                                        Phá Ngay</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="relative hover-opacity">
+                                <img class="w-full h-full object-cover" th:src="@{/assets/image/banner/img_1.png}">
+                                <div class="absolute w-1/2 top-1/2 left-[28px] transform -translate-y-1/2">
+                                    <h2 class="text-[#333333] text-[24px] font-semibold">Sandals up to 70% off</h2>
+                                    <a th:href="@{/shop}"
+                                       class="inline-block text white bg-transparent border-[#959595] border-solid border-[1px] px-[25px] py-[8px] rounded-3xl mt-3">Mua
+                                        Ngay</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-12 mt-[24px]">
+                            <div class="relative hover-opacity">
+                                <img class="w-full h-full object-cover" th:src="@{/assets/image/banner/img_2.png}">
+                                <div class="absolute w-1/2 top-1/2 left-[28px] transform -translate-y-1/2">
+                                    <h2 class="text-white text-[24px] font-semibold">On sale Slip-On Loafers Up to 50%
+                                        off!</h2>
+                                    <a th:href="@{/shop}"
+                                       class="inline-block text-white bg-transparent border-white border-solid border-[1px] px-[30px] py-[8px] rounded-3xl mt-3">Cửa
+                                        Hàng</a>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="relative h-full hover-opacity">
+                        <img class="w-full h-full object-cover" th:src="@{/assets/image/banner/img_3.png}">
+                        <div class="absolute w-1/2 bottom-[50px] left-[28px] ">
+                            <h2 class="text-white text-[24px] font-semibold">Khám Phá Bộ Sưu Tập Mới</h2>
+                            <a th:href="@{/shop}"
+                               class="inline-block text-white bg-transparent border-white border-solid border-[1px] px-[30px] py-[8px] rounded-3xl mt-3">Khám
+                                Phá Ngay</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </section>
 </body>
