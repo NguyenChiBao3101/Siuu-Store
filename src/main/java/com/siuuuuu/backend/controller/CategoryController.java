@@ -1,23 +1,25 @@
 package com.siuuuuu.backend.controller;
 
 import com.siuuuuu.backend.dto.request.CategoryDto;
+import com.siuuuuu.backend.entity.Category;
+import com.siuuuuu.backend.repository.CategoryRepository;
 import com.siuuuuu.backend.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
-import java.util.NoSuchElementException;
-
 @Controller
 @RequestMapping("/admin/category")
 public class CategoryController {
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private CategoryRepository repository;
 
     @RequestMapping(value = {""}, method = RequestMethod.GET)
     public String getAllCategories(Model model) {
@@ -34,49 +36,40 @@ public class CategoryController {
         return "redirect:/admin/category";
     }
 
-
-    @RequestMapping(value= {"/{id}"}, method = RequestMethod.DELETE)
-    public ResponseEntity<String> deleteCategory(@PathVariable String id) {
-        try {
-            categoryService.deleteCategory(id);
-            return ResponseEntity.ok("Danh mục đã được xóa thành công");
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.status(404).body("Danh mục không tồn tại");
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Có lỗi xảy ra khi xóa danh mục");
-        }
+    @GetMapping(value = {"/delete/{id}"})
+    public String deleteCategory(@PathVariable(name="id") String id) {
+        categoryService.deleteCategory(id);
+        return "redirect:/admin/category";
     }
 
+    @GetMapping(value = {"update/{id}"})
+    public String updateCategory(@PathVariable String id, Model model) {
+        Category category =  repository.findById(id).orElseThrow(() -> new RuntimeException("Category not fo"));
+        model.addAttribute("category", category);
+        return "admin/update-category";
+    }
 
+    @PostMapping(value = {"update/{id}"})
+    public String submitUpdateCategory(
+            @PathVariable String id,
+            @ModelAttribute("category") CategoryDto categoryDto,
+            RedirectAttributes redirectAttributes) {
 
+        // Fetch the category from the database
+        Category category = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Category not found"));
 
-//    @GetMapping("/all")
-//    public ResponseEntity<List<CategoryDto>> getAllCategories() {
-//        return ResponseEntity.ok(categoryService.getAllCategories());
-//    }
-//    @GetMapping("/by_id/{id}")
-//    public ResponseEntity<CategoryDto> getCategoryById(@PathVariable String id){
-//        return ResponseEntity.ok(categoryService.getCategoryById(id));
-//    }
-//
-//    @PostMapping("/add")
-//    public ResponseEntity<CategoryDto> createCategory( @RequestBody CategoryDto categoryDto) {
-//        return ResponseEntity.ok(categoryService.createNewCategory(categoryDto));
-//    }
-//
-//    @PutMapping("/update/{id}")
-//    public ResponseEntity<CategoryDto> updateCategory(@RequestBody CategoryDto categoryDto, @PathVariable String id) {
-//        return ResponseEntity.ok(categoryService.updateCategory(categoryDto,id));
-//    }
-//
-//    @DeleteMapping("/delete/{id}")
-//    public ResponseEntity<String> deleteCategory(@PathVariable("id") String id) {
-//        boolean deleted = categoryService.deleteCategory(id);
-//        if (deleted) {
-//            return ResponseEntity.ok("Category deleted successfully");
-//        } else {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Category not found");
-//        }
-//    }
+        // Update category properties with data from the form
+        category.setName(categoryDto.getName());
+        category.setStatus(categoryDto.getStatus());
 
+        // Save the updated category back to the repository
+        repository.save(category);
+
+        // Add a flash attribute for a success message
+        redirectAttributes.addFlashAttribute("message", "Cập nhật danh mục thành công!");
+
+        // Redirect to the category list page
+        return "redirect:/admin/category";
+    }
 }

@@ -12,9 +12,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CategoryDto {
+    private String id;
     private String name;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Boolean status;
-    private String statusString;  // Nhận từ form ("Đang hoạt động" / "Ngừng hoạt động")
+    private Boolean statusString;  // Nhận từ form ("Đang hoạt động" / "Ngừng hoạt động")
 }
