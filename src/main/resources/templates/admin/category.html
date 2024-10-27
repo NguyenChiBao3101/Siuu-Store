@@ -40,7 +40,6 @@
             </div>
         </form>
     </div>
-
     <!-- Table -->
     <div class="w-full bg-white mt-5 p-2.5 rounded-md shadow-md">
         <div class="flex items-center justify-between mb-4">
@@ -75,14 +74,15 @@
                 <td th:text="${category.status ? 'Đang hoạt động' : 'Ngừng hoạt động'}" class="py-3 px-4 border-b"></td>
                 <td class="py-3 px-4 border-b flex gap-2">
                     <a class="bg-blue-500 text-white px-2 py-1 rounded-lg shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 edit-category"
-                       data-bs-toggle="modal" data-bs-target="#updateCategoryModal">
+                       th:href="@{'/admin/category/update/' + ${category.id}}">
                         <i class="fa-solid fa-edit"></i>
                     </a>
                     <a class="bg-red-500 text-white px-2 py-1 rounded-lg shadow hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
-                       href="#">
+
+                       th:href="@{'category/delete/' + ${category.id}}"
+                       th:onclick="return confirm('Bạn có chắc muốn xoá danh mục sản phẩm này không?')">
                         <i class="fa-solid fa-trash"></i>
                     </a>
-
                 </td>
             </tr>
             <tr th:if="${#lists.isEmpty(categories)}">
@@ -119,8 +119,8 @@
                                     <span class="text-danger">*</span> Trạng thái
                                 </label>
                                 <select class="form-select" id="categoryStatus" name="statusString" required>
-                                    <option value="active">Đang hoạt động</option>
-                                    <option value="inactive">Ngừng hoạt động</option>
+                                    <option value="1">Đang hoạt động</option>
+                                    <option value="0">Ngừng hoạt động</option>
                                 </select>
                             </div>
                         </div>
@@ -171,6 +171,7 @@
             </div>
         </div>
 
+
         <!-- Pagination controls -->
         <div class="flex items-center justify-between mt-4">
             <div>
@@ -201,12 +202,9 @@
                         </li>
                     </ul>
                 </nav>
-
-
             </div>
         </div>
     </div>
 </section>
-
 </body>
 </html>

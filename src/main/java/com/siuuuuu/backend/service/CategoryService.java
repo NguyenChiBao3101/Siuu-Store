@@ -5,7 +5,6 @@ import com.siuuuuu.backend.entity.Category;
 import com.siuuuuu.backend.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +19,7 @@ public class CategoryService {
         return mapToListDto(categoryList);
     }
 
-    //get all category by name
+    //get all category by id
     public CategoryDto getCategoryById(String id) {
         Category categoryOptional = categoryRepository.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy mã danh mục sản phẩm"));
         return mapToDto(categoryOptional);
@@ -37,21 +36,19 @@ public class CategoryService {
         category.setName(categoryDto.getName());
         category.setCreatedAt(categoryDto.getCreatedAt());
         category.setUpdatedAt(categoryDto.getUpdatedAt());
-        category.setStatus(categoryDto.getStatusString().equalsIgnoreCase("active")); // true/false
-        System.out.println("Status String: " + categoryDto.getStatusString());
+        category.setStatus(categoryDto.getStatusString()); // true/false
         return mapToDto(categoryRepository.save(category));
     }
-
 
     //delete category by id
     public boolean deleteCategory(String id) {
         if (categoryRepository.existsById(id)) {
+
             categoryRepository.deleteById(id);
             return true;
         }
         return false;
     }
-
 
     //update category information
     public CategoryDto updateCategory(CategoryDto categoryDto ,String id) {
@@ -73,6 +70,7 @@ public class CategoryService {
 
     public CategoryDto mapToDto(Category category) {
         CategoryDto categoryDto = new CategoryDto();
+        categoryDto.setId(category.getId());
         categoryDto.setName(category.getName());
         categoryDto.setStatus(category.getStatus());
         categoryDto.setCreatedAt(category.getCreatedAt());
@@ -85,6 +83,7 @@ public class CategoryService {
         List<CategoryDto> categoryDtoList = new ArrayList<>();
         for(Category category : categoryList) {
             CategoryDto categoryDto = new CategoryDto();
+            categoryDto.setId(category.getId());
             categoryDto.setName(category.getName());
             categoryDto.setStatus(category.getStatus());
             categoryDto.setCreatedAt(category.getCreatedAt());
