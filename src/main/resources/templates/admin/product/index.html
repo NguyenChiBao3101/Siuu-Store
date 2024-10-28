@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{/layout/admin :: layout(~{::section})}">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<section>
+    <div class="flex items-center gap-x-2 text-2xl font-bold">
+        <i class="fa-solid fa-layer-group"></i>
+        <h1>Quản Lý Sản Phẩm</h1>
+    </div>
+
+    <!-- Filter -->
+    <div class="w-full bg-[#FFFFFF] mt-5 p-2.5 rounded-md">
+        <div class="flex items-center gap-x-2 text-xl">
+            <i class="fa-solid fa-filter"></i>
+            <p>Bộ lọc</p>
+        </div>
+        <hr>
+        <form class="flex flex-wrap items-center justify-between gap-4 mt-4">
+            <div class="flex flex-col">
+                <label for="name" class="text-sm font-semibold mb-1">Tên sản phẩm:</label>
+                <input type="text" id="name" name="name"
+                       class="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-80">
+            </div>
+            <div class="flex flex-col">
+                <label for="status" class="text-sm font-semibold mb-1">Trạng thái:</label>
+                <select id="status" name="status"
+                        class="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-80">
+                    <option value="">Tất cả</option>
+                    <option value="1">Đang kinh doanh</option>
+                    <option value="0">Ngừng kinh doanh</option>
+                </select>
+            </div>
+            <div class="flex items-center space-x-3">
+                <button type="submit"
+                        class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    Tìm Kiếm
+                </button>
+                <button type="button"
+                        class="bg-red-500 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500">
+                    Làm mới bộ lọc
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Table -->
+    <div class="w-full bg-white mt-5 p-2.5 rounded-md shadow-md">
+        <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-x-2 text-xl font-semibold">
+                <i class="fa-solid fa-table-list"></i>
+                <p>Danh Sách Sản Phẩm</p>
+            </div>
+            <a th:href="@{/admin/product/create}"
+               class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+                <i class="fa-solid fa-plus"></i>
+                <span>Thêm Mới</span>
+            </a>
+        </div>
+        <hr class="mb-4">
+        <table class="w-full table-auto border-collapse">
+            <thead class="bg-gray-100">
+            <tr>
+                <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#e4641a] rounded-tl-lg">
+                    STT
+                </th>
+                <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#e4641a]">Tên Sản Phẩm</th>
+                <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#e4641a]">Trạng Thái</th>
+                <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#e4641a] rounded-tr-lg">
+                    Hành Động
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="product, iterStat : ${products}">
+                <td th:text="${iterStat.index + 1}" class="py-3 px-4 border-b"></td>
+                <td th:text="${product.name}" class="py-3 px-4 border-b"></td>
+                <td th:text="${product.status ? 'Đang hoạt động' : 'Ngừng hoạt động'}" class="py-3 px-4 border-b"></td>
+                <td class="py-3 px-4 border-b flex gap-2">
+                    <a class="bg-blue-500 text-white px-2 py-1 rounded-lg shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 edit-category"
+                       data-bs-toggle="modal" data-bs-target="#updateCategoryModal">
+                        <i class="fa-solid fa-edit"></i>
+                    </a>
+                    <a class="bg-red-500 text-white px-2 py-1 rounded-lg shadow hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+                       href="#">
+                        <i class="fa-solid fa-trash"></i>
+                    </a>
+
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(products)}">
+                <td colspan="4" class="py-3 px-4 text-center">Không có dữ liệu để hiển thị.</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <!-- Pagination controls -->
+        <div class="flex items-center justify-between mt-4">
+            <div>
+                <p class="text-sm text-gray-600">
+                    Hiển thị 1-3 trong số 3 kết quả
+                </p>
+            </div>
+            <div>
+                <nav>
+                    <ul class="flex items center gap-x-2">
+                        <li>
+                            <a href="#"
+                               class="bg-blue-500 text-white px-3 py-1 rounded-lg shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <i class="fa-solid fa-angle-left"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#"
+                               class="bg-blue-500 text-white px-3 py-1 rounded-lg shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                1
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#"
+                               class="bg-blue-500 text-white px-3 py-1 rounded-lg shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <i class="fa-solid fa-angle-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

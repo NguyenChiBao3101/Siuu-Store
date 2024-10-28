@@ -71,7 +71,7 @@
             <tr th:each="category, iterStat : ${categories}">
                 <td th:text="${iterStat.index + 1}" class="py-3 px-4 border-b"></td>
                 <td th:text="${category.name}" class="py-3 px-4 border-b"></td>
-                <td th:text="${category.status ? 'Đang hoạt động' : 'Ngừng hoạt động'}" class="py-3 px-4 border-b"></td>
+                <td th:text="${category.status ? 'Đang kinh doanh' : 'Ngừng kinh doanh'}" class="py-3 px-4 border-b"></td>
                 <td class="py-3 px-4 border-b flex gap-2">
                     <a class="bg-blue-500 text-white px-2 py-1 rounded-lg shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 edit-category"
                        th:href="@{'/admin/category/update/' + ${category.id}}">
@@ -119,8 +119,8 @@
                                     <span class="text-danger">*</span> Trạng thái
                                 </label>
                                 <select class="form-select" id="categoryStatus" name="statusString" required>
-                                    <option value="1">Đang hoạt động</option>
-                                    <option value="0">Ngừng hoạt động</option>
+                                    <option value="1">Đang kinh doanh</option>
+                                    <option value="0">Ngừng kinh doanh</option>
                                 </select>
                             </div>
                         </div>
@@ -129,44 +129,6 @@
                             <button type="submit" class="btn btn-primary">Thêm</button>
                         </div>
                     </form>
-                </div>
-            </div>
-        </div>
-
-
-        <!-- Modal Update Category -->
-        <div class="modal fade" id="updateCategoryModal" tabindex="-1" aria-labelledby="updateCategoryModalLabel"
-             aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title fw-bold" id="updateCategoryModalLabel">Cập Nhật Danh Mục</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="updateCategoryForm">
-                            <div class="mb-3">
-                                <label for="updateCategoryName" class="form-label fw-bold">
-                                    <span class="text-danger">*</span> Tên danh mục
-                                </label>
-                                <input type="text" class="form-control w-100" id="updateCategoryName" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="updateCategoryStatus" class="form-label fw-bold">
-                                    <span class="text-danger">*</span> Trạng thái
-                                </label>
-                                <select class="form-select" id="updateCategoryStatus" required>
-                                    <option value="active">Đang hoạt động</option>
-                                    <option value="inactive">Ngừng hoạt động</option>
-                                </select>
-                            </div>
-                            <input type="hidden" id="updateCategoryId">
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                        <button type="submit" class="btn btn-primary" id="btnUpdateCategory">Cập Nhật</button>
-                    </div>
                 </div>
             </div>
         </div>

@@ -33,6 +33,7 @@ public class SecurityConfiguration {
             "/auth/sign-in",       // Sign-in page
             "/auth/sign-up",       // Sign-up page
             "assets/**",
+            "/shop/**",
     };
 
     /**

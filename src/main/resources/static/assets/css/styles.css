@@ -103,7 +103,6 @@ body {
 
 .owl-carousel .item .content {
     position: absolute;
-    width: 50%;
     top: 50%;
     left: 80px;
     transform: translateY(-50%);
@@ -113,12 +112,12 @@ body {
 
 
 .owl-carousel .item .content h2 {
-    font-size: 3rem;
+    /*font-size: 3rem;*/
     margin-bottom: 10px;
 }
 
 .owl-carousel .item .content p {
-    font-size: 20px;
+    /*font-size: 20px;*/
     margin-bottom: 20px;
 }
 

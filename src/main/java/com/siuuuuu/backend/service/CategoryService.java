@@ -19,10 +19,13 @@ public class CategoryService {
         return mapToListDto(categoryList);
     }
 
-    //get all category by id
-    public CategoryDto getCategoryById(String id) {
-        Category categoryOptional = categoryRepository.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy mã danh mục sản phẩm"));
-        return mapToDto(categoryOptional);
+    //get category by id
+    public Category getCategoryById(String id) {
+        Category category = categoryRepository.findById(id).orElse(null);
+        if (category == null) {
+            throw new RuntimeException("Không tìm thấy danh mục sản phẩm");
+        }
+        return category;
     }
 
     //insert new category
@@ -51,7 +54,7 @@ public class CategoryService {
     }
 
     //update category information
-    public CategoryDto updateCategory(CategoryDto categoryDto ,String id) {
+    public void updateCategory(CategoryDto categoryDto ,String id) {
         Category category = categoryRepository.findById(id).orElseThrow(() -> new RuntimeException("không tìm thấy danh mục sản phẩm"));
         if(category.getName() != null) {
             category.setName(categoryDto.getName());
@@ -65,7 +68,7 @@ public class CategoryService {
         if(category.getStatus() != null) {
             category.setStatus(categoryDto.getStatus());
         }
-        return mapToDto(categoryRepository.save(category));
+        categoryRepository.save(category);
     }
 
     public CategoryDto mapToDto(Category category) {

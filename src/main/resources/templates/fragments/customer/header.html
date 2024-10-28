@@ -1,13 +1,13 @@
 <header class="flex flex-col" th:fragment="header" xmlns:sec="http://www.w3.org/1999/xhtml">
     <!-- Top Bar -->
     <div class="header-top bg-[#2e2929] text-white">
-        <div class="container">
+        <div class="container mx-auto">
             <div class="border-b-[1px] border-solid border-[#444]">
-                <ul class="flex items-center justify-end gap-x-8 px-0 py-2.5 text-sm">
+                <ul class="flex flex-wrap justify-end gap-x-4 px-0 py-2.5 text-sm">
                     <li>
                         <a class="flex items-center gap-x-2 hover:text-[#e7511a] transition-colors duration-300"
                            href="tel:#">
-                            <i class="fa-solid fa-phone"></i>Liên hệ: +84 123 456 789
+                            <i class="fa-solid fa-phone"></i> Liên hệ: +84 123 456 789
                         </a>
                     </li>
                     <li>
@@ -22,7 +22,6 @@
                             <i class="fa-regular fa-user"></i> Đăng nhập
                         </a>
                     </li>
-                    <!-- login success -->
                     <li sec:authorize="isAuthenticated()">
                         <a class="flex items-center gap-x-2 hover:text-[#e7511a] transition-colors duration-300"
                            th:href="@{/auth/sign-in}">
@@ -35,43 +34,57 @@
     </div>
 
     <!-- Middle Header -->
-    <div class="header-middle sticky-header bg-white shadow-md">
-        <div class="container flex items-center justify-between">
-            <!-- Logo & Navigation -->
-            <div class="flex items-center gap-x-16">
-                <a th:href="@{/}" class="text-4xl font-bold text-[#e7511a] tracking-wide">
-                    SiuuStore
-                </a>
-                <nav>
-                    <ul class="flex items-center gap-x-8">
-                        <li>
-                            <a class="block py-4 text-[#333] hover:text-[#e7511a] uppercase text-lg transition-colors duration-300"
-                               th:href="@{/}">Trang Chủ</a>
-                        </li>
-                        <li>
-                            <a class="block py-4 text-[#333] hover:text-[#e7511a] uppercase text-lg transition-colors duration-300"
-                               th:href="@{/shop}">Cửa Hàng</a>
-                        </li>
-                        <li>
-                            <a class="block py-4 text-[#333] hover:text-[#e7511a] uppercase text-lg transition-colors duration-300"
-                               href="product.html">Nam</a>
-                        </li>
-                        <li>
-                            <a class="block py-4 text-[#333] hover:text-[#e7511a] uppercase text-lg transition-colors duration-300"
-                               href="product.html">Nữ</a>
-                        </li>
-                        <li>
-                            <a class="block py-4 text-[#333] hover:text-[#e7511a] uppercase text-lg transition-colors duration-300"
-                               href="product.html">Sale</a>
-                        </li>
-                    </ul>
-                </nav>
+    <div class="header-middle sticky-header bg-white shadow-md py-4">
+        <div class="container mx-auto flex items-center justify-between">
+            <!-- Mobile: Menu Toggle & Search Icon -->
+            <div class="flex items-center gap-x-6 lg:hidden">
+                <!-- Menu Toggle -->
+                <button id="mobile-menu-btn" class="text-3xl text-gray-700 hover:text-[#e7511a]">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+
+                <!-- Search Icon -->
+                <div class="relative">
+                    <button class="text-xl text-gray-700 hover:text-[#e7511a] transition-colors duration-300">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                </div>
             </div>
 
+            <!-- Logo -->
+            <a th:href="@{/}" class="text-4xl font-bold text-[#e7511a] tracking-wide">
+                SiuuStore
+            </a>
+
+            <!-- Desktop: Navigation Links -->
+            <nav class="hidden lg:flex items-center gap-x-6 ml-8">
+                <ul class="flex items-center gap-x-6">
+                    <li>
+                        <a class="block text-[#333] hover:text-[#e7511a] uppercase text-lg transition-colors duration-300"
+                           th:href="@{/}">Trang Chủ</a>
+                    </li>
+                    <li>
+                        <a class="block text-[#333] hover:text-[#e7511a] uppercase text-lg transition-colors duration-300"
+                           th:href="@{/shop}">Cửa Hàng</a>
+                    </li>
+                    <li>
+                        <a class="block text-[#333] hover:text-[#e7511a] uppercase text-lg transition-colors duration-300"
+                           href="product.html">Nam</a>
+                    </li>
+                    <li>
+                        <a class="block text-[#333] hover:text-[#e7511a] uppercase text-lg transition-colors duration-300"
+                           href="product.html">Nữ</a>
+                    </li>
+                    <li>
+                        <a class="block text-[#333] hover:text-[#e7511a] uppercase text-lg transition-colors duration-300"
+                           href="product.html">Sale</a>
+                    </li>
+                </ul>
+            </nav>
             <!-- Search & Cart -->
             <div class="flex items-center gap-x-6">
                 <!-- Search Bar -->
-                <div class="relative border-[1px] border-solid border-gray-300 px-4 py-2 rounded-full transition-all focus-within:border-[#e7511a]">
+                <div class="hidden lg:block relative border-[1px] border-solid border-gray-300 px-4 py-2 rounded-full transition-all focus-within:border-[#e7511a]">
                     <form action="#" method="get" class="flex items-center">
                         <div class="flex-grow">
                             <label for="q" class="sr-only">Search</label>
@@ -97,8 +110,45 @@
                 </a>
             </div>
         </div>
+
     </div>
+
+    <!-- Mobile Nav -->
+    <div id="mobile-menu" class="hidden lg:hidden bg-white shadow-md">
+        <ul class="flex flex-col p-4">
+            <li>
+                <a class="block py-2 text-[#333] hover:text-[#e7511a] uppercase text-lg transition-colors duration-300"
+                   th:href="@{/}">Trang Chủ</a>
+            </li>
+            <li>
+                <a class="block py-2 text-[#333] hover:text-[#e7511a] uppercase text-lg transition-colors duration-300"
+                   th:href="@{/shop}">Cửa Hàng</a>
+            </li>
+            <li>
+                <a class="block py-2 text-[#333] hover:text-[#e7511a] uppercase text-lg transition-colors duration-300"
+                   href="product.html">Nam</a>
+            </li>
+            <li>
+                <a class="block py-2 text-[#333] hover:text-[#e7511a] uppercase text-lg transition-colors duration-300"
+                   href="product.html">Nữ</a>
+            </li>
+            <li>
+                <a class="block py-2 text-[#333] hover:text-[#e7511a] uppercase text-lg transition-colors duration-300"
+                   href="product.html">Sale</a>
+            </li>
+        </ul>
+    </div>
+
     <script>
+        // Mobile menu toggle
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Sticky header on scroll
         window.onscroll = function () {
             handleScroll();
         };
@@ -107,13 +157,12 @@
             const topBar = document.querySelector('.header-top');
             const middleHeader = document.querySelector('.header-middle');
 
-
             if (window.scrollY > 300) {
-                topBar.classList.add('hidden-top-bar');
-                middleHeader.classList.add('sticky');
+                topBar.classList.add('hidden');
+                middleHeader.classList.add('sticky', 'top-0');
             } else {
-                topBar.classList.remove('hidden-top-bar');
-                middleHeader.classList.remove('sticky');
+                topBar.classList.remove('hidden');
+                middleHeader.classList.remove('sticky', 'top-0');
             }
         }
     </script>
