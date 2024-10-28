@@ -1,4 +1,4 @@
-package com.siuuuuu.backend.controller;
+package com.siuuuuu.backend.controller.admin;
 
 import org.springframework.ui.Model;
 import org.springframework.stereotype.Controller;

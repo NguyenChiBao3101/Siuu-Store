@@ -1,10 +1,11 @@
-package com.siuuuuu.backend.controller;
+package com.siuuuuu.backend.controller.admin;
 
 import com.siuuuuu.backend.dto.request.CategoryDto;
 import com.siuuuuu.backend.entity.Category;
 import com.siuuuuu.backend.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,19 +20,25 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @RequestMapping(value = {""}, method = RequestMethod.GET)
-    public String getAllCategories(Model model) {
-        List<CategoryDto> categories = categoryService.getAllCategories();
+    public String getAllCategories(Model model, @RequestParam(defaultValue = "1") int page,
+                                   @RequestParam(defaultValue = "5") int size) {
+        Page<CategoryDto> categoryPage = categoryService.getAllCategories(page, size);
+
         model.addAttribute("title", "Danh Mục Sản Phẩm");
-        model.addAttribute("categories", categories);
-        System.out.println("Categories size: " + categories.size()); // Kiểm tra kích thước danh sách
+        model.addAttribute("currentPage", page);
+        model.addAttribute("size", size);
+        model.addAttribute("totalPages", categoryPage.getTotalPages());
+        model.addAttribute("totalItems", categoryPage.getTotalElements());
+        model.addAttribute("categories", categoryPage.getContent());
         return "admin/category/index";
     }
+
 
     @RequestMapping(value = {""}, method = RequestMethod.POST)
     public String createCategory(@ModelAttribute("category") CategoryDto categoryDto, RedirectAttributes redirectAttributes) {
         categoryService.createNewCategory(categoryDto);
         redirectAttributes.addFlashAttribute("message", "Thêm danh mục thành công!");
-        return "redirect:/admin/category";
+        return "redirect:/admin/category?page=1&size=5";
     }
 
     @RequestMapping(value = {"/delete/{id}"}, method = RequestMethod.GET)

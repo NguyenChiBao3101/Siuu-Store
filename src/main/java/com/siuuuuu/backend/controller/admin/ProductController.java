@@ -1,4 +1,4 @@
-package com.siuuuuu.backend.controller;
+package com.siuuuuu.backend.controller.admin;
 
 import com.siuuuuu.backend.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;

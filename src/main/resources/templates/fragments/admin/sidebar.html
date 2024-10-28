@@ -17,7 +17,7 @@
             <li class="hr">Quản lý</li>
             <li>
                 <a class="sidebar-item border-l-4 focus:border-red-500 focus:bg-red-50 focus:text-red-500 block px-3.5 py-2.5 cursor-pointer hover:bg-red-50 hover:text-red-500"
-                   th:href="@{/admin/category}">Danh Mục</a>
+                   th:href="@{/admin/category?page=1&size=5}">Danh Mục</a>
             </li>
             <li>
                 <a class="sidebar-item border-l-4 focus:border-red-500 focus:bg-red-50 focus:text-red-500 block px-3.5 py-2.5 cursor-pointer hover:bg-red-50 hover:text-red-500"
@@ -76,7 +76,6 @@
         let sidebarItems = document.querySelectorAll(".sidebar-item");
         sidebarItems.forEach(item => {
             let href = item.getAttribute("href");
-            console.log(href)
             if (href === currentPath) {
                 item.classList.add("sidebar-link-active");
             }
