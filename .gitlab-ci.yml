@@ -4,7 +4,7 @@ stages:
 
 variables:
   APP_NAME: "siuushop"
-  APP_VERSION: "${CI_COMMIT_SHA:0:8}"
+  APP_VERSION: "${CI_COMMIT_SHORT_SHA}"
   DEPLOY_PATH: "/opt/${APP_NAME}"
 build:
   stage: build
