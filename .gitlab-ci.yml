@@ -1,39 +1,24 @@
 stages:
-  - build
-  - deploy
-
+  - run
 variables:
   APP_NAME: "siuushop"
   APP_VERSION: "${CI_COMMIT_SHORT_SHA}"
   DEPLOY_PATH: "/opt/${APP_NAME}"
-build:
-  stage: build
+
+run:
+  stage: run
   variables:
     GIT_STRATEGY: clone
   script:
-    - echo "Building the application"
-    - mvn clean package -DskipTests -Dproject.version=${APP_VERSION}
-  artifacts:
-    paths:
-      - target/${APP_NAME}-${APP_VERSION}.jar
-    expire_in: 1 week
+    - sudo cp -r . ${DEPLOY_PATH}
+    - sudo kill -9 $(sudo lsof -t -i:8080) || true
+    - sudo nohup mvn -f ${DEPLOY_PATH}/pom.xml spring-boot:run Dproject.version=${APP_VERSION} -Dspring-boot.run.profiles=prod > /dev/null 2>&1 & echo $! > spring-boot.pid
+    - sudo systemctl restart nginx
+    - echo "Deployed ${APP_NAME} to ${DEPLOY_PATH} with version ${APP_VERSION}"
+    - echo "Running ${APP_NAME} with PID $(cat spring-boot.pid)"
+    -
   tags:
     - siuu-shop-shell
   only:
     - main
 
-deploy:
-  stage: deploy
-  variables:
-    GIT_STRATEGY: none
-  script:
-    - echo "Deploying the application"
-    - sudo systemctl stop $APP_NAME || true
-    - sudo cp target/${APP_NAME}-${APP_VERSION}.jar ${DEPLOY_PATH}/app.jar
-    - sudo systemctl start $APP_NAME
-    - sudo systemctl status $APP_NAME
-    - echo "Deployed the application"
-  tags:
-    - siuu-shop-shell
-  only:
-    - main
