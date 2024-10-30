@@ -16,7 +16,6 @@ run:
     - sudo systemctl restart nginx
     - echo "Deployed ${APP_NAME} to ${DEPLOY_PATH} with version ${APP_VERSION}"
     - echo "Running ${APP_NAME} with PID $(cat spring-boot.pid)"
-    -
   tags:
     - siuu-shop-shell
   only:
