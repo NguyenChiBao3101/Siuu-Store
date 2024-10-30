@@ -6,10 +6,10 @@
     <div th:replace="~{fragments/admin/sidebar :: sidebar}"></div>
     <div class="ml-[240px]">
         <header th:replace="~{fragments/admin/header :: header}"></header>
-        <div class="p-6">
+        <div style="min-height: calc(100vh - 112px)" class="p-6 mt-[60px]">
             <div th:replace="${content}"></div>
         </div>
-<!--        <footer th:replace="~{fragments/admin/footer :: footer}"></footer>-->
+        <footer th:replace="~{fragments/admin/footer :: footer}"></footer>
     </div>
 </div>
 <div th:replace="~{fragments/script :: script}"></div>

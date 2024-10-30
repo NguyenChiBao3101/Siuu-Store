@@ -3,7 +3,9 @@
 <head th:replace="~{fragments/head :: head(title=${title})}"></head>
 <body>
 <header th:replace="~{fragments/customer/header :: header}"></header>
-<div th:replace="${content}"></div>
+<div style="min-height: calc(100vh - 421.7px)">
+    <div th:replace="${content}"></div>
+</div>
 <footer th:replace="~{fragments/customer/footer :: footer}"></footer>
 <div th:replace="~{fragments/script :: script}"></div>
 </body>

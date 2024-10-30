@@ -70,7 +70,7 @@
             <tbody>
             <tr th:each="category, iterStat : ${categories}">
                 <td th:text="${iterStat.index + 1}" class="py-3 px-4 border-b"></td>
-                <td th:text="${category.name}" class="py-3 px-4 border-b"></td>
+                <td th:text="${category.name}" class="py-3 px-4 border-b first-letter:uppercase"></td>
                 <td th:text="${category.status ? 'Đang kinh doanh' : 'Ngừng kinh doanh'}"
                     class="py-3 px-4 border-b"></td>
                 <td class="py-3 px-4 border-b flex gap-2">

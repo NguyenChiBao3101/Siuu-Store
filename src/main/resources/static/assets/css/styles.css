@@ -73,9 +73,7 @@ body {
 
 /* Admin sidebar */
 .sidebar-link-active {
-    border-left-color: #ef4444;
-    background-color: #fef2f2;
-    color: #ef4444;
+    background-color: #1777ff;
 }
 
 .owl-carousel {

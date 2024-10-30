@@ -1,5 +1,6 @@
 package com.siuuuuu.backend.controller.admin;
 
+import com.siuuuuu.backend.service.CategoryService;
 import com.siuuuuu.backend.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,6 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class ProductController {
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private CategoryService categoryService;
 
     @RequestMapping("")
     public String index(Model model) {
