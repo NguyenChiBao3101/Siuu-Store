@@ -16,7 +16,7 @@ build:
   artifacts:
     paths:
       - target/${APP_NAME}-${APP_VERSION}.jar
-    expire_in: 1 week
+    expire_in: 1 week 
   tags:
     - siuu-shop-shell
   only:
