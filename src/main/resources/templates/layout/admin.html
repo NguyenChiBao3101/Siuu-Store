@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi" th:fragment="layout(content)" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head th:replace="~{fragments/head :: head(title=${title})}"></head>
 <body class="bg-[#f5f5f5]">
 <div>
@@ -7,7 +7,7 @@
     <div class="ml-[240px]">
         <header th:replace="~{fragments/admin/header :: header}"></header>
         <div style="min-height: calc(100vh - 112px)" class="p-6 mt-[60px]">
-            <div th:replace="${content}"></div>
+            <div layout:fragment="content"></div>
         </div>
         <footer th:replace="~{fragments/admin/footer :: footer}"></footer>
     </div>

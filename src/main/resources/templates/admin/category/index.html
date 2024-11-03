@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:replace="~{/layout/admin :: layout(~{::section})}">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/admin.html}">
 <body>
-<section>
+<section layout:fragment="content">
     <div class="flex items-center gap-x-2 text-2xl font-bold">
         <i class="fa-solid fa-layer-group"></i>
         <h1>Quản Lý Danh Mục</h1>

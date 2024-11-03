@@ -1,14 +1,16 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:replace="~{/layout/customer :: layout(~{::section})}">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/customer.html}">
 <body>
-<section>
+<section layout:fragment="content">
     <div class="container">
         <div class="owl-carousel owl-theme">
             <div class="item">
                 <img th:src="@{/assets/image/slider/img.png}" alt="Hàng Mới Về">
                 <div class="content">
                     <h2 class="text-2xl md:text-4xl lg:text-5xl">Những Đôi Giày Mới Nhất!</h2>
-                    <p class="hidden md:block lg:block md:text-lg lg:text-xl">Khám phá những mẫu giày mới nhất và nâng tầm phong cách
+                    <p class="hidden md:block lg:block md:text-lg lg:text-xl">Khám phá những mẫu giày mới nhất và nâng
+                        tầm phong cách
                         của bạn. Bộ sưu tập sneaker vừa cập bến!</p>
                     <a th:href="@{/shop}" class="btn">Mua Ngay</a>
                 </div>
@@ -17,7 +19,8 @@
                 <img th:src="@{/assets/image/slider/img_1.png}" alt="Phiên Bản Giới Hạn">
                 <div class="content">
                     <h2 class="text-2xl md:text-4xl lg:text-5xl">Độc Quyền & Giới Hạn!</h2>
-                    <p class="hidden md:block lg:block md:text-lg lg:text-xl">Đừng bỏ lỡ những đôi giày phiên bản giới hạn. Hết là
+                    <p class="hidden md:block lg:block md:text-lg lg:text-xl">Đừng bỏ lỡ những đôi giày phiên bản giới
+                        hạn. Hết là
                         không còn nữa!</p>
                     <a th:href="@{/shop}" class="btn">Mua Ngay</a>
                 </div>
@@ -26,7 +29,8 @@
                 <img th:src="@{/assets/image/slider/img_2.png}" alt="Khuyến Mãi">
                 <div class="content">
                     <h2 class="text-2xl md:text-4xl lg:text-5xl">Giảm Giá Đến 50%!</h2>
-                    <p class="hidden md:block lg:block md:text-lg lg:text-xl">Những đôi sneaker yêu thích của bạn với mức giá không thể
+                    <p class="hidden md:block lg:block md:text-lg lg:text-xl">Những đôi sneaker yêu thích của bạn với
+                        mức giá không thể
                         tốt hơn. Nhanh tay trước khi hết hàng!</p>
                     <a th:href="@{/shop}" class="btn">Mua Ngay</a>
                 </div>

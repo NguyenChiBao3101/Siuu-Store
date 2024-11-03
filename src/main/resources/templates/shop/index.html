@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{/layout/customer :: layout(~{::section})}">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/customer.html}">
 <body>
-<section>
+<section layout:fragment="content">
     <div class="page-header" style="background-image: url('/assets/image/shop/page-header-bg.jpg')">
         <div class="container">
             <h1 class="text-[#333333] text-4xl text-center font-semibold">Cửa Hàng</h1>

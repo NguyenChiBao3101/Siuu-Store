@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="vi" th:fragment="layout(content)" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head th:replace="~{fragments/head :: head(title=${title})}"></head>
 <body>
 <header th:replace="~{fragments/customer/header :: header}"></header>
-<div style="min-height: calc(100vh - 421.7px)">
-    <div th:replace="${content}"></div>
-</div>
+<main style="min-height: calc(100vh - 421.7px)">
+    <div layout:fragment="content"></div>
+</main>
 <footer th:replace="~{fragments/customer/footer :: footer}"></footer>
 <div th:replace="~{fragments/script :: script}"></div>
 </body>
