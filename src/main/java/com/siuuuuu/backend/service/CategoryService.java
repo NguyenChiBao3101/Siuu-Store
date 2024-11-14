@@ -18,7 +18,11 @@ public class CategoryService {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    //get all categories
+    public List<Category> getAllCategories() {
+        return categoryRepository.findAll();
+    }
+
+    //get all categories with pagination
     public Page<CategoryDto> getAllCategories(int page, int size) {
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<Category> categoryPage = categoryRepository.findAll(pageable);

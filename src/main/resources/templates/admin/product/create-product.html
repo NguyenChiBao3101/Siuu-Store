@@ -12,7 +12,7 @@
     </div>
 
     <div class="container mt-5">
-        <form th:action="@{/admin/product/create}" method="post" enctype="multipart/form-data">
+        <form th:action="@{/admin/product/create}" method="post">
             <div class="mb-3">
                 <label for="name" class="form-label">Tên sản phẩm:</label>
                 <input type="text" id="name" name="name" class="form-control w-full" required>
@@ -21,6 +21,10 @@
                 <label for="description" class="form-label">Mô tả:</label>
                 <textarea rows="7" id="description" name="description" class="form-control w-full h-full"
                           required></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="price" class="form-label">Giá:</label>
+                <input type="number" id="price" name="price" class="form-control w-full" required>
             </div>
             <div class="mb-3 ">
                 <label for="category" class="form-label">Danh mục:</label>
@@ -49,10 +53,6 @@
                         <i class="fa-solid fa-plus"></i>
                     </button>
                 </div>
-            </div>
-            <div class="mb-3">
-                <label for="image" class="form-label">Hình ảnh:</label>
-                <input type="file" id="image" name="image" class="form-control w-full" required>
             </div>
             <div class="mt-4">
                 <button type="submit" class="btn btn-primary">Thêm Mới</button>

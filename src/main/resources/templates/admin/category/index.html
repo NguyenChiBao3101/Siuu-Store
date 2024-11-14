@@ -72,8 +72,10 @@
             <tr th:each="category, iterStat : ${categories}">
                 <td th:text="${iterStat.index + 1}" class="py-3 px-4 border-b"></td>
                 <td th:text="${category.name}" class="py-3 px-4 border-b first-letter:uppercase"></td>
-                <td th:text="${category.status ? 'Đang kinh doanh' : 'Ngừng kinh doanh'}"
-                    class="py-3 px-4 border-b"></td>
+                <td th:switch="${category.status}" class="py-3 px-4 border-b">
+                    <span th:case="true" class="bg-green-500 text-white px-2 py-1 rounded-lg">Đang kinh doanh</span>
+                    <span th:case="false" class="bg-red-500 text-white px-2 py-1 rounded-lg">Ngừng kinh doanh</span>
+                </td>
                 <td class="py-3 px-4 border-b flex gap-2">
                     <a class="bg-blue-500 text-white px-2 py-1 rounded-lg shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 edit-category"
                        th:href="@{'/admin/category/update/' + ${category.id}}">

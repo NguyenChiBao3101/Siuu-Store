@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
-
     @GetMapping("")
     public String index(Model model) {
         model.addAttribute("title", "Trang Quản Trị");
