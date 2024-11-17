@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{/layout/admin :: layout(~{::section})}">
+<body>
+<section>
+    <div class="text-2xl font-bold items-center flex mb-3.5">
+        <i class="fa-solid fa-user mr-3"></i><p>Hồ sơ</p>
+    </div>
+
+    <!-- Table -->
+    <table class="bg-white h-full w-full rounded-md mb-2 ">
+        <thead>
+        <tr>
+            <th class="p-2 border"></th>
+            <th class="p-2 border">Thông tin</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td class="p-2 border">Họ Tên</td>
+            <td class="p-2 border">Test 2</td>
+        </tr>
+        <tr>
+            <td class="p-2 border">Email</td>
+            <td class="p-2 border">Test 4</td>
+        </tr>
+        <tr>
+            <td class="p-2 border">Password</td>
+            <td class="p-2 border">Test 4</td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="fix-menu hidden p-3 flex flex-col justify-between w-96 h-fit border bg-gray-300 absolute top-[132px] left-[360px] z-40 rounded">
+        <div>
+            <label class="mt-2 font-bold">Họ Tên:</label>
+            <input class="w-full border rounded py-1 px-2.5" type="text" />
+            <label class="mt-2 font-bold">Email:</label>
+            <input class="w-full border rounded py-1 px-2.5" type="text" />
+            <label class="mt-2 font-bold">Mật khẩu:</label>
+            <input class="w-full border rounded py-1 px-2.5" type="text" />
+            <label class="mt-2 font-bold">Nhập lại mật khẩu:</label>
+            <input class="w-full border rounded py-1 px-2.5" type="text" />
+        </div>
+    <div class="flex flex-end mt-4">
+        <div class="w-30 h-11 py-1.5 px-4 border-gray-500 border-2 hover:bg-emerald-500 hover:text-white rounded cursor-pointer">Đồng ý</div>
+        <div class="w-30 h-11 py-1.5 px-4 border-gray-500 border-2 hover:bg-red-500 hover:text-white rounded ml-3 cursor-pointer">Hủy</div>
+    </div>
+    </div>
+    <div class="flex relative">
+        <div class="fix-button w-20 py-2 px-4 border-2 hover:bg-gray-600 hover:text-white rounded cursor-pointer"><b>Sửa</b></div>
+        <div class="w-20 py-2 px-4 border-2 hover:bg-emerald-500 hover:text-white rounded ml-3 cursor-pointer"><b>Lưu</b></div>
+    </div>
+
+
+<script>
+    let fixMenu = document.querySelector('.fix-menu');
+    let fixButton = document.querySelector('.fix-button');
+    console.log(fixMenu);
+    console.log(fixButton);
+    fixButton.addEventListener('click', () => {
+        fixMenu.classList.toggle('hidden');
+    })
+</script>
+</section>
+</body>
+</html>
