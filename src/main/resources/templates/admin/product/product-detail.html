@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/admin.html}">
+<body>
+<section layout:fragment="content">
+    <div class="flex items-center gap-x-2 text-2xl font-bold">
+        <i class="fa-solid fa-layer-group"></i>
+        <h1>Quản lý thông tin sản phẩm</h1>
+    </div>
+
+    <div class="container mt-5">
+        <div class="container mt-5">
+            <form th:action="@{/admin/product/update}" method="post" th:object="${product}">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Tên sản phẩm:</label>
+                    <input type="text" id="name" name="name" class="form-control w-full" th:field="*{name}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Mô tả:</label>
+                    <textarea rows="7" id="description" name="description" class="form-control w-full h-full"
+                              th:field="*{description}" required></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="price" class="form-label">Giá:</label>
+                    <input type="number" id="price" name="price" class="form-control w-full" th:field="*{price}"
+                           required>
+                </div>
+                <div class="mb-3 ">
+                    <label for="category" class="form-label">Danh mục:</label>
+                    <div class="flex gap-x-5 items-center">
+                        <select id="category" name="category" class="form-select w-full" required>
+                            <option hidden>Chọn danh mục</option>
+                            <option th:each="category : ${categories}"
+                                    th:value="${category.id}"
+                                    th:text="${category.name}"
+                                    th:selected="${category.id == product.category.id}"
+                            ></option>
+                        </select>
+                        <button class="btn btn-primary">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="brand" class="form-label">Thương hiệu:</label>
+                    <div class="flex gap-x-5 items-center">
+                        <select id="brand" name="brand" class="form-select w-full" required>
+                            <option hidden>Chọn thương hiệu</option>
+                            <option th:each="brand : ${brands}"
+                                    th:value="${brand.id}"
+                                    th:text="${brand.name}"
+                                    th:selected="${brand.id == product.brand.id}"
+                            ></option>
+                        </select>
+                        <button class="btn btn-primary">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary">Cập Nhật</button>
+                    <a href="/admin/product" class="btn btn-secondary">Quay Lại</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!--Table product detail. Include sku, image, size, quantity-->
+    <div class="w-full bg-white mt-5 p-2.5 rounded-md shadow-md">
+        <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-x-2 text-xl font-semibold">
+                <i class="fa-solid fa-table-list"></i>
+                <p>Danh sách chi tiết sản phẩm</p>
+            </div>
+            <a th:href="@{'/admin/product/' + ${product.slug} + '/create/variant'}"
+               class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+                <i class="fa-solid fa-plus"></i>
+                <span>Thêm Mới</span>
+            </a>
+        </div>
+        <hr class="mb-4">
+        <table class="w-full table-auto border-collapse">
+            <thead class="bg-gray-100">
+            <tr>
+                <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#e4641a] rounded-tl-lg">
+                    STT
+                </th>
+                <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#e4641a]">SKU</th>
+                <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#e4641a]">Hình Ảnh</th>
+                <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#e4641a]">Size</th>
+                <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#e4641a]">Số Lượng</th>
+                <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#e4641a] rounded-tr-lg">
+                    Thao Tác
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item, iterStat : ${productVariants}">
+                <td class="py-3 px-4 text-left border-b">
+                    <span th:text="${iterStat.count}"></span>
+                </td>
+                <td class="py-3 px-4 text-left border-b">
+                    <span th:text="${item.getSku()}"></span>
+                </td>
+                <td class="py-3 px-4 text-left border-b">
+                    <img th:src="${item.getProductImageColour().getProductImages().get(0).getImageUrl()}" alt=""
+                         class="w-20 h-20 object-cover">
+                </td>
+                <td class="py-3 px-4 text-left border-b">
+                    <span th:text="${item.getSize().getName()}"></span>
+                </td>
+                <td class="py-3 px-4 text-left border-b">
+                    <span th:text="${item.getQuantity()}"></span>
+                </td>
+                <td class="py-3 px-4 border-b gap-2">
+                    <!--View-->
+                    <a th:href="${'/admin/product/' + item.getId()}"
+                       class="bg-[#ff9900] text-white px-2 py-1 rounded-lg shadow"
+                       href="#">
+                        <i class="fa-solid fa-eye"></i>
+                    </a>
+
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(productVariants)}">
+                <td colspan="6" class="py-3 px-4 text-center">Không có dữ liệu để hiển thị.</td>
+            </tr>
+            </tbody>
+        </table>
+        <!-- Pagination controls -->
+        <div class="flex items-center justify-between mt-4">
+            <div>
+                <p class="text-sm text-gray-600">
+                    Hiển thị 1-3 trong số 3 kết quả
+                </p>
+            </div>
+            <div>
+                <nav>
+                    <ul class="flex items center gap-x-2">
+                        <li>
+                            <a href="#"
+                               class="bg-blue-500 text-white px-3 py-1 rounded-lg shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <i class="fa-solid fa-angle-left"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#"
+                               class="bg-blue-500 text-white px-3 py-1 rounded-lg shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                1
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#"
+                               class="bg-blue-500 text-white px-3 py-1 rounded-lg shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <i class="fa-solid fa-angle-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+
+</section>
+</body>
+</html>

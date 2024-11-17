@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
+@Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
 @Table(name = "role")
 public class Role {
     @Id

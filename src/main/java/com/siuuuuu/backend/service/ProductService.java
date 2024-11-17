@@ -1,19 +1,89 @@
 package com.siuuuuu.backend.service;
 
-import com.siuuuuu.backend.entity.Product;
+import com.siuuuuu.backend.entity.*;
+import com.siuuuuu.backend.repository.ProductImageRepository;
+import com.siuuuuu.backend.repository.ProductVariantRepository;
+import com.siuuuuu.backend.repository.SizeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.siuuuuu.backend.repository.ProductRepository;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    private SizeRepository sizeRepository;
+
+    @Autowired
+    private ProductImageColourService productImageColourService;
+
+    @Autowired
+    private CloudinaryService cloudinaryService;
+
+    @Autowired
+    private ProductImageService productImageService;
+
+    @Autowired
+    private ProductVariantService productVariantService;
+
+
     public List<Product> findAllProduct() {
         return productRepository.findAll();
     }
 
+    public void createProduct(Product product) {
+        productRepository.save(product);
+    }
+
+    public Product getProductBySlug(String slug) {
+        return productRepository.findProductBySlug(slug);
+    }
+
+    public List<ProductVariant> getProductVariantByProductId(String productId) {
+        return productVariantService.findAllProductVariantByProductId(productId);
+    }
+
+    public void createProductVariant(String slug, List<String> sizes, String productImageColour) {
+        Product product = getProductBySlug(slug);
+        sizes.forEach(sizeId -> {
+            Size size = sizeRepository.findById(sizeId).orElse(null);
+            if (Objects.isNull(size)) {
+                return;
+            }
+            ProductVariant productVariant = new ProductVariant();
+            productVariant.setProduct(product);
+            productVariant.setSize(size);
+            productVariant.setProductImageColour(productImageColourService.getProductImageColourById(productImageColour));
+            productVariant.setSku(generateProductVariantSKU(product, size, productVariant.getProductImageColour().getId()));
+            productVariantService.createProductVariant(productVariant);
+        });
+    }
+
+    public String generateProductVariantSKU(Product product, Size size, String colour) {
+        return product.getSlug() + "-" + size.getName() + "-" + colour.substring(0, 8);
+    }
+
+    public void createProductImageColour(String slug, MultipartFile[] images) {
+        Product product = getProductBySlug(slug);
+        ProductImageColour productImageColour = productImageColourService.createProductImageColour(new ProductImageColour(product));
+        System.out.println(productImageColour.getId());
+        List<String> imageUrls = null;
+        try {
+            imageUrls = cloudinaryService.uploadFiles(images).stream().map(map -> map.get("url").toString()).collect(Collectors.toList());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (Objects.nonNull(imageUrls)) {
+            imageUrls.forEach(imageUrl -> productImageService.createProductImage(productImageColour.getId(), imageUrl));
+        }
+    }
 }
