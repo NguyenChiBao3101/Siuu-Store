@@ -4,7 +4,7 @@ stages:
 
 variables:
   APP_NAME: "siuushop"
-  APP_VERSION: "${CI_COMMIT_SHORT_SHA}"
+  APP_VERSION: "0.0.1-SNAPSHOT"
   DEPLOY_PATH: "/opt/${APP_NAME}"
 build:
   stage: build
@@ -12,7 +12,7 @@ build:
     GIT_STRATEGY: clone
   script:
     - echo "Building the application"
-    - mvn clean package -DskipTests -Dproject.version=${APP_VERSION}
+    - mvn clean package -DskipTests
   artifacts:
     paths:
       - target/${APP_NAME}-${APP_VERSION}.jar

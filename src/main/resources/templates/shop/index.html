@@ -26,66 +26,16 @@
                     <h3 class="widget-title">Danh mục</h3>
                     <div class="widget-body">
                         <div class="filter-items filter-items-count">
-                            <div class="filter-item">
+                            <div class="filter-item" th:each="category : ${categories}">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="cat-1">
-                                    <label class="form-check-label" for="cat-1">Váy</label>
-                                    <span class="item-count">3</span>
-                                </div><!-- End .form-check -->
-                            </div><!-- End .filter-item -->
-                            <div class="filter-item">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="cat-2">
-                                    <label class="form-check-label" for="cat-2">Áo phông</label>
-                                    <span class="item-count">2</span>
-                                </div><!-- End .form-check -->
-                            </div><!-- End .filter-item -->
-                            <div class="filter-item">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="cat-3">
-                                    <label class="form-check-label" for="cat-3">Túi sách</label>
-                                    <span class="item-count">2</span>
-                                </div><!-- End .form-check -->
-                            </div><!-- End .filter-item -->
-                            <div class="filter-item">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="cat-4">
-                                    <label class="form-check-label" for="cat-4">Áo khoác</label>
-                                    <span class="item-count">2</span>
-                                </div><!-- End .form-check -->
-                            </div><!-- End .filter-item -->
-                            <div class="filter-item">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="cat-5">
-                                    <label class="form-check-label" for="cat-5">Giày</label>
-                                    <span class="item-count">2</span>
-                                </div><!-- End .form-check -->
-                            </div><!-- End .filter-item -->
-                            <div class="filter-item">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="cat-6">
-                                    <label class="form-check-label" for="cat-6">Áo len</label>
-                                    <span class="item-count">2</span>
-                                </div><!-- End .form-check -->
-                            </div><!-- End .filter-item -->
-                            <div class="filter-item">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="cat-7">
-                                    <label class="form-check-label" for="cat-7">Quần jean</label>
-                                    <span class="item-count">2</span>
-                                </div><!-- End .form-check -->
-                            </div><!-- End .filter-item -->
-                            <div class="filter-item">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="cat-8">
-                                    <label class="form-check-label" for="cat-8">Quần áo thể thao</label>
-                                    <span class="item-count">2</span>
-                                </div><!-- End .form-check -->
-                            </div><!-- End .filter-item -->
-
-                        </div><!-- End .filter-items -->
-                    </div> <!-- End .widget-body -->
+                                    <label><input class="form-check-input" type="checkbox" th:id="'cat-' + ${category.id}"></label>
+                                    <label class="form-check-label" th:for="'cat-' + ${category.id}" th:text="${category.name}"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
 
                 <div class="size">
                     <h3 class="widget-title">Kích cỡ</h3>
@@ -95,14 +45,14 @@
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="size-xs">
                                     <label class="form-check-label" for="size-xs">XS</label>
-                                </div><!-- End .form-check -->
-                            </div><!-- End .filter-item -->
+                                </div>
+                            </div>
                             <div class="filter-item">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="size-s">
                                     <label class="form-check-label" for="size-s">S</label>
-                                </div><!-- End .form-check -->
-                            </div><!-- End .filter-item -->
+                                </div>
+                            </div>
                             <div class="filter-item">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="size-m">
@@ -143,8 +93,8 @@
                             <a href="#" style="background: #669933;"><span class="sr-only">Color Name</span></a>
                             <a href="#" style="background: #f2719c;"><span class="sr-only">Color Name</span></a>
                             <a href="#" style="background: #ebebeb;"><span class="sr-only">Color Name</span></a>
-                        </div><!-- End .filter-colors -->
-                    </div><!-- End .widget-body -->
+                        </div>
+                    </div>
                 </div>
 
                 <div class="price">
@@ -155,26 +105,26 @@
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="cat-1">
                                     <label class="form-check-label" for="cat-1">100,000đ - 200,000đ</label>
-                                </div><!-- End .form-check -->
-                            </div><!-- End .filter-item -->
+                                </div>
+                            </div>
                             <div class="filter-item">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="cat-2">
                                     <label class="form-check-label" for="cat-2">200,000đ - 300,000đ</label>
-                                </div><!-- End .form-check -->
-                            </div><!-- End .filter-item -->
+                                </div>
+                            </div>
                             <div class="filter-item">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="cat-3">
                                     <label class="form-check-label" for="cat-3">300,000đ - 400,000đ</label>
-                                </div><!-- End .form-check -->
-                            </div><!-- End .filter-item -->
+                                </div>
+                            </div>
                             <div class="filter-item">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="cat-4">
                                     <label class="form-check-label" for="cat-4">400,000đ - 500,000đ</label>
-                                </div><!-- End .form-check -->
-                            </div><!-- End .filter-item -->
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -199,218 +149,62 @@
                         </div>
                     </div>
                 </div>
+                <!--List of products-->
                 <div class="container">
                     <div class="row">
-                        <div class="col-6 col-md-4 col-lg-4 col-xl-4">
+                        <div class="col-6 col-md-4 col-lg-4 col-xl-4" th:each="product : ${products}">
                             <div class="product">
                                 <figure class="product-media">
-                                    <a href="#">
-                                        <img th:src="@{/assets/image/shop/sh.jpg}" alt="">
+                                    <a th:href="@{/shop/product(id=${product.id})}">
+                                        <img th:src="${productThumbnails[product.id]}" alt="Product Image">
                                     </a>
                                 </figure>
                                 <div class="product-body">
-                                    <h3 class="product-title">
-                                        Giày nike Air Max 270
+                                    <h3 class="product-title" th:text="${product.name}">
                                     </h3>
-                                    <div class="product-price">
-                                        200,000đ
-                                    </div>
-                                    <button class="btn btn-primary button-add">Thêm vào giỏ hàng</button>
+                                    <div class="product-price" th:text="${#numbers.formatCurrency(product.price)}"></div>
+                                    <button class="btn btn-primary button-add" th:data-id="${product.id}">Thêm vào giỏ hàng</button>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-6 col-md-4 col-lg-4 col-xl-4">
-                            <div class="product">
-                                <figure class="product-media">
-                                    <a href="#">
-                                        <img th:src="@{/assets/image/shop/sh.jpg}" alt="">
-                                    </a>
-                                </figure>
-                                <div class="product-body">
-                                    <h3 class="product-title">
-                                        Giày nike Air Max 270
-                                    </h3>
-                                    <div class="product-price">
-                                        200,000đ
-                                    </div>
-                                    <button class="btn btn-primary button-add">Thêm vào giỏ hàng</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6 col-md-4 col-lg-4 col-xl-4">
-                            <div class="product">
-                                <figure class="product-media">
-                                    <a href="#">
-                                        <img th:src="@{/assets/image/shop/sh.jpg}" alt="">
-                                    </a>
-                                </figure>
-                                <div class="product-body">
-                                    <h3 class="product-title">
-                                        Giày nike Air Max 270
-                                    </h3>
-                                    <div class="product-price">
-                                        200,000đ
-                                    </div>
-                                    <button class="btn btn-primary button-add">Thêm vào giỏ hàng</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6 col-md-4 col-lg-4 col-xl-4">
-                            <div class="product">
-                                <figure class="product-media">
-                                    <a href="#">
-                                        <img th:src="@{/assets/image/shop/sh.jpg}" alt="">
-                                    </a>
-                                </figure>
-                                <div class="product-body">
-                                    <h3 class="product-title">
-                                        Giày nike Air Max 270
-                                    </h3>
-                                    <div class="product-price">
-                                        200,000đ
-                                    </div>
-                                    <button class="btn btn-primary button-add">Thêm vào giỏ hàng</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6 col-md-4 col-lg-4 col-xl-4">
-                            <div class="product">
-                                <figure class="product-media">
-                                    <a href="#">
-                                        <img th:src="@{/assets/image/shop/sh.jpg}" alt="">
-                                    </a>
-                                </figure>
-                                <div class="product-body">
-                                    <h3 class="product-title">
-                                        Giày nike Air Max 270
-                                    </h3>
-                                    <div class="product-price">
-                                        200,000đ
-                                    </div>
-                                    <button class="btn btn-primary button-add">Thêm vào giỏ hàng</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6 col-md-4 col-lg-4 col-xl-4">
-                            <div class="product">
-                                <figure class="product-media">
-                                    <a href="#">
-                                        <img th:src="@{/assets/image/shop/sh.jpg}" alt="">
-                                    </a>
-                                </figure>
-                                <div class="product-body">
-                                    <h3 class="product-title">
-                                        Giày nike Air Max 270
-                                    </h3>
-                                    <div class="product-price">
-                                        200,000đ
-                                    </div>
-                                    <button class="btn btn-primary button-add">Thêm vào giỏ hàng</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6 col-md-4 col-lg-4 col-xl-4">
-                            <div class="product">
-                                <figure class="product-media">
-                                    <a href="#">
-                                        <img th:src="@{/assets/image/shop/sh.jpg}" alt="">
-                                    </a>
-                                </figure>
-                                <div class="product-body">
-                                    <h3 class="product-title">
-                                        Giày nike Air Max 270
-                                    </h3>
-                                    <div class="product-price">
-                                        200,000đ
-                                    </div>
-                                    <button class="btn btn-primary button-add">Thêm vào giỏ hàng</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6 col-md-4 col-lg-4 col-xl-4">
-                            <div class="product">
-                                <figure class="product-media">
-                                    <a href="#">
-                                        <img th:src="@{/assets/image/shop/sh.jpg}" alt="">
-                                    </a>
-                                </figure>
-                                <div class="product-body">
-                                    <h3 class="product-title">
-                                        Giày nike Air Max 270
-                                    </h3>
-                                    <div class="product-price">
-                                        200,000đ
-                                    </div>
-                                    <button class="btn btn-primary button-add">Thêm vào giỏ hàng</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6 col-md-4 col-lg-4 col-xl-4">
-                            <div class="product">
-                                <figure class="product-media">
-                                    <a href="#">
-                                        <img th:src="@{/assets/image/shop/sh.jpg}" alt="">
-                                    </a>
-                                </figure>
-                                <div class="product-body">
-                                    <h3 class="product-title">
-                                        Giày nike Air Max 270
-                                    </h3>
-                                    <div class="product-price">
-                                        200,000đ
-                                    </div>
-                                    <button class="btn btn-primary button-add">Thêm vào giỏ hàng</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6 col-md-4 col-lg-4 col-xl-4">
-                            <div class="product">
-                                <figure class="product-media">
-                                    <a href="#">
-                                        <img th:src="@{/assets/image/shop/sh.jpg}" alt="">
-                                    </a>
-                                </figure>
-                                <div class="product-body">
-                                    <h3 class="product-title">
-                                        Giày nike Air Max 270
-                                    </h3>
-                                    <div class="product-price">
-                                        200,000đ
-                                    </div>
-                                    <button class="btn btn-primary button-add">Thêm vào giỏ hàng</button>
-                                </div>
-                            </div>
-                        </div>
-
                     </div>
-                    <ul class="pagination home-product__pagination">
-                        <li class="pagination-item">
-                            <a href="" class="pagination-item__link">
-                                <i class="pagination-item__icon fas fa-angle-left"></i>
+                    <!--pagination-->
+                    <ul class="flex items-center gap-x-2 justify-center">
+                        <!-- Previous Page Link -->
+                        <li th:if="${currentPage > 1}">
+                            <a th:href="@{/shop(page=${currentPage - 1}, size=${size})}"
+                               class="bg-blue-500 text-white px-3 py-1 rounded-lg shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <i class="fa-solid fa-angle-left"></i>
                             </a>
                         </li>
 
-                        <li class="pagination-item pagination-item--active">
-                            <a href="" class="pagination-item__link">1</a>
+                        <!-- Page Number Links -->
+                        <li th:if="${currentPage > 3}">
+                            <a th:href="@{/shop(page=1, size=${size})}"
+                               class="text-white px-3 py-1 rounded-lg bg-blue-500">1</a>
+                            <span class="text-gray-600">...</span>
                         </li>
-                        <li class="pagination-item">
-                            <a href="" class="pagination-item__link">2</a>
+
+                        <li th:each="i : ${#numbers.sequence(currentPage - 2, currentPage + 2)}"
+                            th:if="${i > 0 && i <= totalPages}">
+                            <a th:href="@{/shop(page=${i}, size=${size})}"
+                               th:text="${i}"
+                               th:classappend="${i == currentPage} ? 'bg-[#e4641a]' : 'bg-blue-500'"
+                               class="text-white px-3 py-1 rounded-lg shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </a>
                         </li>
-                        <li class="pagination-item">
-                            <a href="" class="pagination-item__link">3</a>
+
+                        <li th:if="${currentPage < totalPages - 2}">
+                            <span class="text-gray-600">...</span>
+                            <a th:href="@{/shop(page=${totalPages}, size=${size})}"
+                               class="text-white px-3 py-1 rounded-lg bg-blue-500" th:text="${totalPages}"></a>
                         </li>
-                        <li class="pagination-item">
-                            <a href="" class="pagination-item__link">4</a>
-                        </li>
-                        <li class="pagination-item">
-                            <a href="" class="pagination-item__link">...</a>
-                        </li>
-                        <li class="pagination-item">
-                            <a href="" class="pagination-item__link">12</a>
-                        </li>
-                        <li class="pagination-item">
-                            <a href="" class="pagination-item__link">
-                                <i class="pagination-item__icon fas fa-angle-right"></i>
+
+                        <!-- Next Page Link -->
+                        <li th:if="${currentPage < totalPages}">
+                            <a th:href="@{/shop(page=${currentPage + 1}, size=${size})}"
+                               class="bg-blue-500 text-white px-3 py-1 rounded-lg shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <i class="fa-solid fa-angle-right"></i>
                             </a>
                         </li>
                     </ul>

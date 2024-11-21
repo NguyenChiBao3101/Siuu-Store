@@ -1,22 +1,125 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="utf-8">
-    <meta content="width=device-width, initial-scale=1" name="viewport">
-    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
-          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" rel="stylesheet">
-
-    <title>Registration</title>
+<head th:replace="~{fragments/head :: head(title=${title})}">
 </head>
-<body>
-<div class="container">
-    <h1 class="text-center">Registration</h1>
+<body class="bg-gray-100">
+<div class="container mx-auto">
+    <div class="flex justify-center">
+        <div class="w-full max-w-md mt-12">
+            <div class="bg-white p-10 rounded-lg shadow-md">
+                <div class="text-2xl font-bold text-center text-gray-800 mb-5">Đăng Ký</div>
+                <div class="form-signup">
+                    <form th:action="@{/auth/sign-up}" th:object="${signUpDto}" method="post">
+                        <div class="mb-4">
+                            <input
+                                    class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-600"
+                                    type="text"
+                                    placeholder="Họ và tên đệm"
+                                    th:field="*{first_name}"
+                                    id="first_name"
+                                    name="first_name"
+
+                            />
+                            <p class="text-red-600 text-sm" th:if="${#fields.hasErrors('first_name')}" th:errors="*{first_name}" />
+                        </div>
+                        <div class="mb-4">
+                            <input
+                                    class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-600"
+                                    type="text"
+                                    placeholder="Tên"
+                                    th:field="*{last_name}"
+                                    id="last_name"
+                                    name="last_name"
+                            />
+                            <p class="text-red-600 text-sm" th:if="${#fields.hasErrors('last_name')}" th:errors="*{last_name}" />
+                        </div>
+                        <div class="mb-4">
+                            <input
+                                    class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-600"
+                                    placeholder="dd-mm-yyyy"
+                                    th:field="*{date_of_birth}"
+                                    id="date_of_birth"
+                                    name="date_of_birth"
+                            />
+                            <p class="text-red-600 text-sm" th:if="${#fields.hasErrors('date_of_birth')}" th:errors="*{date_of_birth}" />
+                        </div>
+
+                        <div class="mb-4">
+                            <input
+                                    class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-600"
+
+                                    placeholder="Email"
+                                    th:field="*{email}"
+                                    id="email"
+                                    name="username"
+
+                            />
+                            <p class="text-red-600 text-sm" th:if="${#fields.hasErrors('email')}" th:errors="*{email}" />
+                        </div>
+                        <div class="mb-4">
+                            <input
+                                    class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-600"
+                                    type="password"
+                                    placeholder="Mật khẩu"
+                                    th:field="*{password}"
+                                    id="password"
+                                    name="password"
+
+                            />
+                            <p class="text-red-600 text-sm" th:if="${#fields.hasErrors('password')}" th:errors="*{password}" />
+                        </div>
+
+                        <div class="mb-4">
+                            <input
+                                    class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-600"
+                                    type="password"
+                                    placeholder="Nhập lại mật khẩu"
+                                    th:field="*{confirm_password}"
+                                    id="confirm_password"
+                                    name="confirm_password"
+
+                            />
+                            <p class="text-red-600 text-sm" th:if="${#fields.hasErrors('confirm_password')}" th:errors="*{confirm_password}" />
+                        </div>
+
+                        <button class="w-full bg-orange-600 text-white font-bold py-2 rounded hover:bg-orange-500 transition duration-300" type="submit">Đăng Ký</button>
+
+                        <div class="mt-5 text-center">
+                            Bạn đã có tài khoản?
+                            <a th:href="@{/auth/sign-in}" class="text-orange-600">Đăng Nhập</a>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Toast Message -->
+<div th:if="${param.error}">
+    <div class="fixed top-0 right-0 p-3">
+        <div id="errorToast" class="toast show border border-red-600 bg-light text-red-600 shadow-lg" role="alert"
+             aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-red-600 text-light">
+                <strong class="mr-auto">
+                    <i class="bi bi-exclamation-triangle-fill mr-2"></i> Lỗi
+                </strong>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"
+                        aria-label="Close"></button>
+            </div>
+            <div class="toast-body font-bold">
+                <i class="bi bi-exclamation-circle-fill mr-1"></i>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/script :: script}">
+
 </div>
 
 
-<script crossorigin="anonymous"
-        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 </html>
+

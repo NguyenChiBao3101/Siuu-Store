@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Variant</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .product-detail-container {
+            padding: 20px;
+        }
+        .product-image img {
+            width: 100%;
+            height: auto;
+        }
+        .product-info h2 {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .product-price {
+            font-size: 20px;
+            color: #e74c3c;
+        }
+        .product-options label {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .filter-colors {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .filter-colors a {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%; /* Để tạo hình tròn */
+            border: 2px solid transparent; /* Viền để chọn màu */
+            cursor: pointer;
+        }
+        .filter-colors a.selected {
+            border: 2px solid #000; /* Viền màu đen cho màu đã chọn */
+        }
+    </style>
+</head>
+<body>
+
+<div class="container product-detail-container">
+    <div class="row">
+        <div class="col-md-6 product-image">
+            <img src="/assets/image/shop/sh.jpg" alt="Product Image">
+        </div>
+        <div class="col-md-6 product-info">
+            <h2>Giày Nike Air Max 270</h2>
+            <div class="product-price">200,000đ</div>
+
+            <!-- Size Options -->
+            <div class="product-options">
+                <label for="size">Kích thước:</label>
+                <select id="size" class="form-control">
+                    <option>38</option>
+                    <option>39</option>
+                    <option>40</option>
+                    <option>41</option>
+                    <option>42</option>
+                </select>
+            </div>
+
+            <!-- Color Options -->
+            <div class="product-options">
+                <label for="color">Màu sắc:</label>
+                <div class="filter-colors">
+                    <a href="#" style="background: #b87145;" title="Brown"></a>
+                    <a href="#" style="background: #f0c04a;" title="Yellow"></a>
+                    <a href="#" style="background: #333333;" title="Black"></a>
+                    <a href="#" class="selected" style="background: #cc3333;" title="Red"></a>
+                    <a href="#" style="background: #3399cc;" title="Blue"></a>
+                    <a href="#" style="background: #669933;" title="Green"></a>
+                    <a href="#" style="background: #f2719c;" title="Pink"></a>
+                    <a href="#" style="background: #ebebeb;" title="White"></a>
+                </div>
+            </div>
+
+            <!-- Quantity Options -->
+            <div class="product-options">
+                <label for="quantity">Số lượng:</label>
+                <input type="number" id="quantity" class="form-control" value="1" min="1">
+            </div>
+            <!-- Add to Cart Button -->
+            <button class="btn btn-primary btn-block mt-3">Thêm vào giỏ hàng</button>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

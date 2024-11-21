@@ -33,7 +33,6 @@ public class CategoryController {
         return "admin/category/index";
     }
 
-
     @RequestMapping(value = {""}, method = RequestMethod.POST)
     public String createCategory(@ModelAttribute("category") CategoryDto categoryDto, RedirectAttributes redirectAttributes) {
         categoryService.createNewCategory(categoryDto);
