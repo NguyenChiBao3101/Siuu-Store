@@ -1,10 +1,15 @@
 package com.siuuuuu.backend.service;
 
+import com.siuuuuu.backend.dto.request.CategoryDto;
 import com.siuuuuu.backend.entity.*;
 import com.siuuuuu.backend.repository.ProductImageRepository;
 import com.siuuuuu.backend.repository.ProductVariantRepository;
 import com.siuuuuu.backend.repository.SizeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import com.siuuuuu.backend.repository.ProductRepository;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,6 +43,18 @@ public class ProductService {
     public List<Product> findAllProduct() {
         return productRepository.findAll();
     }
+
+    //Get all products with pagination
+    public Page<Product> getAllProducts(int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        return productRepository.findAll(pageable);
+
+    }
+
+    public Product findProductById(String productId) {
+        return productRepository.findById(productId).orElse(null);
+    }
+
 
     public void createProduct(Product product) {
         productRepository.save(product);
