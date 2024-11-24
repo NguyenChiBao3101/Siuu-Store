@@ -103,11 +103,15 @@
                     </form>
                 </div>
                 <!-- Cart Icon -->
-                <a href="#" class="relative text-2xl text-gray-700 hover:text-[#e7511a] transition-colors duration-300">
+                <a sec:authorize="!isAuthenticated()" th:href="@{/auth/sign-in}"
+                   class="relative text-2xl text-gray-700 hover:text-[#e7511a] transition-colors duration-300">
                     <i class="fa-solid fa-cart-shopping"></i>
-                    <span class="absolute top-[-8px] right-[-10px] rounded-full bg-[#e7511a] text-white text-xs font-bold px-2 py-0.5">
-                        2
-                    </span>
+                </a>
+                <a sec:authorize="isAuthenticated()" th:href="@{/cart}"
+                   class="relative text-2xl text-gray-700 hover:text-[#e7511a] transition-colors duration-300">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="absolute top-[-8px] right-[-10px] rounded-full bg-[#e7511a] text-white text-xs font-bold px-2 py-0.5"
+                          th:text="${cartItemCount}">0</span>
                 </a>
             </div>
         </div>

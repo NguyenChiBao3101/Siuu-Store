@@ -48,5 +48,4 @@ public class ProductVariant {
     @LastModifiedDate
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-
 }

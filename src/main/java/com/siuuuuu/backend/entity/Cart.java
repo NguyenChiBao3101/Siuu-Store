@@ -2,40 +2,31 @@ package com.siuuuuu.backend.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
-
+import java.util.List;
 
 @Data
 @Entity
-@Table(name = "account")
+@Table(name = "cart")
+@AllArgsConstructor
+@NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class Account {
+public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @Column(name = "email", unique = true, nullable = false)
-    private String email;
-
-    @Column(name = "password", nullable = false)
-    private String password;
-
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    @JoinTable(
-            name = "account_role",
-            joinColumns = @JoinColumn(name = "account_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
+    @OneToOne
+    @JoinColumn(name = "id_account", referencedColumnName = "id")
     @ToString.Exclude
-    private Set<Role> roles = new HashSet<>();
+    private Account account;
 
     @CreatedDate
     @Column(updatable = false)
@@ -45,7 +36,7 @@ public class Account {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @OneToOne(mappedBy = "account")
+    @OneToMany(mappedBy = "cart", fetch = FetchType.EAGER)
     @ToString.Exclude
-    private Cart cart;
+    private List<CartDetail> cartDetails;
 }

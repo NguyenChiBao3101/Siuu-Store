@@ -1,8 +1,10 @@
 package com.siuuuuu.backend.config;
 
 import com.siuuuuu.backend.entity.Account;
+import com.siuuuuu.backend.entity.Cart;
 import com.siuuuuu.backend.entity.Role;
 import com.siuuuuu.backend.repository.AccountRepository;
+import com.siuuuuu.backend.repository.CartRepository;
 import com.siuuuuu.backend.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -21,6 +23,9 @@ public class ApplicationInitConfiguration implements CommandLineRunner {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private CartRepository cartRepository;
 
     // Method that runs automatically after the application starts
     @Override
@@ -49,5 +54,17 @@ public class ApplicationInitConfiguration implements CommandLineRunner {
             customer.getRoles().add(customerRole);
             accountRepository.save(customer);
         }
+
+        // Create cart using account id if it not exits
+        accountRepository.findAll().forEach(account -> {
+            if (cartRepository.findByAccount(account) == null) {
+                if (account.getCart() == null) {
+                    Cart newCart = new Cart();
+                    newCart.setAccount(account);
+                    account.setCart(newCart);
+                }
+                cartRepository.save(account.getCart());
+            }
+        });
     }
 }
