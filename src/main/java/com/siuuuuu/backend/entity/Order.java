@@ -93,6 +93,12 @@ public class Order {
     private String vnpayTransactionNo;
 
     /**
+     * The Payment URl.
+     */
+    @Column(name = "payment_url", length = 1000)
+    private String paymentUrl;
+
+    /**
      * The shipping address for the order.
      */
     @Column(name = "shipping_address", nullable = false)

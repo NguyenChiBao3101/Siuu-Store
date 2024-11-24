@@ -18,4 +18,8 @@ public class CartDetailService {
         return cartDetailRepository.findAllById(cartDetailIds);
     }
 
+    public void deleteCartDetails(List<String> cartDetailIds) {
+        cartDetailRepository.deleteAllById(cartDetailIds);
+    }
+
 }

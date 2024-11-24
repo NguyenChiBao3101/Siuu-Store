@@ -1,6 +1,7 @@
 package com.siuuuuu.backend.controller.client;
 
 import com.siuuuuu.backend.entity.CartDetail;
+import com.siuuuuu.backend.entity.Order;
 import com.siuuuuu.backend.service.CartService;
 import com.siuuuuu.backend.service.OrderService;
 import com.siuuuuu.backend.service.VNPayService;
@@ -21,8 +22,11 @@ import java.util.List;
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = lombok.AccessLevel.PRIVATE)
 public class CheckoutController {
+
     CartService cartService;
+
     VNPayService vnPayService;
+
     OrderService orderService;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
@@ -45,7 +49,6 @@ public class CheckoutController {
 
     @RequestMapping(value = "/vnpay", method = RequestMethod.GET)
     public String vnpayPayment(@RequestParam("totalPrice") int totalPrice,
-                               @RequestParam("orderInfo") String orderInfo,
                                @RequestParam("name") String name,
                                @RequestParam("email") String email,
                                @RequestParam("address") String address,
@@ -54,33 +57,31 @@ public class CheckoutController {
                                @RequestParam("cartDetailIds") List<String> cartDetailIds,
                                HttpServletRequest request) {
         String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
-        String paymentUrl = vnPayService.createOrder(totalPrice, orderInfo, baseUrl + "/checkout");
-        orderService.createOrder(name, email, address, phone, totalPrice, cartDetailIds, paymentMethod);
+        Order order = orderService.createOrder(name, email, address, phone, totalPrice, cartDetailIds, paymentMethod);
+        String paymentUrl = vnPayService.createOrder(totalPrice, order.getId(), baseUrl + "/checkout");
+        orderService.updatePaymentUrl(order.getId(), paymentUrl);
         return "redirect:" + paymentUrl;
     }
 
     @RequestMapping(value = "/vnpay-return", method = RequestMethod.GET)
     public String vnpayReturn(HttpServletRequest request, Model model) {
         int paymentStatus = vnPayService.orderReturn(request);
-        String orderInfo = request.getParameter("vnp_OrderInfo");
-        String paymentTime = request.getParameter("vnp_PayDate");
-        String transactionId = request.getParameter("vnp_TransactionNo");
-        String totalPrice = request.getParameter("vnp_Amount");
 
-        System.out.println("Order Info: " + orderInfo);
-        System.out.println("Payment Time: " + paymentTime);
-        System.out.println("Transaction ID: " + transactionId);
-        System.out.println("Total Price: " + totalPrice);
-        System.out.println("Payment Status: " + paymentStatus);
+        String orderId = request.getParameter("vnp_OrderInfo");
+        String transactionId = request.getParameter("vnp_TransactionNo");
+
 
         if (paymentStatus == 1) {
-            model.addAttribute("message", "Payment successful!");
+            model.addAttribute("message", "Thanh toán thành công!");
+            orderService.updateOrderWhenPaymentSuccess(orderId, transactionId);
             return "checkout/success";
         } else if (paymentStatus == 0) {
-            model.addAttribute("message", "Payment failed!");
+            model.addAttribute("message", "Thanh toán thất bại!");
+            orderService.updateOrderWhenPaymentFailed(orderId);
             return "checkout/failure";
         } else {
             model.addAttribute("message", "Invalid payment signature!");
+            orderService.updateOrderWhenPaymentFailed(orderId);
             return "checkout/failure";
         }
     }
