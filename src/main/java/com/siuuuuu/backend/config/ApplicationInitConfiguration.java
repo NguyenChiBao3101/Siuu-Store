@@ -44,6 +44,7 @@ public class ApplicationInitConfiguration implements CommandLineRunner {
             admin.setPassword(passwordEncoder.encode("admin"));
             admin.getRoles().add(adminRole);
             accountRepository.save(admin);
+
         }
 
         if (!accountRepository.existsByEmail("customer@gmail.com")) {
