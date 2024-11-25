@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.siuuuuu.backend.entity.ProductImage;
 
+import java.util.List;
+
 @Service
 public class ProductImageService {
 

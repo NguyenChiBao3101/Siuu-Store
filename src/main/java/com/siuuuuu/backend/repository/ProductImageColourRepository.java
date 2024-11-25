@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface ProductImageColourRepository extends JpaRepository<ProductImageColour, String> {
    List<ProductImageColour> findAllByProductId(String productId);
+   //ProductImageColour findBy(String id);
 }

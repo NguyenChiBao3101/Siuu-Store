@@ -18,6 +18,6 @@ public class ProductVariantService {
 
     public void createProductVariant(ProductVariant productVariant) {
         productVariantRepository.save(productVariant);
-
     }
+
 }
