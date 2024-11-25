@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/customer.html}">
+<body>
+<section layout:fragment="content">
+    <style>
+        .left-image{
+            width: 75px;
+            height: 75px;
+            margin-top: 10px;
+            border-radius: 7px;
+            border: 1px solid #d7d7d7;
+        }
+        .left-image:hover{
+            filter: brightness(90%);
+        }
+
+        .middle{}
+        .middle-image{
+            width: 540px;
+            border-radius: 7px;
+        }
+
+        .right{
+            width: 380px;
+        }
+        .right-header{
+            font-size: 22px;
+            margin-bottom: 25px;
+        }
+        .right-price{
+            margin-bottom: 35px;
+        }
+        .right-image-group a{
+            display: block;
+            margin-right: 20px;
+            border-radius: 7px;
+            border: 1px solid #d7d7d7;
+        }
+        .right-image-group a:hover{
+            border-color: black;
+        }
+
+        .right-image-group a:focus{
+            border-color: black;
+        }
+
+        .right-images{
+            width: 75px;
+            height: 75px;
+            cursor: pointer;
+            border-radius: 7px;
+        }
+
+        .size-table{
+            display: grid;
+            grid-template-columns: auto auto auto auto;
+            column-gap: 5px;
+            margin-bottom: 20px;
+        }
+        .size-item{
+            border: 1px solid #d0d0d0;
+            border-radius: 7px;
+            align-self: center;
+            text-align: center;
+            padding: 10px 0;
+            cursor: pointer;
+            user-select: none;
+        }
+        .size-item:hover{
+            border-color: black;
+        }
+        .size-item:focus{
+            border-color: black;
+        }
+
+        .add-card-button{
+            background-color: black;
+            color: white;
+            width: 100%;
+            padding: 18px 0;
+            text-align: center;
+            border-radius: 30px;
+            margin-bottom: 30px;
+        }
+        .add-card-button:hover{
+            opacity: 0.6;
+        }
+    </style>
+    <div class="page-header" style="background-image: url('/assets/image/shop/page-header-bg.jpg')"></div>
+    <div class="container mb-5">
+        <nav class="my-4">
+            <ul class="flex items-center gap-x-2">
+                <li class=""><a th:href="@{/}">Trang chủ</a></li>
+                <li><i class="fa-solid fa-chevron-right"></i></li>
+                <li class="" aria-current="page"><a th:href="@{/shop}">Cửa hàng</a></li>
+                <li><i class="fa-solid fa-chevron-right"></i></li>
+                <li th:text="${product.getName()}"></li>
+            </ul>
+        </nav>
+            <div class="container flex justify-evenly">
+                <div class="left flex-col">
+                    <div th:each="imageUrl : ${imageUrls}" class="left-item">
+                        <img th:src="${imageUrl}" class="left-image"
+                             alt="Product Image" onmouseover="changeMainImage(this.src)"/>
+                    </div>
+                </div>
+
+                <div class="middle">
+                    <img th:src="${imageUrls[3]}" class="middle-image" alt="Product Image"/>
+                </div>
+
+                <div class="right">
+                    <h3 class="right-header font-bold" th:text="${product.getName()}"></h3>
+                    <p th:text="${#numbers.formatCurrency(productImageColours.get(0).getProduct().getPrice())}" class="right-price font-semibold"></p>
+
+                    <div class="right-image-group flex">
+                        <div th:each="productImageColour : ${productImageColours}">
+                            <a th:href="@{/shop/product(slug=${product.getSlug()}, colourId=${productImageColour.getId()})}" tabindex="0" th:class="${productImageColour.getId()==colourSelected?'border-black':''}" >
+                                <img th:src="${productImageColour.getProductImages()[3].getImageUrl()}"
+                                     class="right-images" alt="Product Image"
+
+                                />
+                            </a>
+
+                        </div>
+                    </div>
+
+                    <p class="my-2">Chọn kích cỡ</p>
+                    <div class="size-table">
+                        <div th:each="productVariant : ${productVariants}">
+                            <p class="size-item" tabindex="0" th:text="${productVariant.getSize().getName()}"></p>
+                        </div>
+
+                    </div>
+
+                    <button class="add-card-button">
+                        Thêm vào giỏ hàng
+                    </button>
+
+                    <div class="description">
+                        <p th:text="${product.getDescription()}" class="text-justify"></p>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+    <script>
+<!--     -->
+        function changeMainImage(imageSrc) {
+            const mainImage = document.querySelector(".middle-image");
+            mainImage.src = imageSrc;
+        }
+
+        // function updateImageList(colourId) {
+        //     let leftItemImage = document.querySelector(".left-item div");
+        //     leftItemImage.dataset.id = `${colourId}`;
+        // }
+    </script>
+</section>
+</body>
+</html>

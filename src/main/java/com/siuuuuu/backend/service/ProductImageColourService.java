@@ -7,6 +7,7 @@ import com.siuuuuu.backend.repository.ProductImageColourRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,4 +42,5 @@ public class ProductImageColourService {
         }
         return images.get(0).getImageUrl();
     }
+
 }
