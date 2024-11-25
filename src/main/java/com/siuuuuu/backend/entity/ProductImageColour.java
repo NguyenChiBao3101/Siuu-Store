@@ -34,4 +34,8 @@ public class ProductImageColour {
     public ProductImageColour(Product product) {
         this.product = product;
     }
+
+    public String getThumbnail() {
+        return productImages.get(0).getImageUrl();
+    }
 }
