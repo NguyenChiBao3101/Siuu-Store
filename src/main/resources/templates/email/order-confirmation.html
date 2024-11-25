@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xác nhận thông tin đơn hàng</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #000000 !important;
+        }
+
+        p,
+        th,
+        td {
+            font-size: 16px !important;
+        }
+
+        .email-container {
+            max-width: 700px;
+            margin: 20px auto;
+            background: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .header {
+            background-color: #e7511a;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 24px;
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        .content h2 {
+            color: #333;
+        }
+
+        .order-details {
+            margin: 20px 0;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .order-details th,
+        .order-details td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        .order-details th {
+            background-color: #f2f2f2;
+            text-align: left;
+        }
+
+        .product-name {
+            display: flex;
+            align-items: center !important;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #f2f2f2;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .button {
+            display: inline-block;
+            background-color: #e7511a;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .product-image {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="email-container">
+    <div class="header">
+        Đặt hàng thành công
+    </div>
+    <div class="content">
+        <h2>Cảm ơn bạn đã mua hàng tại SiuuStore!</h2>
+        <p>Xin chào <strong th:text="${order.getShippingName()}"></strong>,</p>
+        <p>SiuuStore rất vui thông báo đơn hàng của quý khách đã được tiếp nhận và đang trong quá trình xử lý.</p>
+        <p>SiuuStore sẽ gửi email thông báo đến quý khách khi đơn hàng được đóng gói và chuyển sang đơn vị vận
+            chuyển.</p>
+        <h2>Thông tin đơn hàng</h2>
+
+        <table class="order-details">
+            <tr>
+                <th>Mã đơn hàng</th>
+                <td th:text="${order.getId()}"></td>
+            </tr>
+            <tr>
+                <th>Tên khách hàng</th>
+                <td th:text="${order.getShippingName()}"></td>
+            </tr>
+            <tr>
+                <th>Số điện thoại</th>
+                <td th:text="${order.getShippingPhone()}"></td>
+            </tr>
+            <tr>
+                <th>Ngày đặt hàng</th>
+                <td th:text="${#temporals.format(order.getCreatedAt(), 'dd-MM-yyyy HH:mm:ss')}"></td>
+            </tr>
+            <tr>
+                <th>Địa chỉ giao hàng</th>
+                <td th:text="${order.getShippingAddress()}"></td>
+            </tr>
+            <tr>
+                <th>Ngày giao hàng dự kiến</th>
+                <td></td>
+            </tr>
+            <tr>
+                <th>Trạng thái</th>
+                <td>
+                    <span th:if="${order.getStatus().name() == 'PENDING'}">Đang chờ xử lý</span>
+                </td>
+            </tr>
+            <tr>
+                <th>Trạng thái thanh toán</th>
+                <td>
+                    <span th:if="${order.getPaymentStatus().name() == 'PENDING'}">Chờ thanh toán</span>
+                    <span th:if="${order.getPaymentStatus().name() == 'PAID'}">Đã thanh toán</span>
+                    <span th:if="${order.getPaymentStatus().name() == 'UNPAID'}">Chưa thanh toán</span>
+                </td>
+            </tr>
+            <tr>
+                <th>Hình thức thanh toán</th>
+                <td>
+                    <span th:if="${order.getPaymentMethod().name() == 'COD'}">Thanh toán khi nhận hàng</span>
+                    <span th:if="${order.getPaymentMethod().name() == 'VN_PAY'}">Thanh toán bằng VNPay</span>
+                </td>
+            </tr>
+        </table>
+
+        <h2>Chi tiết đơn hàng</h2>
+        <table class="order-details">
+            <tr>
+                <th>Sản Phẩm</th>
+                <th>Size</th>
+                <th>Số Lượng</th>
+                <th>Giá Bán</th>
+                <th>Thành Tiền</th>
+            </tr>
+            <tr th:each="item : ${order.getOrderDetails()}">
+                <td>
+                    <div class="product-name">
+                        <img class="product-image"
+                             th:src="@{${item.getProductVariant().getProductImageColour().getProductImages().get(0).getImageUrl()}}"
+                             alt="Product Image"/>
+                        <span th:text="${item.getProductVariant().getProduct().getName()}"></span>
+                    </div>
+                </td>
+                <td th:text="${item.getProductVariant().getSize().getName()}"></td>
+                <td th:text="${item.getQuantity()}"></td>
+                <td th:text="${#numbers.formatCurrency(item.getProductVariant().getProduct().getPrice())}"></td>
+                <td th:text="${#numbers.formatCurrency(item.getQuantity() * item.getProductVariant().getProduct().getPrice())}"></td>
+            </tr>
+            <tr>
+                <th colspan="4">Tổng tiền hàng</th>
+                <th th:text="${#numbers.formatCurrency(order.getTotalPrice())}">0₫</th>
+            </tr>
+            <tr>
+                <th colspan="4">Phí vận chuyển</th>
+                <th th:text="${#numbers.formatCurrency(order.getShippingFee())}">0₫</th>
+            </tr>
+            <tr>
+                <th colspan="4">Giảm giá</th>
+                <th th:text="${#numbers.formatCurrency(order.getShippingFee())}">-0₫</th>
+            </tr>
+            <tr>
+                <th colspan="4">Tổng cộng</th>
+                <th th:text="${#numbers.formatCurrency(order.getTotalPrice() + order.getShippingFee() - order.getDiscount())}">
+                    0₫
+                </th>
+            </tr>
+        </table>
+        <p><a href="" class="button">Tiếp tục mua sắm</a></p>
+    </div>
+    <div class="footer">
+        &copy; 2024 SiuuStore. All rights reserved.
+    </div>
+</div>
+</body>
+
+</html>

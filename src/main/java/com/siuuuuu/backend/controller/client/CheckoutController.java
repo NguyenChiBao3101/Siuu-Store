@@ -3,13 +3,17 @@ package com.siuuuuu.backend.controller.client;
 import com.siuuuuu.backend.entity.CartDetail;
 import com.siuuuuu.backend.entity.Order;
 import com.siuuuuu.backend.service.CartService;
+import com.siuuuuu.backend.service.EmailService;
 import com.siuuuuu.backend.service.OrderService;
 import com.siuuuuu.backend.service.VNPayService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,6 +32,8 @@ public class CheckoutController {
     VNPayService vnPayService;
 
     OrderService orderService;
+
+    EmailService emailService;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String checkout(@RequestParam("selectedItems") List<String> selectedItems, Model model) {
@@ -70,19 +76,34 @@ public class CheckoutController {
         String orderId = request.getParameter("vnp_OrderInfo");
         String transactionId = request.getParameter("vnp_TransactionNo");
 
-
         if (paymentStatus == 1) {
-            model.addAttribute("message", "Thanh toán thành công!");
-            orderService.updateOrderWhenPaymentSuccess(orderId, transactionId);
-            return "checkout/success";
+            model.addAttribute("title", "Đặt hàng thành công!");
+            Order order = orderService.updateOrderWhenPaymentSuccess(orderId, transactionId);
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String currentUserEmail = authentication.getName();
+            String subject = "Thông báo đơn hàng #" + order.getId() + " của quý khách đã được tiếp nhận";
+            emailService.sendOrderConfirmationEmail("phucnh203@gmail.com", subject, order);
+            return "redirect:/checkout/success/" + orderId;
         } else if (paymentStatus == 0) {
-            model.addAttribute("message", "Thanh toán thất bại!");
+            model.addAttribute("title", "Đặt hàng thất bại!");
             orderService.updateOrderWhenPaymentFailed(orderId);
-            return "checkout/failure";
+            return "redirect:/checkout/failure/" + orderId;
         } else {
-            model.addAttribute("message", "Invalid payment signature!");
+            model.addAttribute("title", "Đặt hàng thất bại!");
             orderService.updateOrderWhenPaymentFailed(orderId);
-            return "checkout/failure";
+            return "redirect:/checkout/failure/" + orderId;
         }
+    }
+
+    @RequestMapping(value = "/success/{orderId}", method = RequestMethod.GET)
+    public String orderSuccess(@PathVariable("orderId") String orderId, Model model) {
+        model.addAttribute("title", "Đặt hàng thành công!");
+        return "checkout/success";
+    }
+
+    @RequestMapping(value = "/failure/{orderId}", method = RequestMethod.GET)
+    public String orderFailure(@PathVariable("orderId") String orderId, Model model) {
+        model.addAttribute("title", "Đặt hàng thành công!");
+        return "checkout/failure";
     }
 }

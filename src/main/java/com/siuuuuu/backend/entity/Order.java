@@ -15,6 +15,7 @@ import java.util.List;
 @Data
 @Entity
 @Builder
+@ToString(exclude = "orderDetails")
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "`order`")

@@ -91,7 +91,6 @@ public class ProductService {
     public void createProductImageColour(String slug, MultipartFile[] images) {
         Product product = getProductBySlug(slug);
         ProductImageColour productImageColour = productImageColourService.createProductImageColour(new ProductImageColour(product));
-        System.out.println(productImageColour.getId());
         List<String> imageUrls = null;
         try {
             imageUrls = cloudinaryService.uploadFiles(images).stream().map(map -> map.get("url").toString()).collect(Collectors.toList());

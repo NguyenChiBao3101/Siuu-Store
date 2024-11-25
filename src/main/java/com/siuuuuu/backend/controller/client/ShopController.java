@@ -4,6 +4,8 @@ import com.siuuuuu.backend.entity.*;
 import com.siuuuuu.backend.repository.ProductImageColourRepository;
 import com.siuuuuu.backend.repository.ProductVariantRepository;
 import com.siuuuuu.backend.service.*;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -20,74 +22,50 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/shop")
+@RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = lombok.AccessLevel.PRIVATE)
 public class ShopController {
-    @Autowired
-    private CategoryService categoryService;
 
-    @Autowired
-    private ProductService productService;
+    CategoryService categoryService;
 
-    @Autowired
-    private ProductImageColourService productImageColourService;
+    ProductService productService;
 
-    @Autowired
-    private SizeService sizeService;
-    @Autowired
-    private ProductVariantRepository productVariantRepository;
-    @Autowired
-    private ProductImageService productImageService;
-    @Autowired
-    private ProductImageColourRepository productImageColourRepository;
+    SizeService sizeService;
+
+    ProductVariantRepository productVariantRepository;
 
     @GetMapping("")
     public String shop(Model model, @RequestParam(defaultValue = "1") int page,
-                       @RequestParam(defaultValue = "1") int size) {
-        model.addAttribute("title", "Cửa hàng");
+                       @RequestParam(defaultValue = "12") int size) {
         List<Category> categories = categoryService.getAllCategories();
-        model.addAttribute("categories", categories);
-
         Page<Product> products = productService.getAllProducts(page, size);
+
+        model.addAttribute("title", "Cửa hàng");
+        model.addAttribute("categories", categories);
         model.addAttribute("products", products);
         model.addAttribute("currentPage", page);
         model.addAttribute("size", size);
         model.addAttribute("totalPages", products.getTotalPages());
         model.addAttribute("totalItems", products.getTotalElements());
-
-        List<ProductImageColour> productImageColours = productImageColourService.findAllProductImageColours();
-        model.addAttribute("productImageColours", productImageColours);
-
-        Map<String, String> productThumbnails = new HashMap<>();
-        for (ProductImageColour productImageColour : productImageColours) {
-            try {
-                 String productId = productImageColour.getProduct().getId();
-                 Product product = productService.findProductById(productId);
-                 String thumbnail = productImageColourService.getProductThumbnail(productImageColour);
-                 productThumbnails.put(product.getId(), thumbnail);
-            } catch (RuntimeException e) {
-                 productThumbnails.put(productImageColour.getProduct().getId(), "sh.jpg");
-            }
-        }
-        model.addAttribute("productThumbnails", productThumbnails);
         return "shop/index";
     }
 
     @GetMapping("/product")
-    public String product(@RequestParam("slug") String slug, Model model, @RequestParam("colourId") String colourId ) {
+    public String product(@RequestParam("slug") String slug, Model model, @RequestParam("colourId") String colourId) {
         Product product = productService.getProductBySlug(slug);
         List<ProductImageColour> productImageColours = product.getProductImageColours();
         List<Size> sizes = sizeService.findAllSize();
-        List<String>imageUrls = new ArrayList<>();
-        for(ProductImageColour productImageColour : productImageColours) {
-            if(productImageColour.getId().equals(colourId)) {
-                for(ProductImage productImage : productImageColour.getProductImages()) {
+        List<String> imageUrls = new ArrayList<>();
+        for (ProductImageColour productImageColour : productImageColours) {
+            if (productImageColour.getId().equals(colourId)) {
+                for (ProductImage productImage : productImageColour.getProductImages()) {
                     imageUrls.add(productImage.getImageUrl());
                 }
             }
         }
-        System.out.println(slug+"---"+colourId);
+        System.out.println(slug + "---" + colourId);
         List<ProductVariant> productVariants = productVariantRepository.findAllByProduct_IdAndProductImageColour_IdOrderBySize_NameAsc(product.getId(), colourId);
-        System.out.println(productVariants);
-
+        model.addAttribute("title", product.getName());
         model.addAttribute("imageUrls", imageUrls);
         model.addAttribute("product", product);
         model.addAttribute("sizes", sizes);
@@ -97,6 +75,4 @@ public class ShopController {
         model.addAttribute("colourSelected", colourId);
         return "shop/product-detail";
     }
-
-
 }

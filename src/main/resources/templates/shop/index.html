@@ -28,8 +28,11 @@
                         <div class="filter-items filter-items-count">
                             <div class="filter-item" th:each="category : ${categories}">
                                 <div class="form-check">
-                                    <label><input class="form-check-input" type="checkbox" th:id="'cat-' + ${category.id}"></label>
-                                    <label class="form-check-label" th:for="'cat-' + ${category.id}" th:text="${category.name}"></label>
+                                    <label><input class="form-check-input" type="checkbox"
+                                                  th:id="'cat-' + ${category.id}"></label>
+                                    <label class="form-check-label first-letter:uppercase"
+                                           th:for="'cat-' + ${category.id}"
+                                           th:text="${category.name}"></label>
                                 </div>
                             </div>
                         </div>
@@ -154,26 +157,31 @@
                     <div class="row">
                         <div class="col-6 col-md-4 col-lg-4 col-xl-4" th:each="product : ${products}">
                             <div class="product">
+                                <a th:href="@{/shop/product(slug=${product.slug}, colourId=${product.getProductImageColours().get(0).getId()})}">
                                 <figure class="product-media">
-                                    <a th:href="@{/shop/product(slug=${product.slug}, colourId=${product.getProductImageColours().get(0).getId()})}">
-                                        <img th:src="${productThumbnails[product.id]}" alt="Product Image">
-                                    </a>
+                                        <img th:src="${product.getProductImageColours().get(0).getThumbnail()}"
+                                             alt="Product Image">
                                 </figure>
                                 <div class="product-body">
                                     <h3 class="product-title" th:text="${product.name}">
                                     </h3>
-                                    <div class="product-price" th:text="${#numbers.formatCurrency(product.price)}"></div>
-                                    <button class="btn btn-primary button-add" th:data-id="${product.id}">Thêm vào giỏ hàng</button>
+                                    <div class="product-price"
+                                         th:text="${#numbers.formatCurrency(product.price)}"></div>
+                                    <button class="btn btn-primary button-add" th:data-id="${product.id}">Thêm vào giỏ
+                                        hàng
+                                    </button>
                                 </div>
+                                </a>
                             </div>
                         </div>
                     </div>
                     <!--pagination-->
-                    <ul class="flex items-center gap-x-2 justify-center">
+                    <!-- Pagination -->
+                    <ul class="pagination flex items-center gap-2 justify-center mt-4">
                         <!-- Previous Page Link -->
                         <li th:if="${currentPage > 1}">
                             <a th:href="@{/shop(page=${currentPage - 1}, size=${size})}"
-                               class="bg-blue-500 text-white px-3 py-1 rounded-lg shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                               class="pagination-link bg-gray-200 text-gray-800 px-4 py-2 rounded-md shadow-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400">
                                 <i class="fa-solid fa-angle-left"></i>
                             </a>
                         </li>
@@ -181,38 +189,69 @@
                         <!-- Page Number Links -->
                         <li th:if="${currentPage > 3}">
                             <a th:href="@{/shop(page=1, size=${size})}"
-                               class="text-white px-3 py-1 rounded-lg bg-blue-500">1</a>
-                            <span class="text-gray-600">...</span>
+                               class="pagination-link bg-gray-200 text-gray-800 px-4 py-2 rounded-md shadow-md hover:bg-gray-300">1</a>
+                            <span class="text-gray-500 px-2">...</span>
                         </li>
 
                         <li th:each="i : ${#numbers.sequence(currentPage - 2, currentPage + 2)}"
                             th:if="${i > 0 && i <= totalPages}">
                             <a th:href="@{/shop(page=${i}, size=${size})}"
                                th:text="${i}"
-                               th:classappend="${i == currentPage} ? 'bg-[#e4641a]' : 'bg-blue-500'"
-                               class="text-white px-3 py-1 rounded-lg shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                               th:classappend="${i == currentPage} ? 'pagination-link-active' : ''"
+                               class="pagination-link bg-gray-200 text-gray-800 px-4 py-2 rounded-md shadow-md hover:bg-gray-300">
                             </a>
                         </li>
 
                         <li th:if="${currentPage < totalPages - 2}">
-                            <span class="text-gray-600">...</span>
+                            <span class="text-gray-500 px-2">...</span>
                             <a th:href="@{/shop(page=${totalPages}, size=${size})}"
-                               class="text-white px-3 py-1 rounded-lg bg-blue-500" th:text="${totalPages}"></a>
+                               class="pagination-link bg-gray-200 text-gray-800 px-4 py-2 rounded-md shadow-md hover:bg-gray-300"
+                               th:text="${totalPages}"></a>
                         </li>
 
                         <!-- Next Page Link -->
                         <li th:if="${currentPage < totalPages}">
                             <a th:href="@{/shop(page=${currentPage + 1}, size=${size})}"
-                               class="bg-blue-500 text-white px-3 py-1 rounded-lg shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                               class="pagination-link bg-gray-200 text-gray-800 px-4 py-2 rounded-md shadow-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400">
                                 <i class="fa-solid fa-angle-right"></i>
                             </a>
                         </li>
                     </ul>
+
                 </div>
             </div>
         </div>
-
     </div>
+    <style>
+        .pagination-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .pagination-link-active {
+            background-color: #e4641a; /* Active page color */
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .pagination-link:hover {
+            background-color: #e4641a;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .pagination {
+            margin-top: 1rem;
+        }
+
+        .pagination > li {
+            list-style: none;
+        }
+
+    </style>
 </section>
 
 </body>
