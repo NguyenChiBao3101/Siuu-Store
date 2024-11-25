@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/customer.html}">
+<body>
+<section layout:fragment="content">
+    <div class="container mx-auto my-20">
+        <div th:if="${#lists.isEmpty(cartDetails)}" class="flex justify-center">
+            <img src="https://bizweb.dktcdn.net/100/414/833/themes/803358/assets/empty-cart.png?1698141402395">
+        </div>
+        <form th:unless="${#lists.isEmpty(cartDetails)}" action="/checkout" method="get">
+            <div class="flex flex-col lg:flex-row gap-4">
+                <!-- Cart Items -->
+                <div class="lg:w-2/3">
+                    <div class="bg-white shadow-md p-4">
+                        <h2 class="text-2xl font-semibold">Giỏ hàng</h2>
+                        <div class="mt-4">
+                            <div class="flex items-center justify-between border-b-[1px] border-solid border-[#e4e4e4] py-2">
+                                <div class="flex items-center gap-4">
+                                    <input type="checkbox" id="select-all">
+                                    <label for="select-all">Tất Cả</label>
+                                </div>
+                                <button id="delete-all" class="text-red-500 hover:text-red-600">Xóa Tất Cả</button>
+                            </div>
+                            <div th:each="item : ${cartDetails}"
+                                 class="flex items-center justify-between border-b-[1px] border-solid border-[#e4e4e4] py-2">
+                                <div class="flex items-center gap-4">
+                                    <input type="checkbox" class="select-item"
+                                           th:value="${item.getId()}"
+                                           th:data-price="${item.getProductVariant().getProduct().getPrice()}"
+                                           th:data-quantity="${item.getQuantity()}" th:name="'selectedItems'">
+                                    <img class="w-20 h-20 object-cover"
+                                         th:src="${item.getProductVariant().getProductImageColour().getProductImages().get(0).getImageUrl()}"
+                                         alt="product">
+                                    <div>
+                                        <h3 class="text-lg font-semibold"
+                                            th:text="${item.getProductVariant().getProduct().getName()}"></h3>
+                                        <p class="text-gray-500">Size: <span
+                                                th:text="${item.getProductVariant().getSize().getName()}"></span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <button class="decrease-quantity">-</button>
+                                    <input class="w-16 h-10 border-[1px] border-solid border-[#e4e4e4] text-center"
+                                           type="number" th:value="${item.getQuantity()}">
+                                    <button class="increase-quantity">+</button>
+                                    <span class="text-lg font-semibold"
+                                          th:text="${#numbers.formatCurrency(item.getProductVariant().getProduct().getPrice())}"></span>
+                                    <button class="text-red-500 hover:text-red-600">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <!-- Cart Summary -->
+                <div class="lg:w-1/3">
+                    <div class="bg-white shadow-md p-4">
+                        <h2 class="text-2xl font-semibold">Tóm tắt đơn hàng</h2>
+                        <div class="mt-4">
+                            <div class="flex justify-between py-2">
+                                <span class="text-lg">Tạm tính:</span>
+                                <span class="text-lg font-semibold" id="subtotal">0đ</span>
+                            </div>
+                            <div class="flex justify-between py-2 border-t-[1px] border-solid border-[#e4e4e4]">
+                                <span class="text-lg">Tổng cộng:</span>
+                                <span class="text-lg font-semibold" id="total">0đ</span>
+                            </div>
+                            <div class="mt-4">
+                                <button type="submit" id="checkout-button"
+                                        class="block w-full bg-[#e7511a] text-white text-center py-2 rounded-md">
+                                    Tiếp tục thanh toán
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <style>
+        .disabled-button {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+    </style>
+    <script>
+        function updateSummary() {
+            const checkboxes = document.querySelectorAll('.select-item:checked');
+            let subtotal = 0;
+            checkboxes.forEach(checkbox => {
+                const price = parseInt(checkbox.dataset.price);
+                const quantity = parseInt(checkbox.dataset.quantity);
+                subtotal += price * quantity;
+            });
+            document.getElementById('subtotal').textContent = subtotal.toLocaleString('vi-VN', {
+                style: 'currency',
+                currency: 'VND'
+            });
+            const shipping = 0;
+            const discount = 0;
+            const total = subtotal + shipping - discount;
+            document.getElementById('total').textContent = total.toLocaleString('vi-VN', {
+                style: 'currency',
+                currency: 'VND'
+            });
+
+            // Enable or disable the checkout button
+            const checkoutButton = document.getElementById('checkout-button');
+            const cartDetails = document.querySelectorAll('.select-item');
+            if (checkboxes.length === 0 || cartDetails.length === 0) {
+                checkoutButton.disabled = true;
+                checkoutButton.classList.add('disabled-button');
+            } else {
+                checkoutButton.disabled = false;
+                checkoutButton.classList.remove('disabled-button');
+            }
+        }
+
+        document.getElementById('select-all').addEventListener('change', function () {
+            const checkboxes = document.querySelectorAll('.select-item');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+            updateSummary();
+        });
+
+        document.querySelectorAll('.select-item').forEach(checkbox => {
+            checkbox.addEventListener('change', updateSummary);
+        });
+
+        document.querySelectorAll('.increase-quantity').forEach(button => {
+            button.addEventListener('click', function () {
+                const input = this.previousElementSibling;
+                input.value = parseInt(input.value) + 1;
+                updateSummary();
+            });
+        });
+
+        document.querySelectorAll('.decrease-quantity').forEach(button => {
+            button.addEventListener('click', function () {
+                const input = this.nextElementSibling;
+                if (input.value > 1) {
+                    input.value = parseInt(input.value) - 1;
+                    updateSummary();
+                }
+            });
+        });
+
+        // Initial check to disable the button if no items are selected
+        updateSummary();
+    </script>
+</section>
+</body>
+</html>

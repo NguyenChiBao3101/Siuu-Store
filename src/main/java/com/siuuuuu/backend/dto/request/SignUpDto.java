@@ -18,7 +18,7 @@ public class SignUpDto {
     private  String last_name;
     @NotNull(message = "Ngày sinh không được để trống")
     @DateTimeFormat(pattern = "dd-MM-yyyy")
-    private Date date_of_birth;
+    private LocalDate date_of_birth;
     @NotEmpty(message = "Email không được để trống")
     @Email(message = "Email không đúng định dạng")
     private String email;

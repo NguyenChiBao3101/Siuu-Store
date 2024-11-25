@@ -20,6 +20,7 @@ public class Role {
     private String name;
 
     @ManyToMany(mappedBy = "roles")
+    @ToString.Exclude
     private List<Account> accounts = new ArrayList<>();
 
     public Role(String name) {

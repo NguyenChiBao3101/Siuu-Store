@@ -2,44 +2,31 @@ package com.siuuuuu.backend.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Entity
-@Table(name = "product_variant")
-@ToString
+@Table(name = "cart")
+@AllArgsConstructor
+@NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class ProductVariant {
+public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @Column(name = "sku", nullable = false, unique = true)
-    private String sku;
-
-    @ManyToOne()
-    @JoinColumn(name = "product_id", nullable = false)
+    @OneToOne
+    @JoinColumn(name = "id_account", referencedColumnName = "id")
     @ToString.Exclude
-    private Product product;
-
-    @ManyToOne()
-    @JoinColumn(name = "product_image_colour_id", nullable = false)
-    @ToString.Exclude
-    private ProductImageColour productImageColour;
-
-
-    @ManyToOne()
-    @JoinColumn(name = "size_id", nullable = false)
-    @ToString.Exclude
-    private Size size;
-
-    @Column(name = "quantity", nullable = false)
-    private int quantity = 0;
+    private Account account;
 
     @CreatedDate
     @Column(updatable = false)
@@ -48,4 +35,8 @@ public class ProductVariant {
     @LastModifiedDate
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "cart", fetch = FetchType.EAGER)
+    @ToString.Exclude
+    private List<CartDetail> cartDetails;
 }

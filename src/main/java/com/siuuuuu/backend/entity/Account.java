@@ -2,15 +2,14 @@ package com.siuuuuu.backend.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
-
 
 @Data
 @Entity
@@ -27,12 +26,16 @@ public class Account {
     @Column(name = "password", nullable = false)
     private String password;
 
+    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Profile profile;
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(
-            name = "account_role", // Join table name
-            joinColumns = @JoinColumn(name = "account_id"), // Foreign key in join table for Account
-            inverseJoinColumns = @JoinColumn(name = "role_id") // Foreign key in join table for Role
+            name = "account_role",
+            joinColumns = @JoinColumn(name = "account_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
     )
+    @ToString.Exclude
     private Set<Role> roles = new HashSet<>();
 
     @CreatedDate
@@ -43,4 +46,7 @@ public class Account {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @OneToOne(mappedBy = "account")
+    @ToString.Exclude
+    private Cart cart;
 }

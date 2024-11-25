@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/customer.html}">
+
+<body>
+<section layout:fragment="content">
+    <div class="container mx-auto my-20">
+        <div class="bg-white shadow-md p-4">
+            <h2 class="text-2xl font-semibold">Thông tin thanh toán</h2>
+            <form action="/process-checkout" method="post">
+                <div class="flex flex-col lg:flex-row gap-4">
+                    <!-- Order Information -->
+                    <div class="lg:w-1/2">
+                        <div class="mt-4">
+                            <label for="name" class="block text-lg">Họ và tên</label>
+                            <input type="text" id="name" name="name"
+                                   class="w-full border-[1px] border-solid border-[#e4e4e4] p-2" required>
+                        </div>
+                        <div class="mt-4">
+                            <label for="email" class="block text-lg">Email</label>
+                            <input type="email" id="email" name="email"
+                                   class="w-full border-[1px] border-solid border-[#e4e4e4] p-2" required>
+                        </div>
+                        <div class="mt-4">
+                            <label for="address" class="block text-lg">Địa chỉ</label>
+                            <input type="text" id="address" name="address"
+                                   class="w-full border-[1px] border-solid border-[#e4e4e4] p-2" required>
+                        </div>
+                        <div class="mt-4">
+                            <label for="phone" class="block text-lg">Số điện thoại</label>
+                            <input type="text" id="phone" name="phone"
+                                   class="w-full border-[1px] border-solid border-[#e4e4e4] p-2" required>
+                        </div>
+                        <div class="mt-4">
+                            <label class="block text-lg">Phương thức thanh toán</label>
+                            <div class="flex items-center gap-4">
+                                <label class="flex items-center h-[50px] gap-2 cursor-pointer payment-option p-2 rounded-md border-[#ccc3c3] border-solid border-[1px] ">
+                                    <input type="radio" id="cod" name="payment-method" value="cod" class="hidden"
+                                           required>
+                                    <span>Thanh toán khi nhận hàng</span>
+                                </label>
+                                <label class="flex items-center h-[50px] gap-2 cursor-pointer payment-option p-2 rounded-md border-[#ccc3c3] border-solid border-[1px]">
+                                    <input type="radio" id="vnpay" name="payment-method" value="vnpay" class="hidden"
+                                           required>
+                                    <span>Thanh toán bằng VNPay</span>
+                                    <img class="w-[40px]" th:src="@{/assets/image/vnpay.png}">
+                                </label>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- Item Information -->
+                    <div class="lg:w-1/2">
+                        <h3 class="text-xl font-semibold">Thông tin sản phẩm</h3>
+                        <div th:each="item : ${cartDetails}" class="mt-4">
+                            <div class="flex items-center justify-between border-b-[1px] border-solid border-[#e4e4e4] py-2">
+                                <div class="flex items-center gap-4">
+                                    <img class="w-20 h-20 object-cover"
+                                         th:src="${item.getProductVariant().getProductImageColour().getProductImages().get(0).getImageUrl()}"
+                                         alt="product">
+                                    <div>
+                                        <h3 class="text-lg font-semibold"
+                                            th:text="${item.getProductVariant().getProduct().getName()}"></h3>
+                                        <p class="text-gray-500">Size: <span
+                                                th:text="${item.getProductVariant().getSize().getName()}"></span></p>
+                                        <p class="text-gray-500">Số lượng: <span th:text="${item.getQuantity()}"></span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <span class="text-lg font-semibold"
+                                      th:text="${#numbers.formatCurrency(item.getProductVariant().getProduct().getPrice())}"></span>
+                                <input type="hidden" name="cartDetailIds" th:value="${item.getId()}">
+                            </div>
+                        </div>
+                        <!-- Total Price -->
+                        <div class="mt-4">
+                            <h3 class="text-xl font-semibold">Tổng cộng:</h3>
+                            <span id="total" class="text-lg font-semibold"
+                                  th:text="${#numbers.formatCurrency(totalPrice)}"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <button type="submit" id="checkout-button"
+                            class="block w-full bg-[#e7511a] text-white text-center py-2 rounded-md">
+                        Đặt Hàng
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <style>
+        .selected {
+            border-color: #e7511a;
+            background-color: #f9f9f9;
+        }
+    </style>
+    <script>
+        document.querySelectorAll('input[name="payment-method"]').forEach(input => {
+            input.addEventListener('change', function () {
+                document.querySelectorAll('.payment-option').forEach(label => {
+                    label.classList.remove('selected');
+                });
+                this.parentElement.classList.add('selected');
+            });
+        });
+
+        document.getElementById('checkout-button').addEventListener('click', function (event) {
+            if (document.getElementById('vnpay').checked) {
+                event.preventDefault();
+                const totalPrice = document.getElementById('total').textContent.replace(/\D/g, '');
+                const orderInfo = "Thanh Toan Hoa Don"; // Customize this as needed
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
+                const address = document.getElementById('address').value;
+                const phone = document.getElementById('phone').value;
+                const cartDetailIds = Array.from(document.querySelectorAll('input[name="cartDetailIds"]')).map(input => input.value);
+                const form = document.createElement('form');
+                form.method = 'GET';
+                form.action = '/checkout/vnpay';
+                form.innerHTML = `<input type="hidden" name="totalPrice" value="${totalPrice}">
+                                  <input type="hidden" name="name" value="${name}">
+                                  <input type="hidden" name="email" value="${email}">
+                                  <input type="hidden" name="address" value="${address}">
+                                  <input type="hidden" name="phone" value="${phone}">
+                                  <input type="hidden" name="paymentMethod" value="VN_PAY">
+                                  ${cartDetailIds.map(id => `<input type="hidden" name="cartDetailIds" value="${id}">`).join('')}`;
+                document.body.appendChild(form);
+                form.submit();
+            }
+        });
+    </script>
+</section>
+
+</body>
+</html>
