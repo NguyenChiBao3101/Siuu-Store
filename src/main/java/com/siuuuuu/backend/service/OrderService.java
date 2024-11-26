@@ -13,6 +13,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -72,6 +73,7 @@ public class OrderService {
         final Order finalOrder = order;
 
         List<CartDetail> cartDetails = cartDetailService.getCartDetailsByIds(cartDetailIds);
+        List<OrderDetail> orderDetails = new ArrayList<>();
         cartDetails.forEach(cartDetail -> {
             OrderDetail orderDetail = new OrderDetail();
             orderDetail.setOrder(finalOrder);
@@ -80,9 +82,11 @@ public class OrderService {
             orderDetail.setPrice(cartDetail.getProductVariant().getProduct().getPrice());
             orderDetail.setTotalPrice(cartDetail.getProductVariant().getProduct().getPrice() * cartDetail.getQuantity());
             // Save order detail
+            orderDetails.add(orderDetail);
             orderDetailRepository.save(orderDetail);
         });
 
+        order.setOrderDetails(orderDetails);
         return order;
     }
 

@@ -2,7 +2,9 @@ package com.siuuuuu.backend.service;
 
 import java.util.List;
 
+import com.siuuuuu.backend.entity.Cart;
 import com.siuuuuu.backend.repository.CartDetailRepository;
+import com.siuuuuu.backend.repository.ProductVariantRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,8 @@ public class CartService {
     AccountRepository accountRepository;
 
     CartDetailRepository cartDetailRepository;
+
+    ProductVariantRepository productVariantRepository;
 
     public int getCartItemCountForCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -41,5 +45,39 @@ public class CartService {
 
     public CartDetail getCartDetailById(String cartId) {
         return cartDetailRepository.findById(cartId).orElse(null);
+    }
+
+    public void addProductToCart(String productVariantId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserEmail = authentication.getName();
+        Account account = accountRepository.findByEmail(currentUserEmail);
+        Cart cart = account.getCart();
+        List<CartDetail> cartDetails = cart.getCartDetails();
+        boolean isProductVariantExistInCart = false;
+        for (CartDetail cartDetail : cartDetails) {
+            if (cartDetail.getProductVariant().getId().equals(productVariantId)) {
+                cartDetail.setQuantity(cartDetail.getQuantity() + 1);
+                cartDetailRepository.save(cartDetail);
+                isProductVariantExistInCart = true;
+                break;
+            }
+        }
+        if (!isProductVariantExistInCart) {
+            CartDetail cartDetail = new CartDetail();
+            cartDetail.setCart(cart);
+            cartDetail.setProductVariant(productVariantRepository.findById(productVariantId).orElse(null));
+            cartDetail.setQuantity(1);
+            cartDetailRepository.save(cartDetail);
+        }
+    }
+
+    public void removeProductFromCart(String cartDetailId) {
+        cartDetailRepository.deleteById(cartDetailId);
+    }
+
+    public void updateProductQuantityInCart(String cartDetailId, int quantity) {
+        CartDetail cartDetail = cartDetailRepository.findById(cartDetailId).orElse(null);
+        cartDetail.setQuantity(quantity);
+        cartDetailRepository.save(cartDetail);
     }
 }

@@ -158,19 +158,22 @@
                         <div class="col-6 col-md-4 col-lg-4 col-xl-4" th:each="product : ${products}">
                             <div class="product">
                                 <a th:href="@{/shop/product(slug=${product.slug}, colourId=${product.getProductImageColours().get(0).getId()})}">
-                                <figure class="product-media">
+                                    <figure class="product-media">
                                         <img th:src="${product.getProductImageColours().get(0).getThumbnail()}"
                                              alt="Product Image">
-                                </figure>
-                                <div class="product-body">
-                                    <h3 class="product-title" th:text="${product.name}">
-                                    </h3>
-                                    <div class="product-price"
-                                         th:text="${#numbers.formatCurrency(product.price)}"></div>
-                                    <button class="btn btn-primary button-add" th:data-id="${product.id}">Thêm vào giỏ
-                                        hàng
-                                    </button>
-                                </div>
+                                    </figure>
+                                    <div class="product-body">
+                                        <p>
+                                            <span th:text="${product.getProductImageColours().size()}"></span>
+                                            <span>Màu</span>
+                                        </p>
+                                        <h3 class="product-title" th:text="${product.name}">
+                                        </h3>
+                                        <p class="product-price"
+                                           th:text="${#numbers.formatCurrency(product.price)}">
+
+                                        </p>
+                                    </div>
                                 </a>
                             </div>
                         </div>
@@ -253,6 +256,5 @@
 
     </style>
 </section>
-
 </body>
 </html>

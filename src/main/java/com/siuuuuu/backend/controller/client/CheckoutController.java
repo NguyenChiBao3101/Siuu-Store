@@ -2,6 +2,7 @@ package com.siuuuuu.backend.controller.client;
 
 import com.siuuuuu.backend.entity.CartDetail;
 import com.siuuuuu.backend.entity.Order;
+import com.siuuuuu.backend.entity.OrderDetail;
 import com.siuuuuu.backend.service.CartService;
 import com.siuuuuu.backend.service.EmailService;
 import com.siuuuuu.backend.service.OrderService;
@@ -13,10 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +51,25 @@ public class CheckoutController {
         return "checkout/index";
     }
 
-    @RequestMapping(value = "/vnpay", method = RequestMethod.GET)
+    @RequestMapping(value = "/payment/cod", method = RequestMethod.POST)
+    public String codPayment(
+            @RequestParam("totalPrice") int totalPrice,
+            @RequestParam("name") String name,
+            @RequestParam("email") String email,
+            @RequestParam("address") String address,
+            @RequestParam("phone") String phone,
+            @RequestParam("paymentMethod") String paymentMethod,
+            @RequestParam("cartDetailIds") List<String> cartDetailIds) {
+        System.out.println("Cart detail ids: " + cartDetailIds);
+        Order order = orderService.createOrder(name, email, address, phone, totalPrice, cartDetailIds, paymentMethod);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserEmail = authentication.getName();
+        String subject = "Thông báo đơn hàng #" + order.getId() + " của quý khách đã được tiếp nhận";
+        emailService.sendOrderConfirmationEmail("phucnh203@gmail.com", subject, order);
+        return "checkout/success";
+    }
+
+    @RequestMapping(value = "/payment/vnpay", method = RequestMethod.POST)
     public String vnpayPayment(@RequestParam("totalPrice") int totalPrice,
                                @RequestParam("name") String name,
                                @RequestParam("email") String email,

@@ -228,7 +228,6 @@ figure {
     margin-bottom: 25px;
     border-radius: 10px;
     overflow: hidden;
-    text-align: center;
     transition: transform .3s;
 }
 
@@ -269,7 +268,7 @@ figure {
 .product-price {
     flex-flow: wrap;
     font-weight: 400;
-    font-size: 1.0rem;
+    font-size: 18px;
     line-height: 1.25;
     color: #E7511A;
     margin-bottom: 1.3rem;

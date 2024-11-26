@@ -8,6 +8,7 @@
             <img src="https://bizweb.dktcdn.net/100/414/833/themes/803358/assets/empty-cart.png?1698141402395">
         </div>
         <form th:unless="${#lists.isEmpty(cartDetails)}" action="/checkout" method="get">
+            <input type="hidden" id="csrf-token" name="_csrf" th:value="${_csrf.token}"/>
             <div class="flex flex-col lg:flex-row gap-4">
                 <!-- Cart Items -->
                 <div class="lg:w-2/3">
@@ -40,13 +41,14 @@
                                     </div>
                                 </div>
                                 <div class="flex items-center gap-4">
-                                    <button class="decrease-quantity">-</button>
-                                    <input class="w-16 h-10 border-[1px] border-solid border-[#e4e4e4] text-center"
-                                           type="number" th:value="${item.getQuantity()}">
-                                    <button class="increase-quantity">+</button>
+                                    <div class="decrease-quantity cursor-pointer">-</div>
+                                    <input id="cart-detail-quantity"
+                                           class="w-16 h-10 border-[1px] border-solid border-[#e4e4e4] text-center"
+                                           type="number" th:value="${item.getQuantity()}" th:data-id="${item.getId()}">
+                                    <div class="increase-quantity cursor-pointer">+</div>
                                     <span class="text-lg font-semibold"
                                           th:text="${#numbers.formatCurrency(item.getProductVariant().getProduct().getPrice())}"></span>
-                                    <button class="text-red-500 hover:text-red-600">
+                                    <button type="button" class="text-red-500 hover:text-red-600">
                                         <i class="fa-solid fa-trash"></i>
                                     </button>
                                 </div>
@@ -135,6 +137,16 @@
             button.addEventListener('click', function () {
                 const input = this.previousElementSibling;
                 input.value = parseInt(input.value) + 1;
+                // Create Form to update quantity
+                const form = document.createElement('form');
+                const csrfToken = document.getElementById('csrf-token').value;
+                form.method = 'POST';
+                form.action = '/cart/update';
+                form.innerHTML = `<input type="hidden" name="_csrf" value="${csrfToken}">
+                                  <input type="hidden" name="cartDetailId" value="${input.dataset.id}">
+                                  <input type="hidden" name="quantity" value="${input.value}">`;
+                document.body.appendChild(form);
+                form.submit();
                 updateSummary();
             });
         });
@@ -142,13 +154,20 @@
         document.querySelectorAll('.decrease-quantity').forEach(button => {
             button.addEventListener('click', function () {
                 const input = this.nextElementSibling;
-                if (input.value > 1) {
-                    input.value = parseInt(input.value) - 1;
-                    updateSummary();
-                }
+                input.value = parseInt(input.value) - 1;
+                // Create Form to update quantity
+                const form = document.createElement('form');
+                const csrfToken = document.getElementById('csrf-token').value;
+                form.method = 'POST';
+                form.action = '/cart/update';
+                form.innerHTML = `<input type="hidden" name="_csrf" value="${csrfToken}">
+                                  <input type="hidden" name="cartDetailId" value="${input.dataset.id}">
+                                  <input type="hidden" name="quantity" value="${input.value}">`;
+                document.body.appendChild(form);
+                form.submit();
+                updateSummary();
             });
         });
-
         // Initial check to disable the button if no items are selected
         updateSummary();
     </script>
