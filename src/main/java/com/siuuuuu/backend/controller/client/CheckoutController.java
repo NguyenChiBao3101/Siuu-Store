@@ -65,7 +65,7 @@ public class CheckoutController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUserEmail = authentication.getName();
         String subject = "Thông báo đơn hàng #" + order.getId() + " của quý khách đã được tiếp nhận";
-        emailService.sendOrderConfirmationEmail("phucnh203@gmail.com", subject, order);
+        emailService.sendOrderConfirmationEmail(currentUserEmail, subject, order);
         return "checkout/success";
     }
 
@@ -98,7 +98,7 @@ public class CheckoutController {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String currentUserEmail = authentication.getName();
             String subject = "Thông báo đơn hàng #" + order.getId() + " của quý khách đã được tiếp nhận";
-            emailService.sendOrderConfirmationEmail("phucnh203@gmail.com", subject, order);
+            emailService.sendOrderConfirmationEmail(currentUserEmail, subject, order);
             return "redirect:/checkout/success/" + orderId;
         } else if (paymentStatus == 0) {
             model.addAttribute("title", "Đặt hàng thất bại!");
