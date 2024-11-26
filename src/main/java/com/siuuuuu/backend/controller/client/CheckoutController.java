@@ -80,7 +80,7 @@ public class CheckoutController {
                                HttpServletRequest request) {
         String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
         Order order = orderService.createOrder(name, email, address, phone, totalPrice, cartDetailIds, paymentMethod);
-        String paymentUrl = vnPayService.createOrder(totalPrice, order.getId(), baseUrl + "/checkout");
+        String paymentUrl = vnPayService.createOrder(totalPrice, order.getId(), baseUrl + "/checkout", request);
         orderService.updatePaymentUrl(order.getId(), paymentUrl);
         return "redirect:" + paymentUrl;
     }
