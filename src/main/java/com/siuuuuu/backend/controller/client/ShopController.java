@@ -30,8 +30,6 @@ public class ShopController {
 
     ProductService productService;
 
-    SizeService sizeService;
-
     ProductVariantRepository productVariantRepository;
 
     @GetMapping("")
@@ -53,26 +51,33 @@ public class ShopController {
     @GetMapping("/product")
     public String product(@RequestParam("slug") String slug, Model model, @RequestParam("colourId") String colourId) {
         Product product = productService.getProductBySlug(slug);
-        List<ProductImageColour> productImageColours = product.getProductImageColours();
-        List<Size> sizes = sizeService.findAllSize();
-        List<String> imageUrls = new ArrayList<>();
-        for (ProductImageColour productImageColour : productImageColours) {
-            if (productImageColour.getId().equals(colourId)) {
-                for (ProductImage productImage : productImageColour.getProductImages()) {
-                    imageUrls.add(productImage.getImageUrl());
+
+        try{
+            List<ProductImageColour> productImageColours = product.getProductImageColours();
+            List<String> imageUrls = new ArrayList<>();
+            for (ProductImageColour productImageColour : productImageColours) {
+                if (productImageColour.getId().equals(colourId)) {
+                    for (ProductImage productImage : productImageColour.getProductImages()) {
+                        imageUrls.add(productImage.getImageUrl());
+                    }
                 }
             }
+            System.out.println(slug + "---" + colourId);
+            List<ProductVariant> productVariants = productVariantRepository.findAllByProduct_IdAndProductImageColour_IdOrderBySize_NameAsc(product.getId(), colourId);
+
+
+
+            model.addAttribute("title", product.getName());
+            model.addAttribute("imageUrls", imageUrls);
+            model.addAttribute("product", product);
+            model.addAttribute("productVariants", productVariants);
+            model.addAttribute("productImageColours", productImageColours);
+            model.addAttribute("product0", productImageColours.get(0).getProductImages());
+            model.addAttribute("colourSelected", colourId);
+        } catch (Error error) {
+            throw new RuntimeException();
         }
-        System.out.println(slug + "---" + colourId);
-        List<ProductVariant> productVariants = productVariantRepository.findAllByProduct_IdAndProductImageColour_IdOrderBySize_NameAsc(product.getId(), colourId);
-        model.addAttribute("title", product.getName());
-        model.addAttribute("imageUrls", imageUrls);
-        model.addAttribute("product", product);
-        model.addAttribute("sizes", sizes);
-        model.addAttribute("productVariants", productVariants);
-        model.addAttribute("productImageColours", productImageColours);
-        model.addAttribute("product0", productImageColours.get(0).getProductImages());
-        model.addAttribute("colourSelected", colourId);
+
         return "shop/product-detail";
     }
 }
