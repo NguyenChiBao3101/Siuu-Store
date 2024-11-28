@@ -9,6 +9,8 @@ import com.siuuuuu.backend.entity.CartDetail;
 import com.siuuuuu.backend.service.CartService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/cart")
@@ -24,5 +26,18 @@ public class CartController {
         model.addAttribute("title", "Giỏ Hàng");
         model.addAttribute("cartDetails", cartDetails);
         return "cart/index";
+    }
+
+    @RequestMapping("/add")
+    public String addProductToCart(@RequestParam("productVariantId") String productVariantId) {
+        cartService.addProductToCart(productVariantId);
+        return "redirect:/cart";
+    }
+
+    @RequestMapping(value="/update", method = RequestMethod.POST)
+    public String updateProductQuantityInCart(@RequestParam("cartDetailId") String cartDetailId, @RequestParam("quantity") int quantity) {
+        System.out.println("cartDetailId: " + cartDetailId);
+        cartService.updateProductQuantityInCart(cartDetailId, quantity);
+        return "redirect:/cart";
     }
 }

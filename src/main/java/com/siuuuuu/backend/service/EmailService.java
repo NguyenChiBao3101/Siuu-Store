@@ -11,7 +11,8 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
-import java.util.Map;
+import java.util.Locale;
+
 
 @Service
 @RequiredArgsConstructor
@@ -24,12 +25,10 @@ public class EmailService {
     public void sendOrderConfirmationEmail(String to, String subject, Order order) {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
-        System.out.println("Sending email to: " + to);
-        System.out.println(order);
         try {
             helper.setTo(to);
             helper.setSubject(subject);
-            Context context = new Context();
+            Context context = new Context(new Locale("vi", "VN"));
             context.setVariable("order", order);
             String html = templateEngine.process("email/order-confirmation", context);
             helper.setText(html, true);

@@ -117,20 +117,18 @@
                          alt="Product Image" onmouseover="changeMainImage(this.src)"/>
                 </div>
             </div>
-
             <div class="middle">
                 <img th:src="${imageUrls[3]}" class="middle-image" alt="Product Image"/>
             </div>
-
             <div class="right">
                 <h3 class="right-header font-bold" th:text="${product.getName()}"></h3>
                 <p th:text="${#numbers.formatCurrency(productImageColours.get(0).getProduct().getPrice())}"
                    class="right-price font-semibold"></p>
-
                 <div class="right-image-group flex">
                     <div th:each="productImageColour : ${productImageColours}">
                         <a th:href="@{/shop/product(slug=${product.getSlug()}, colourId=${productImageColour.getId()})}"
-                           tabindex="0" th:style="${productImageColour.getId()==colourSelected?'border-color:#e7511a':''}">
+                           tabindex="0"
+                           th:style="${productImageColour.getId()==colourSelected?'border-color:#e7511a':''}">
                             <img th:src="${productImageColour.getProductImages()[3].getImageUrl()}"
                                  class="right-images" alt="Product Image"
                             />
@@ -141,14 +139,17 @@
                 <p class="my-2">Chọn kích cỡ</p>
                 <div class="size-table">
                     <div th:each="productVariant : ${productVariants}">
-                        <p class="size-item" tabindex="0" th:text="${productVariant.getSize().getName()}"></p>
+                        <p class="size-item" tabindex="0" th:text="${productVariant.getSize().getName()}"
+                           th:data-id="${productVariant.getId()}" onclick="selectSize(this)"></p>
                     </div>
-
                 </div>
 
-                <button class="add-card-button">
-                    Thêm vào giỏ hàng
-                </button>
+                <form th:action="@{/cart/add}" method="post">
+                    <input type="hidden" id="productVariantId" name="productVariantId" value=""/>
+                    <button type="submit" class="add-card-button">
+                        Thêm vào giỏ hàng
+                    </button>
+                </form>
 
                 <div class="description">
                     <p th:text="${product.getDescription()}" class="text-justify"></p>
@@ -158,16 +159,15 @@
     </div>
 
     <script>
-        <!--     -->
         function changeMainImage(imageSrc) {
             const mainImage = document.querySelector(".middle-image");
             mainImage.src = imageSrc;
         }
 
-        // function updateImageList(colourId) {
-        //     let leftItemImage = document.querySelector(".left-item div");
-        //     leftItemImage.dataset.id = `${colourId}`;
-        // }
+        function selectSize(element) {
+            const productVariantId = element.getAttribute("data-id");
+            document.getElementById("productVariantId").value = productVariantId;
+        }
     </script>
 </section>
 </body>

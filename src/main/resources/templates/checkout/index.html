@@ -7,7 +7,8 @@
     <div class="container mx-auto my-20">
         <div class="bg-white shadow-md p-4">
             <h2 class="text-2xl font-semibold">Thông tin thanh toán</h2>
-            <form action="/process-checkout" method="post">
+            <form>
+                <input type="hidden" id="csrf-token" name="_csrf" th:value="${_csrf.token}"/>
                 <div class="flex flex-col lg:flex-row gap-4">
                     <!-- Order Information -->
                     <div class="lg:w-1/2">
@@ -109,16 +110,17 @@
             if (document.getElementById('vnpay').checked) {
                 event.preventDefault();
                 const totalPrice = document.getElementById('total').textContent.replace(/\D/g, '');
-                const orderInfo = "Thanh Toan Hoa Don"; // Customize this as needed
                 const name = document.getElementById('name').value;
                 const email = document.getElementById('email').value;
                 const address = document.getElementById('address').value;
                 const phone = document.getElementById('phone').value;
+                const csrfToken = document.getElementById('csrf-token').value;
                 const cartDetailIds = Array.from(document.querySelectorAll('input[name="cartDetailIds"]')).map(input => input.value);
                 const form = document.createElement('form');
-                form.method = 'GET';
-                form.action = '/checkout/vnpay';
-                form.innerHTML = `<input type="hidden" name="totalPrice" value="${totalPrice}">
+                form.method = 'POST';
+                form.action = '/checkout/payment/vnpay';
+                form.innerHTML = `<input type="hidden" name="_csrf" value="${csrfToken}">
+                                  <input type="hidden" name="totalPrice" value="${totalPrice}">
                                   <input type="hidden" name="name" value="${name}">
                                   <input type="hidden" name="email" value="${email}">
                                   <input type="hidden" name="address" value="${address}">
@@ -127,10 +129,31 @@
                                   ${cartDetailIds.map(id => `<input type="hidden" name="cartDetailIds" value="${id}">`).join('')}`;
                 document.body.appendChild(form);
                 form.submit();
+            } else  {
+                event.preventDefault();
+                const totalPrice = document.getElementById('total').textContent.replace(/\D/g, '');
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
+                const address = document.getElementById('address').value;
+                const phone = document.getElementById('phone').value;
+                const csrfToken = document.getElementById('csrf-token').value;
+                const cartDetailIds = Array.from(document.querySelectorAll('input[name="cartDetailIds"]')).map(input => input.value);
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '/checkout/payment/cod';
+                form.innerHTML = `<input type="hidden" name="_csrf" value="${csrfToken}">
+                                  <input type="hidden" name="totalPrice" value="${totalPrice}">
+                                  <input type="hidden" name="name" value="${name}">
+                                  <input type="hidden" name="email" value="${email}">
+                                  <input type="hidden" name="address" value="${address}">
+                                  <input type="hidden" name="phone" value="${phone}">
+                                  <input type="hidden" name="paymentMethod" value="COD">
+                                  ${cartDetailIds.map(id => `<input type="hidden" name="cartDetailIds" value="${id}">`).join('')}`;
+                document.body.appendChild(form);
+                form.submit();
             }
         });
     </script>
 </section>
-
 </body>
 </html>
