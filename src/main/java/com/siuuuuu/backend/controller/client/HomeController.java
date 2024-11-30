@@ -24,29 +24,12 @@ public class HomeController {
     @Autowired
     private ProductImageColourService productImageColourService;
 
-
-
     @GetMapping("/")
     public String home(Model model) {
-
         List<Product> productList = productService.findAllProduct();
-        List<String> imageUrls = new ArrayList<>();
-        for (Product product : productList) {
-            imageUrls.add(productService.getProductThumbnail(product.getProductImageColours().get(0)));
-        }
-
-//  Take image for example
-        List<ProductImageColour> imageColours = productImageColourService.findAllProductImageColours();
-        List<String> imageColourUrls = new ArrayList<>();
-        for (ProductImageColour imageColour : imageColours) {
-            imageColourUrls.add(imageColour.getProductImages().get(0).getImageUrl());
-        }
-        model.addAttribute("imageColourUrls", imageColourUrls);
-        System.out.println(imageUrls);
 
 
-
-        model.addAttribute("imageUrls", imageUrls);
+        model.addAttribute("productList", productList);
         model.addAttribute("title", "Siuu Store");
         return "index";
     }
