@@ -52,7 +52,7 @@ public class ShopController {
     public String product(@RequestParam("slug") String slug, Model model, @RequestParam("colourId") String colourId) {
         Product product = productService.getProductBySlug(slug);
 
-        try{
+        try {
             List<ProductImageColour> productImageColours = product.getProductImageColours();
             List<String> imageUrls = new ArrayList<>();
             for (ProductImageColour productImageColour : productImageColours) {
@@ -64,7 +64,6 @@ public class ShopController {
             }
             System.out.println(slug + "---" + colourId);
             List<ProductVariant> productVariants = productVariantRepository.findAllByProduct_IdAndProductImageColour_IdOrderBySize_NameAsc(product.getId(), colourId);
-
 
 
             model.addAttribute("title", product.getName());

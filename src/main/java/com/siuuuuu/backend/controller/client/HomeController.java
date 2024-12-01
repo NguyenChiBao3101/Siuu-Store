@@ -27,8 +27,7 @@ public class HomeController {
     @GetMapping("/")
     public String home(Model model) {
         List<Product> productList = productService.findAllProduct();
-
-
+        productList = productList.stream().filter(product -> !product.getProductVariants().isEmpty()).toList();
         model.addAttribute("productList", productList);
         model.addAttribute("title", "Siuu Store");
         return "index";

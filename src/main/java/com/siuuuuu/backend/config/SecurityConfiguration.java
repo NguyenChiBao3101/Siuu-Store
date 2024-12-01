@@ -2,6 +2,7 @@ package com.siuuuuu.backend.config;
 
 import com.siuuuuu.backend.entity.Account;
 import com.siuuuuu.backend.repository.AccountRepository;
+import com.siuuuuu.backend.service.CustomOAuth2UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -44,13 +45,23 @@ public class SecurityConfiguration {
      * @throws Exception if an error occurs during configuration
      */
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomOAuth2UserService customOAuth2UserService) throws Exception {
         //CSRF protection and configure request authorization
         http.csrf(Customizer.withDefaults())
                 .authorizeHttpRequests(req -> req
                         .requestMatchers(WHITE_LIST_URL).permitAll()            // Permit requests to the whitelist URLs
                         .requestMatchers("/admin/**").hasAuthority("ADMIN")      // Only users with 'ADMIN' role can access admin routes
                         .anyRequest().authenticated()                           // All other requests require authentication
+                ).oauth2Login(oauth2 -> oauth2
+                        .loginPage("/auth/sign-in")
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(
+                                        customOAuth2UserService
+                                ) // Use your custom service
+                        )
+                        .defaultSuccessUrl("/", true)// Redirect after successful Google login
+
+
                 )
                 // Configure form-based login
                 .formLogin((form) -> form
@@ -93,6 +104,7 @@ public class SecurityConfiguration {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
 
     /**
      * Configures a custom UserDetailsService to load user-specific data.

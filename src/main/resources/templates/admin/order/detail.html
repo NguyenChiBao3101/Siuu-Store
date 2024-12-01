@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/admin.html}">
+<body>
+<section layout:fragment="content">
+    <div class="flex items-center gap-x-2 text-2xl font-bold mb-6">
+        <i class="fa-solid fa-layer-group"></i>
+        <h1>Quản Lý Đơn Hàng</h1>
+    </div>
+    <!-- Timeline -->
+    <div class="w-full bg-white mt-5 p-6 rounded-lg shadow-md">
+        <div class="flex flex-col relative">
+            <div class="absolute left-4 top-28 bottom-0 w-0.5 bg-gray-300"></div>
+            <div class="flex items-center gap-x-2 text-xl font-semibold">
+                <i class="fa-solid fa-history"></i>
+                <p>Theo dõi trạng thái đơn hàng</p>
+            </div>
+            <hr class="my-4">
+            <!-- Step 1 -->
+            <div th:if="${order.getCreatedAt()}" class="flex items-center relative mb-4">
+                <div class="w-8 h-8 rounded-full flex justify-center items-center bg-green-500 text-white">
+                    <i class="fa-solid fa-file-alt"></i>
+                </div>
+                <div class="flex-1 ml-4">
+                    <h3 class="text-lg font-semibold">Đã tạo đơn hàng</h3>
+                    <p class="text-sm text-gray-500">Đơn hàng đã được tạo</p>
+                    <p class="text-sm text-gray-400">
+                        <span th:text="${#temporals.format(order.getCreatedAt(), 'dd-MM-yyyy HH:mm:ss')}"></span>
+                    </p>
+                </div>
+            </div>
+            <!-- Loop through order histories and check condition-->
+            <div th:each="history : ${order.getOrderHistories()}">
+                <div th:if="${history.getStatus().name() == 'CONFIRMED'}" class="flex items-center relative mb-4">
+                    <div class="w-8 h-8 rounded-full flex justify-center items-center bg-blue-500 text-white">
+                        <i class="fa-solid fa-check-circle"></i>
+                    </div>
+                    <div class="flex-1 ml-4">
+                        <h3 class="text-lg font-semibold">Đã xác nhận</h3>
+                        <p class="text-sm text-gray-500">Đơn hàng đã được xác nhận</p>
+                        <p class="text-sm text-gray-400">
+                            <span th:text="${#temporals.format(history.getCreatedAt(), 'dd-MM-yyyy HH:mm:ss')}"></span>
+                        </p>
+                    </div>
+                </div>
+                <div th:if="${history.getStatus().name() == 'SHIPPING'}" class="flex items-center relative mb-4">
+                    <div class="w-8 h-8 rounded-full flex justify-center items-center bg-yellow-500 text-white">
+                        <i class="fa-solid fa-truck"></i>
+                    </div>
+                    <div class="flex-1 ml-4">
+                        <h3 class="text-lg font-semibold">Đang vận chuyển</h3>
+                        <p class="text-sm text-gray-500">Đơn hàng đang được giao bởi đơn vị vận chuyển</p>
+                        <p class="text-sm text-gray-400">
+                            <span th:text="${#temporals.format(history.getCreatedAt(), 'dd-MM-yyyy HH:mm:ss')}"></span>
+                        </p>
+                    </div>
+                </div>
+                <div th:if="${history.getStatus().name() == 'COMPLETED'}" class="flex items-center relative mb-4">
+                    <div class="w-8 h-8 rounded-full flex justify-center items-center bg-green-500 text-white">
+                        <i class="fa-solid fa-check"></i>
+                    </div>
+                    <div class="flex-1 ml-4">
+                        <h3 class="text-lg font-semibold">Hoàn thành</h3>
+                        <p class="text-sm text-gray-500">Đơn hàng đã được giao thành công</p>
+                        <p class="text-sm text-gray-400">
+                            <span th:text="${#temporals.format(history.getCreatedAt(), 'dd-MM-yyyy HH:mm:ss')}"></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div th:if="${order.getStatus().name() == 'CANCELLED'}" class="flex items-center relative mb-4">
+                <div class="w-8 h-8 rounded-full flex justify-center items-center bg-red-500 text-white">
+                    <i class="fa-solid fa-times-circle"></i>
+                </div>
+                <div class="flex-1 ml-4">
+                    <h3 class="text-lg font-semibold">Đã hủy</h3>
+                    <p class="text-sm text-gray-500">Đơn hàng đã bị hủy</p>
+                    <p class="text-sm text-gray-400">
+                        <span th:text="${#temporals.format(order.getCanceledDate(), 'dd-MM-yyyy HH:mm:ss')}"></span>
+                    </p>
+                </div>
+            </div>
+
+        </div>
+        <!-- Action Buttons -->
+        <div th:if="${order.getStatus().name() == 'PENDING'}" class="flex justify-end mt-6 gap-3">
+            <form th:action="@{/admin/order/confirm/{id}(id=${order.getId()})}" method="post">
+                <button class="bg-blue-500 hover:bg-blue-600 text-white font-medium px-5 py-2 rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    Xác Nhận Đơn Hàng
+                </button>
+            </form>
+            <form th:action="@{/admin/order/cancel/{id}(id=${order.getId()})}" method="post">
+                <button class="bg-red-500 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 ml-2">
+                    Hủy Đơn Hàng
+                </button>
+            </form>
+        </div>
+        <div th:if="${order.getStatus().name() == 'CONFIRMED'}" class="flex justify-end mt-6 gap-3">
+            <form th:action="@{/admin/order/shipping/{id}(id=${order.getId()})}" method="post">
+                <button class="bg-blue-500 hover:bg-blue-600 text-white font-medium px-5 py-2 rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    Vận chuyển
+                </button>
+            </form>
+        </div>
+        <div th:if="${order.getStatus().name() == 'SHIPPING'}" class="flex justify-end mt-6 gap-3">
+            <form th:action="@{/admin/order/complete/{id}(id=${order.getId()})}"
+                  method="post">
+                <button class="bg-blue-500 hover:bg-blue-600 text-white font-medium px-5 py-2 rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    Hoàn thành
+                </button>
+            </form>
+        </div>
+    </div>
+    <!-- Payment information Table -->
+    <div class="w-full bg-white mt-5 p-6 rounded-lg shadow-md">
+        <div class="flex flex-col">
+            <div class="flex items-center gap-x-2 text-xl font-semibold">
+                <i class="fa-solid fa-credit-card"></i>
+                <p>Thông tin thanh toán</p>
+            </div>
+            <hr class="my-4">
+            <table class="w-full text-left">
+                <tbody>
+                <tr class="border-b">
+                    <th class="py-3 px-4 text-gray-600">Mã Giao Dịch</th>
+                    <td class="py-3 px-4 text-gray-800" th:text="${order.getVnpayTransactionNo()}"></td>
+                </tr>
+                <tr class="border-b">
+                    <th class="py-3 px-4 text-gray-600">Hình Thức Thanh Toán</th>
+                    <td class="py-3 px-4">
+                        <span th:if="${order.getPaymentMethod().name() == 'COD'}">Thanh toán khi nhận hàng</span>
+                        <span th:if="${order.getPaymentMethod().name() == 'VN_PAY'}">Thanh toán bằng VNPay</span>
+                    </td>
+                </tr>
+                <tr class="border-b">
+                    <th class="py-3 px-4 text-gray-600">Trạng Thái Thanh Toán</th>
+                    <td class="py-3 px-4">
+                        <span th:if="${order.getPaymentStatus().name() == 'PENDING'}"
+                              class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full">Chờ thanh toán</span>
+                        <span th:if="${order.getPaymentStatus().name() == 'PAID'}"
+                              class="bg-green-100 text-green-800 px-3 py-1 rounded-full">Đã thanh toán</span>
+                        <span th:if="${order.getPaymentStatus().name() == 'UNPAID'}"
+                              class="bg-red-100 text-red-800 px-3 py-1 rounded-full">Chưa thanh toán</span>
+                    </td>
+                </tr>
+                <tr class="border-b">
+                    <th class="py-3 px-4 text-gray-600">Ngày Thanh Toán</th>
+                    <td class="py-3 px-4"
+                        th:text="${#temporals.format(order.getPaymentDate(), 'dd-MM-yyyy HH:mm:ss')}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- Order Details -->
+    <div class="w-full bg-white mt-5 p-6 rounded-lg shadow-md">
+        <div class="flex flex-col">
+            <div class="flex items-center gap-x-2 text-xl font-semibold">
+                <i class="fa-solid fa-info-circle"></i>
+                <p>Thông Tin Đơn Hàng </p>
+            </div>
+            <hr class="my-4">
+            <table class="w-full text-left">
+                <tbody>
+                <tr class="border-b">
+                    <th class="py-3 px-4 text-gray-600">Mã Đơn Hàng</th>
+                    <td class="py-3 px-4 text-gray-800" th:text="${order.getId()}"></td>
+                </tr>
+                <tr class="border-b">
+                    <th class="py-3 px-4 text-gray-600">Tên Khách Hàng</th>
+                    <td class="py-3 px-4 text-gray-800" th:text="${order.getShippingName()}"></td>
+                </tr>
+                <tr class="border-b">
+                    <th class="py-3 px-4 text-gray-600">Số Điện Thoại</th>
+                    <td class="py-3 px-4 text-gray-800" th:text="${order.getShippingPhone()}"></td>
+                </tr>
+                <tr class="border-b">
+                    <th class="py-3 px-4 text-gray-600">Ngày Đặt Hàng</th>
+                    <td class="py-3 px-4 text-gray-800"
+                        th:text="${#temporals.format(order.getCreatedAt(), 'dd-MM-yyyy HH:mm:ss')}"></td>
+                </tr>
+                <tr class="border-b">
+                    <th class="py-3 px-4 text-gray-600">Địa Chỉ Giao Hàng</th>
+                    <td class="py-3 px-4 text-gray-800" th:text="${order.getShippingAddress()}"></td>
+                </tr>
+                <tr class="border-b">
+                    <th class="py-3 px-4 text-gray-600">Ngày Giao Hàng Dự Kiến</th>
+                    <td class="py-3 px-4 text-gray-800"></td>
+                </tr>
+                <tr class="border-b">
+                    <th class="py-3 px-4 text-gray-600">Trạng Thái</th>
+                    <td class="py-3 px-4">
+                        <span th:if="${order.getStatus().name() == 'PENDING'}"
+                              class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full">Đang chờ xác nhận</span>
+                        <span th:if="${order.getStatus().name() == 'CONFIRMED'}"
+                              class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full">Đã xác nhận</span>
+                        <span th:if="${order.getStatus().name() == 'SHIPPING'}"
+                              class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full">Đang giao hàng</span>
+                        <span th:if="${order.getStatus().name() == 'COMPLETED'}"
+                              class="bg-green-100 text-green-800 px-3 py-1 rounded-full">Hoàn Thành</span>
+                        <span th:if="${order.getStatus().name() == 'CANCELLED'}"
+                              class="bg-red-100 text-red-800 px-3 py-1 rounded-full">Đã Hủy</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- Order Items -->
+    <div class="w-full bg-white mt-5 p-6 rounded-lg shadow-md">
+        <div class="flex flex-col">
+            <div class="flex items-center gap-x-2 text-xl font-semibold">
+                <i class="fa-solid fa-box"></i>
+                <p>Thông tin sản phẩm đã mua</p>
+            </div>
+            <hr class="my-4">
+
+            <table class="w-full text-left">
+                <thead>
+                <tr class="border-b">
+                    <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#e4641a] rounded-tl-lg">
+                        Sản Phẩm
+                    </th>
+                    <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#e4641a]">Size</th>
+                    <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#e4641a]">Số
+                        Lượng
+                    </th>
+                    <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#e4641a]">Giá Bán
+                    </th>
+                    <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#e4641a] rounded-tr-lg">
+                        Thành Tiền
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item : ${order.getOrderDetails()}">
+                    <td class="py-3 px-4 border-b">
+                        <!--Include product image and name-->
+                        <div class="flex items-center gap-x-2">
+                            <img class="w-12 h-12 object-cover rounded-md"
+                                 th:src="@{${item.getProductVariant().getProductImageColour().getProductImages().get(0).getImageUrl()}}"
+                                 alt="product-image">
+                            <span th:text="${item.getProductVariant().getProduct().getName()}"></span>
+                        </div>
+                    </td>
+                    <td class="py-3 px-4 border-b" th:text="${item.getProductVariant().getSize().getName()}"></td>
+                    <td class="py-3 px-4 border-b" th:text="${item.getQuantity()}"></td>
+                    <td class="py-3 px-4 border-b"
+                        th:text="${#numbers.formatCurrency(item.getProductVariant().getProduct().getPrice())}"></td>
+                    <td class="py-3 px-4 border-b"
+                        th:text="${#numbers.formatCurrency(
+                        item.getQuantity() * item.getProductVariant().getProduct().getPrice()
+                        )}"></td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="flex justify-end mt-4">
+                <div>
+                    <table class="w-full text-left">
+                        <tr>
+                            <th class="py-3 px-4">Tổng Tiền Hàng:</th>
+                            <td class="py-3 px-4 text-right"
+                                th:text="${#numbers.formatCurrency(order.getTotalPrice())}"></td>
+                        </tr>
+                        <tr>
+                            <th class="py-3 px-4">Phí Vận Chuyển:</th>
+                            <td class="py-3 px-4 text-right"
+                                th:text="${#numbers.formatCurrency(order.getShippingFee())}"></td>
+                        </tr>
+                        <tr>
+                            <th class="py-3 px-4">Giảm Giá:</th>
+                            <td class="py-3 px-4 text-right"
+                                th:text="${#numbers.formatCurrency(order.getDiscount())}"></td>
+                        </tr>
+                        <tr>
+                            <th class="py-3 px-4">Tổng Thanh Toán:</th>
+                            <td class="py-3 px-4 text-right"
+                                th:text="${#numbers.formatCurrency(order.getTotalPrice() + order.getShippingFee() - order.getDiscount())}"></td>
+                        </tr>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</section>
+</body>
+</html>

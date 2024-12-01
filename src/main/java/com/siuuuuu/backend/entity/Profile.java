@@ -2,6 +2,7 @@ package com.siuuuuu.backend.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -20,6 +21,7 @@ public class Profile {
 
     @OneToOne(fetch = FetchType.LAZY) // Mỗi Profile chỉ liên kết với một Account
     @JoinColumn(name = "account_id", nullable = false, unique = true) // account_id là khóa ngoại, unique để đảm bảo 1-1
+    @ToString.Exclude
     private Account account;
 
     @Column(name = "first_name", nullable = false)

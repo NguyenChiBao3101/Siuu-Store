@@ -19,5 +19,10 @@ public enum PaymentStatus {
     /**
      * Payment is pending.
      */
-    PENDING
+    PENDING,
+
+    /**
+     * Payment has expired.
+     */
+    EXPIRED
 }

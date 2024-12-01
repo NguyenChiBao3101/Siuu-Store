@@ -15,7 +15,6 @@ import java.util.List;
 @Data
 @Entity
 @Builder
-@ToString(exclude = "orderDetails")
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "`order`")
@@ -34,13 +33,6 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "customer_id", referencedColumnName = "id")
     private Account customer;
-
-    /**
-     * The user that confirmed the order.
-     */
-    @ManyToOne
-    @JoinColumn(name = "confirmed_by", referencedColumnName = "id")
-    private Account confirmedBy;
 
     /**
      * The total price of the order.
@@ -100,6 +92,12 @@ public class Order {
     private String paymentUrl;
 
     /**
+     * The payment expiration date.
+     */
+    @Column(name = "payment_expiration_date")
+    private LocalDateTime paymentExpirationDate;
+
+    /**
      * The shipping address for the order.
      */
     @Column(name = "shipping_address", nullable = false)
@@ -130,40 +128,16 @@ public class Order {
     private String shippingNote;
 
     /**
-     * The date when the order was confirmed.
-     */
-    @Column(name = "confirmation_date")
-    private LocalDateTime confirmationDate;
-
-    /**
      * The date when the order will be received.
      */
     @Column(name = "receive_date")
     private LocalDateTime receiveDate;
 
     /**
-     * The date when the order was delivered to the shipping company.
-     */
-    @Column(name = "shipping_date")
-    private LocalDateTime shippingDate;
-
-    /**
-     * The date when the order was completed.
-     */
-    @Column(name = "completed_date")
-    private LocalDateTime completedDate;
-
-    /**
      * The date when the order was canceled.
      */
     @Column(name = "canceled_date")
     private LocalDateTime canceledDate;
-
-    /**
-     * Reason for canceling the order.
-     */
-    @Column(name = "cancel_reason")
-    private String cancelReason;
 
     /**
      * The date when the order was created.
@@ -183,7 +157,16 @@ public class Order {
      * The list of items in the order.
      */
     @OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<OrderDetail> orderDetails;
+
+    /**
+     * The list of histories for the order.
+     */
+    @OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
+    @ToString.Exclude
+    private List<OrderHistory> orderHistories;
 
     /**
      * Sets the default status of the order to TAO_HOA_DON before persisting.

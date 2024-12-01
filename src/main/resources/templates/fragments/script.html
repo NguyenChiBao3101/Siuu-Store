@@ -9,27 +9,46 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script th:src="@{/assets/js/owl.carousel.min.js}"></script>
     <script>
-        $(document).ready(function(){
-            $(".owl-carousel").owlCarousel({
-                items : 1,
-                loop : true,
-                autoplay : true,
-                autoplayTimeout : 3000,
-                autoplayHoverPause : true,
-                dots : true,
+        $(document).ready(function () {
+            $(".banner").owlCarousel({
+                items: 1,
+                loop: true,
+                autoplay: true,
+                autoplayTimeout: 3000,
+                autoplayHoverPause: true,
+                dots: true,
+            });
+            $('.product-slider').owlCarousel({
+                loop: true,
+                autoplay: true,
+                autoplayTimeout: 3000,
+                autoplayHoverPause: true,
+                margin: 10,
+                dots: true,
+                responsive: {
+                    0: {
+                        items: 1
+                    },
+                    600: {
+                        items: 3
+                    },
+                    1000: {
+                        items: 5
+                    },
+                }
             });
         });
     </script>
     <!-- Thêm Flatpickr JS -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
             //console.log("DOM fully loaded and parsed");
 
             flatpickr("#date_of_birth", {
                 dateFormat: "d-m-Y",
                 maxDate: "today",
-                onReady: function() {
+                onReady: function () {
                     //console.log("Flatpickr initialized");
                 }
             });
@@ -37,82 +56,82 @@
     </script>
 
     <!--    <script>-->
-<!--        document.addEventListener("DOMContentLoaded", function () {-->
-<!--            const form = document.querySelector('#signup-form');-->
+    <!--        document.addEventListener("DOMContentLoaded", function () {-->
+    <!--            const form = document.querySelector('#signup-form');-->
 
-<!--            form.addEventListener('submit', function (event) {-->
-<!--                let valid = true;-->
+    <!--            form.addEventListener('submit', function (event) {-->
+    <!--                let valid = true;-->
 
-<!--                // Kiểm tra trường họ-->
-<!--                const firstName = document.getElementById('first_name');-->
-<!--                if (firstName.value.trim() === "") {-->
-<!--                    valid = false;-->
-<!--                    document.getElementById('firstNameError').innerText = "Trường này không được để trống.";-->
-<!--                } else {-->
-<!--                    document.getElementById('firstNameError').innerText = "";-->
-<!--                }-->
+    <!--                // Kiểm tra trường họ-->
+    <!--                const firstName = document.getElementById('first_name');-->
+    <!--                if (firstName.value.trim() === "") {-->
+    <!--                    valid = false;-->
+    <!--                    document.getElementById('firstNameError').innerText = "Trường này không được để trống.";-->
+    <!--                } else {-->
+    <!--                    document.getElementById('firstNameError').innerText = "";-->
+    <!--                }-->
 
-<!--                // Kiểm tra trường tên-->
-<!--                const lastName = document.getElementById('last_name');-->
-<!--                if (lastName.value.trim() === "") {-->
-<!--                    valid = false;-->
-<!--                    document.getElementById('lastNameError').innerText = "Trường này không được để trống.";-->
-<!--                } else {-->
-<!--                    document.getElementById('lastNameError').innerText = "";-->
-<!--                }-->
+    <!--                // Kiểm tra trường tên-->
+    <!--                const lastName = document.getElementById('last_name');-->
+    <!--                if (lastName.value.trim() === "") {-->
+    <!--                    valid = false;-->
+    <!--                    document.getElementById('lastNameError').innerText = "Trường này không được để trống.";-->
+    <!--                } else {-->
+    <!--                    document.getElementById('lastNameError').innerText = "";-->
+    <!--                }-->
 
-<!--                // Kiểm tra ngày sinh-->
-<!--                const dateOfBirth = document.getElementById('date_of_birth');-->
-<!--                const datePattern = /^\d{2}\/\d{2}\/\d{4}$/; // định dạng dd/mm/yyyy-->
-<!--                if (dateOfBirth.value.trim() === "") {-->
-<!--                    valid = false;-->
-<!--                    document.getElementById('dateOfBirthError').innerText = "Trường này không được để trống.";-->
-<!--                } else if (!datePattern.test(dateOfBirth.value.trim())) {-->
-<!--                    valid = false;-->
-<!--                    document.getElementById('dateOfBirthError').innerText = "Ngày sinh không đúng định dạng (dd/mm/yyyy).";-->
-<!--                } else {-->
-<!--                    document.getElementById('dateOfBirthError').innerText = "";-->
-<!--                }-->
+    <!--                // Kiểm tra ngày sinh-->
+    <!--                const dateOfBirth = document.getElementById('date_of_birth');-->
+    <!--                const datePattern = /^\d{2}\/\d{2}\/\d{4}$/; // định dạng dd/mm/yyyy-->
+    <!--                if (dateOfBirth.value.trim() === "") {-->
+    <!--                    valid = false;-->
+    <!--                    document.getElementById('dateOfBirthError').innerText = "Trường này không được để trống.";-->
+    <!--                } else if (!datePattern.test(dateOfBirth.value.trim())) {-->
+    <!--                    valid = false;-->
+    <!--                    document.getElementById('dateOfBirthError').innerText = "Ngày sinh không đúng định dạng (dd/mm/yyyy).";-->
+    <!--                } else {-->
+    <!--                    document.getElementById('dateOfBirthError').innerText = "";-->
+    <!--                }-->
 
-<!--                // Kiểm tra email-->
-<!--                const email = document.getElementById('email');-->
-<!--                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;-->
-<!--                if (email.value.trim() === "") {-->
-<!--                    valid = false;-->
-<!--                    document.getElementById('emailError').innerText = "Trường này không được để trống.";-->
-<!--                } else if (!emailPattern.test(email.value.trim())) {-->
-<!--                    valid = false;-->
-<!--                    document.getElementById('emailError').innerText = "Email không hợp lệ.";-->
-<!--                } else {-->
-<!--                    document.getElementById('emailError').innerText = "";-->
-<!--                }-->
+    <!--                // Kiểm tra email-->
+    <!--                const email = document.getElementById('email');-->
+    <!--                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;-->
+    <!--                if (email.value.trim() === "") {-->
+    <!--                    valid = false;-->
+    <!--                    document.getElementById('emailError').innerText = "Trường này không được để trống.";-->
+    <!--                } else if (!emailPattern.test(email.value.trim())) {-->
+    <!--                    valid = false;-->
+    <!--                    document.getElementById('emailError').innerText = "Email không hợp lệ.";-->
+    <!--                } else {-->
+    <!--                    document.getElementById('emailError').innerText = "";-->
+    <!--                }-->
 
-<!--                // Kiểm tra mật khẩu-->
-<!--                const password = document.getElementById('password');-->
-<!--                const confirmPassword = document.getElementById('confirm_password');-->
-<!--                if (password.value.trim() === "") {-->
-<!--                    valid = false;-->
-<!--                    document.getElementById('passwordError').innerText = "Trường này không được để trống.";-->
-<!--                } else {-->
-<!--                    document.getElementById('passwordError').innerText = "";-->
-<!--                }-->
+    <!--                // Kiểm tra mật khẩu-->
+    <!--                const password = document.getElementById('password');-->
+    <!--                const confirmPassword = document.getElementById('confirm_password');-->
+    <!--                if (password.value.trim() === "") {-->
+    <!--                    valid = false;-->
+    <!--                    document.getElementById('passwordError').innerText = "Trường này không được để trống.";-->
+    <!--                } else {-->
+    <!--                    document.getElementById('passwordError').innerText = "";-->
+    <!--                }-->
 
-<!--                // Kiểm tra xác nhận mật khẩu-->
-<!--                if (confirmPassword.value.trim() === "") {-->
-<!--                    valid = false;-->
-<!--                    document.getElementById('confirmPasswordError').innerText = "Trường này không được để trống.";-->
-<!--                } else if (password.value !== confirmPassword.value) {-->
-<!--                    valid = false;-->
-<!--                    document.getElementById('confirmPasswordError').innerText = "Mật khẩu không khớp.";-->
-<!--                } else {-->
-<!--                    document.getElementById('confirmPasswordError').innerText = "";-->
-<!--                }-->
+    <!--                // Kiểm tra xác nhận mật khẩu-->
+    <!--                if (confirmPassword.value.trim() === "") {-->
+    <!--                    valid = false;-->
+    <!--                    document.getElementById('confirmPasswordError').innerText = "Trường này không được để trống.";-->
+    <!--                } else if (password.value !== confirmPassword.value) {-->
+    <!--                    valid = false;-->
+    <!--                    document.getElementById('confirmPasswordError').innerText = "Mật khẩu không khớp.";-->
+    <!--                } else {-->
+    <!--                    document.getElementById('confirmPasswordError').innerText = "";-->
+    <!--                }-->
 
-<!--                // Ngăn chặn form gửi nếu có lỗi-->
-<!--                if (!valid) {-->
-<!--                    event.preventDefault();-->
-<!--                }-->
-<!--            });-->
-<!--        });-->
-<!--    </script>-->
+    <!--                // Ngăn chặn form gửi nếu có lỗi-->
+    <!--                if (!valid) {-->
+    <!--                    event.preventDefault();-->
+    <!--                }-->
+    <!--            });-->
+    <!--        });-->
+    <!--    </script>-->
 </div>

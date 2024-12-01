@@ -48,8 +48,16 @@
                             Bạn chưa có tài khoản?
                             <a th:href="@{/auth/sign-up}" class="text-orange-600">Đăng Ký</a>
                         </div>
-
                     </form>
+                </div>
+                <div class="mt-4">
+                    <!-- Login with google -->
+                    <a th:href="@{/oauth2/authorization/google}"
+                       class="flex items-center justify-center bg-white border border-gray-300 rounded-lg shadow-md py-2">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg"
+                             alt="Google" class="w-6 h-6 mr-2"/>
+                        <span class="text-gray-700 font-semibold">Đăng nhập với Google</span>
+                    </a>
                 </div>
             </div>
         </div>

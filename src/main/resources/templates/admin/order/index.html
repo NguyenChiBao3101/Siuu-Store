@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/admin.html}">
+<body>
+<section layout:fragment="content">
+    <div class="flex items-center gap-x-2 text-2xl font-bold mb-6">
+        <i class="fa-solid fa-layer-group"></i>
+        <h1>Quản Lý Đơn Hàng</h1>
+    </div>
+    <div class="w-full bg-white mt-5 p-6 rounded-lg shadow-md">
+        <div class="flex items-center gap-x-2 text-xl font-semibold mb-4">
+            <i class="fa-solid fa-filter"></i>
+            <p>Bộ lọc</p>
+        </div>
+        <hr class="my-4">
+        <div class="mb-6">
+            <label for="orderId" class="block text-sm font-medium text-gray-600 mb-2">Tìm kiếm theo mã đơn hàng:</label>
+            <div class="relative">
+                <i class="fa-solid fa-search absolute top-1/2 left-3 -translate-y-1/2 text-gray-400"></i>
+                <input type="text"
+                       id="orderId"
+                       class="w-full border border-gray-300 rounded-lg py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                       placeholder="Nhập mã đơn hàng" name="orderId">
+            </div>
+        </div>
+
+        <!-- Filter by Date Range -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label for="startDate" class="block text-sm font-medium text-gray-600 mb-2">Ngày bắt đầu:</label>
+                <input type="date"
+                       id="startDate"
+                       class="w-full border border-gray-300 rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                       name="startDate">
+            </div>
+            <div>
+                <label for="endDate" class="block text-sm font-medium text-gray-600 mb-2">Ngày kết thúc:</label>
+                <input type="date"
+                       id="endDate"
+                       class="w-full border border-gray-300 rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                       name="endDate">
+            </div>
+        </div>
+
+        <!-- Button Actions -->
+        <div class="flex justify-end mt-6 gap-3">
+            <button class="bg-blue-500 hover:bg-blue-600 text-white font-medium px-5 py-2 rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                Lọc
+            </button>
+            <button class="bg-red-500 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 ml-2">
+                Làm mới
+            </button>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="w-full bg-white mt-5 p-2.5 rounded-md shadow-md">
+        <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-x-2 text-xl font-semibold">
+                <i class="fa-solid fa-table-list"></i>
+                <p>Danh Sách Đơn Hàng</p>
+            </div>
+        </div>
+        <hr class="mb-4">
+
+        <table class="w-full table-auto border-collapse">
+            <thead class="bg-gray-100">
+            <tr>
+                <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#e4641a] rounded-tl-lg">
+                    STT
+                </th>
+                <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#e4641a]">Mã đơn hàng</th>
+                <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#e4641a]">Tên khách hàng
+                </th>
+                <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#e4641a]">Ngày đặt hàng
+                </th>
+                <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#e4641a]">Tổng tiền</th>
+                <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#e4641a]">Trạng thái</th>
+                <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#e4641a] rounded-tr-lg">
+                    Hành động
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="order, iterStat : ${orders}">
+                <td class="py-3 px-4 text-left border-b">
+                    <span th:text="${iterStat.count}"></span>
+                </td>
+                <td class="py-3 px-4 text-left border-b">
+                    <span th:text="${order.id}"></span>
+                </td>
+                <td class="py-3 px-4 text-left border-b">
+                    <span th:text="${order.getShippingName()}"></span>
+                </td>
+                <td class="py-3 px-4 text-left border-b">
+                    <span th:text="${#temporals.format(order.getCreatedAt(), 'dd-MM-yyyy HH:mm:ss')}"></span>
+                </td>
+                <td class="py-3 px-4 text-left border-b">
+                    <span th:text="${#numbers.formatCurrency(order.getTotalPrice())}"></span>
+                </td>
+                <td th:switch="${order.status.toString()}" class="py-3 px-4 text-left border-b">
+                    <!--Pending-->
+                    <span th:case="PENDING"
+                          class="bg-yellow-500 text-white px-2 py-1 rounded-lg">Đang chờ xác nhận</span>
+                    <!--Confirmed-->
+                    <span th:case="CONFIRMED" class="bg-blue-500 text-white px-2 py-1 rounded-lg">Đã xác nhận</span>
+                    <!-- WAITING_FOR_SHIPMENT -->
+                    <span th:case="WAITING_FOR_SHIPMENT" class="bg-blue-500 text-white px-2 py-1 rounded-lg">Chờ giao hàng</span>
+                    <!-- SHIPPING -->
+                    <span th:case="SHIPPING" class="bg-blue-500 text-white px-2 py-1 rounded-lg">Đang giao hàng</span>
+                    <!-- COMPLETED -->
+                    <span th:case="COMPLETED" class="bg-green-500 text-white px-2 py-1 rounded-lg">Hoàn thành</span>
+                    <!-- CANCELED -->
+                    <span th:case="CANCELLED" class="bg-red-500 text-white px-2 py-1 rounded-lg">Đã hủy</span>
+                </td>
+                <td class="py-3 px-4 border-b gap-2">
+                    <!--View-->
+                    <a th:href="${'/admin/order/detail/' + order.getId()}"
+                       class="bg-[#ff9900] text-white px-2 py-1 rounded-lg shadow"
+                       href="#">
+                        <i class="fa-solid fa-eye"></i>
+                    </a>
+                </td>
+            <tr th:if="${#lists.isEmpty(orders)}">
+                <td colspan="7" class="py-3 px-4 text-center">Không có dữ liệu để hiển thị.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+</body>
+</html>
