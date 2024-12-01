@@ -1,5 +1,6 @@
 stages:
   - build
+  - sonarqube-check
   - deploy
 
 variables:
@@ -19,6 +20,21 @@ build:
     expire_in: 1 week
   tags:
     - siuu-shop-shell
+  only:
+    - main
+
+sonarqube-check:
+  image: maven:3.6.3-jdk-11
+  variables:
+    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
+    GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
+  cache:
+    key: "${CI_JOB_NAME}"
+    paths:
+      - .sonar/cache
+  script:
+    - mvn verify sonar:sonar -Dsonar.projectKey=siuuuuu_backend_AZOCXqutQeM2xImMXHjB
+  allow_failure: true
   only:
     - main
 
