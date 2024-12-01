@@ -15,6 +15,7 @@ import com.siuuuuu.backend.repository.ProductRepository;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -101,5 +102,16 @@ public class ProductService {
         if (Objects.nonNull(imageUrls)) {
             imageUrls.forEach(imageUrl -> productImageService.createProductImage(productImageColour.getId(), imageUrl));
         }
+    }
+
+    public String getProductThumbnail(ProductImageColour productImageColour) {
+        List<ProductImage> images = new ArrayList<>();
+        if (productImageColour != null) {
+            images = productImageColour.getProductImages();
+        }
+        if (images == null || images.isEmpty()) {
+            return "assets/image/shop/sh.jpg";
+        }
+        return images.get(0).getImageUrl();
     }
 }

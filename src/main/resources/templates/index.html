@@ -3,6 +3,131 @@
       layout:decorate="~{/layout/customer.html}">
 <body>
 <section layout:fragment="content">
+    <style>
+        .container-2{
+            background-color: #c2c0c1;
+            margin: 20px 0;
+        }
+
+        #slogan{
+            font-family: "Helvetica Now Text Medium", Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 460px;
+            text-transform: uppercase;
+        }
+
+        #slogan a:hover{
+            background-color: black;
+            color: white;
+        }
+
+        #slogan a:hover span:hover{
+            color: #6c6c6c;
+        }
+
+        .slogan__content-1,
+        .slogan__content-2{
+            font-size: 48px;
+            font-weight: bolder;
+        }
+
+        .slogan__content-2{
+            font-size: 24px;
+        }
+
+        .container-3{
+            /*margin-bottom: 50px;*/
+            padding: 0 130px;
+        }
+
+        .container-3 h2{
+            font-family: "Helvetica Now Text Medium", Helvetica, Arial, sans-serif;
+            width: fit-content;
+            font-size: 25px;
+            padding-left: 100px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            border-left: 4px solid black;
+        }
+
+        .container-3 h2:hover{
+            color: #e95218;
+            border-left: 4px solid #e95218;
+        }
+        .new-product__slider{
+            width: 100%;
+            max-width: 1260px;
+            overflow: hidden;
+        }
+        .slider{
+            gap: 28px;
+            transition: transform 0.5s ease-in-out;
+
+        }
+        .slider img {
+            min-width: 200px;
+            flex-shrink: 0;
+        }
+
+        .container-4{
+            width: 100%;
+            padding: 0 130px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .container-4__left,
+        .container-4__right{
+            position: relative;
+        }
+
+        .image-container{
+            width: 630px;
+            height: 330px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .image-container:hover{
+            filter: brightness(70%);
+        }
+
+        .container-4__left-image,
+        .container-4__right-image{
+            width: auto;
+            height: auto;
+            position: absolute;
+            transition: transform 0.3s ease;
+        }
+
+        .container-4__left-body,
+        .container-4__right-body{
+            font-family: "Helvetica Now Text Medium", Helvetica, Arial, sans-serif;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+        }
+
+        .container-4__left-body-slogan,
+        .container-4__right-body-slogan{
+            font-size: 30px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .container-4__left-body-subtext,
+        .container-4__right-body-subtext{
+            font-size: 20px;
+            margin-top: 10px;
+        }
+    </style>
     <div class="container">
         <div class="owl-carousel owl-theme">
             <div class="item">
@@ -92,6 +217,156 @@
             </div>
         </div>
     </div>
+    <div class="container-2">
+        <div id="slogan">
+            <p class="slogan__content-1">Tạo dấu ấn của riêng bạn!</p>
+            <p class="slogan__content-2">Tiện lợi - đơn giản - nhanh chóng.</p>
+            <a th:href="@{/shop}"
+               class="block bg-[#c2c0c1] border-black border
+               px-8 py-2 rounded-3xl mt-3 w-fit"><span>Khám Phá Ngay</span></a>
+        </div>
+    </div>
+    <div class="container-3 mt-1">
+        <a href="#"><h2>Sản phẩm mới nhất</h2></a>
+        <div class="new-product__slider">
+            <div class="slider flex">
+                <div th:each="product : ${productList}">
+                    <a th:href="@{/shop/product(slug=${product.slug}, colourId=${product.getProductImageColours().get(0).getId()})}"    >
+                        <figure class="product-media">
+                            <img th:src="${product.getProductImageColours().get(0).getProductImages().get(0).getImageUrl()}"
+                                 alt="Product Image">
+                        </figure>
+                        <div class="product-body">
+                            <h3 class="product-title" th:text="${product.getName()}">
+                            </h3>
+                            <p class="product-price"
+                               th:text="${#numbers.formatCurrency(product.getPrice())}">
+                            </p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr class="mt-2 mb-3 mx-[130px]">
+    <div class="container-4">
+        <div class="container-4__left">
+            <div class="image-container">
+                <img src="https://pos.nvncdn.com/be3294-43017/art/artCT/20230630_BmWdCKtv.jpg" class="container-4__left-image" alt="left-image" />
+            </div>
+            <div class="container-4__left-body">
+                <p class="container-4__left-body-slogan">Xu hướng thời trang</p>
+                <hr>
+                <p class="container-4__left-body-subtext">Đầu tư cho vẻ đẹp của bạn</p>
+            </div>
+        </div>
+        <div class="container-4__right">
+            <div class="image-container">
+                <img src="https://pos.nvncdn.com/be3294-43017/art/artCT/20230630_8fq9ACdG.jpg" class="container-4__right-image" alt="right-image" />
+            </div>
+            <div class="container-4__right-body">
+                <p class="container-4__right-body-slogan">Dẫn đầu thị trường</p>
+                <hr>
+                <p class="container-4__right-body-subtext">Bước tiến của thời trang</p>
+            </div>
+        </div>
+    </div>
+    <div class="container-5 mx-[130px] my-5 flex justify-between">
+        <div class="flex justify-between text-black bg-[#c2c0c1] p-3 rounded-lg w-[410px]">
+            <p><i class="fa-solid fa-check p-1 rounded-full border border-black"></i></p>
+            <div class="flex-1 pl-3">
+                <h3 class="font-bold mb-0.5 text-sm">SiuuStore đã được xác nhận</h3>
+                <p class="text-xs">SiuuStore là tên gọi riêng của chúng tôi và có nghĩa là chúng tôi có thể kiểm tra mọi mặt hàng vào mọi lúc.</p>
+            </div>
+        </div>
+        <div class="flex justify-between text-black bg-[#c2c0c1] p-3 rounded-lg w-[410px]">
+            <p><i class="fa-solid fa-check p-1 rounded-full border border-black"></i></p>
+            <div class="flex-1 pl-3">
+                <h3 class="font-bold mb-0.5 text-sm">Cam kết</h3>
+                <p class="text-xs">Sự tin tưởng của các bạn là hàng đầu. Nếu chúng ta phạm sai lầm, chúng tôi sẽ sửa chữa.</p>
+            </div>
+        </div>
+        <div class="flex justify-between text-black bg-[#c2c0c1] p-3 rounded-lg w-[410px]">
+            <p><i class="fa-solid fa-check p-1 rounded-full border border-black"></i></p>
+            <div class="flex-1 pl-3">
+                <h3 class="font-bold mb-0.5 text-sm">Thanh toán linh hoạt</h3>
+                <p class="text-xs">Tiền mặt và online linh động cho quý khách</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        <!--    Script của container-3 (Slide)    -->
+        let currentPosition = 0; // Vị trí hiện tại
+        const visibleImages = 5; // Số lượng ảnh hiển thị
+        const imageWidth = 200; // Chiều rộng ảnh (bao gồm padding/margin)
+        let autoSlideInterval; // Biến để lưu trạng thái Interval
+
+        function slideAutomatically() {
+            const slider = document.querySelector('.slider');
+            const totalImages = slider.children.length;
+            const maxPosition = -(totalImages - visibleImages) * imageWidth;
+
+            // Kiểm tra nếu đã đến cuối danh sách ảnh thì quay lại đầu
+            if (currentPosition <= maxPosition) {
+                currentPosition = 0; // Quay lại đầu
+            } else {
+                currentPosition -= imageWidth; // Di chuyển sang phải
+            }
+
+            slider.style.transform = `translateX(${currentPosition}px)`;
+        }
+
+        // Bắt đầu tự động cuộn
+        function startAutoSlide() {
+            autoSlideInterval = setInterval(slideAutomatically, 1500); // Chạy mỗi 1.5 giây
+        }
+
+        // Dừng tự động cuộn
+        function stopAutoSlide() {
+            clearInterval(autoSlideInterval);
+        }
+
+        // Gắn sự kiện khi di chuột
+        document.addEventListener("DOMContentLoaded", () => {
+            const sliderContainer = document.querySelector('.new-product__slider');
+
+            // Bắt đầu tự động cuộn khi trang tải
+            startAutoSlide();
+
+            // Dừng khi chuột vào và khởi động lại khi chuột rời
+            sliderContainer.addEventListener('mouseenter', stopAutoSlide);
+            sliderContainer.addEventListener('mouseleave', startAutoSlide);
+        });
+
+    //   Script của container-4
+        const containers = document.querySelectorAll('.image-container');
+
+        containers.forEach(container => {
+            const image = container.querySelector('img');  // Lấy ảnh bên trong từng container
+
+            container.addEventListener('mousemove', (e) => {
+                const { left, top, width, height } = container.getBoundingClientRect();
+                const x = ((e.clientX - left) / width) * 100;
+                const y = ((e.clientY - top) / height) * 100;
+
+                // Giới hạn dịch chuyển
+                const maxTranslateX = (image.width - width) / width * 100;
+                const maxTranslateY = (image.height - height) / height * 100;
+
+                const translateX = Math.max(-maxTranslateX, Math.min(0, -(x / 2)));
+                const translateY = Math.max(-maxTranslateY, Math.min(0, -(y / 2)));
+
+                image.style.transform = `translate(${translateX}%, ${translateY}%)`;
+            });
+
+            container.addEventListener('mouseleave', () => {
+                image.style.transform = 'translate(0, 0)';
+            });
+        });
+
+    </script>
 </section>
 </body>
 </html>
