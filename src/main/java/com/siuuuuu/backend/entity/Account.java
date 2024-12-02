@@ -26,6 +26,9 @@ public class Account {
     @Column(name = "password", nullable = false)
     private String password;
 
+    @Column(name="is_active", columnDefinition = "BIT")
+    private Boolean isActive;
+
     @OneToOne(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @ToString.Exclude
     private Profile profile;

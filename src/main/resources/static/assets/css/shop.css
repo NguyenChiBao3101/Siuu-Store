@@ -154,6 +154,7 @@
     font-size: 1.4rem;
     line-height: 1.1;
     letter-spacing: -0.1rem;
+    margin-top: 1rem;
     margin-bottom: 2rem;
 }
 
@@ -271,6 +272,15 @@ figure {
     font-size: 18px;
     line-height: 1.25;
     color: #E7511A;
+    margin-bottom: 1.3rem;
+}
+
+.product-category {
+    flex-flow: wrap;
+    font-weight: 400;
+    font-size: 1.0rem;
+    line-height: 1.25;
+    color: #e37850;
     margin-bottom: 1.3rem;
 }
 
