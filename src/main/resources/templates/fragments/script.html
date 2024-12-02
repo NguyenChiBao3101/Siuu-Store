@@ -55,6 +55,26 @@
         });
     </script>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const toast = document.getElementById('captchaErrorToast');
+            if (toast) {
+                setTimeout(() => toast.classList.remove('show'), 3000); // Ẩn sau 5 giây
+            }
+        });
+
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const toast = document.getElementById('errorToast');
+            if (toast) {
+                setTimeout(() => toast.classList.remove('show'), 3000); // Ẩn sau 5 giây
+            }
+        });
+
+    </script>
+
+
     <!--    <script>-->
     <!--        document.addEventListener("DOMContentLoaded", function () {-->
     <!--            const form = document.querySelector('#signup-form');-->
