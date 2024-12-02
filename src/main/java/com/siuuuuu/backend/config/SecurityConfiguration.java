@@ -2,6 +2,7 @@ package com.siuuuuu.backend.config;
 
 import com.siuuuuu.backend.entity.Account;
 import com.siuuuuu.backend.repository.AccountRepository;
+import com.siuuuuu.backend.service.RecaptchaService;
 import com.siuuuuu.backend.service.CustomOAuth2UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +16,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.util.stream.Collectors;
@@ -32,11 +34,17 @@ public class SecurityConfiguration {
     private static final String[] WHITE_LIST_URL = {
             "/",                  // Home page
             "/auth/sign-in",       // Sign-in page
-            "/auth/sign-up",       // Sign-up page
+            "/auth/sign-up",
+            "/oauth2/**",
             "assets/**",
             "/shop/**",
     };
 
+    private final RecaptchaService recaptchaService;
+
+    public SecurityConfiguration(RecaptchaService recaptchaService) {
+        this.recaptchaService = recaptchaService;
+    }
     /**
      * Configures the security filter chain, which defines how HTTP requests are secured.
      *
@@ -47,7 +55,8 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomOAuth2UserService customOAuth2UserService) throws Exception {
         //CSRF protection and configure request authorization
-        http.csrf(Customizer.withDefaults())
+        http.addFilterBefore(new RecaptchaAuthenticationFilter(recaptchaService), UsernamePasswordAuthenticationFilter.class)
+                .csrf(Customizer.withDefaults())
                 .authorizeHttpRequests(req -> req
                         .requestMatchers(WHITE_LIST_URL).permitAll()            // Permit requests to the whitelist URLs
                         .requestMatchers("/admin/**").hasAuthority("ADMIN")      // Only users with 'ADMIN' role can access admin routes
@@ -71,7 +80,8 @@ public class SecurityConfiguration {
                         .defaultSuccessUrl("/", true)                           // Redirect to home on successful login
                         .successHandler(new CustomAuthenticationSuccessHandler()) // Custom success handler for additional actions after login
                         .permitAll()                                            // Allow everyone to access the login page
-                ).rememberMe((rememberMe) -> rememberMe
+                )
+                .rememberMe((rememberMe) -> rememberMe
                         .key("3cfa76ef14937c1c0ea519f8fc057a80fcd04a7420f8e8bcd0a7567c272e007b")                                 // Key for remember-me cookie
                         .tokenValiditySeconds(86400)                            // Token validity period (24 hours)
                         .rememberMeParameter("remember-me")                     // Form parameter for remember-me
@@ -104,7 +114,6 @@ public class SecurityConfiguration {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 
     /**
      * Configures a custom UserDetailsService to load user-specific data.

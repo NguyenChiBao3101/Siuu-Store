@@ -15,6 +15,8 @@ import org.slf4j.LoggerFactory;
 import com.siuuuuu.backend.dto.request.SignUpDto;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -47,6 +49,10 @@ public class AuthController {
 
     @Autowired
     private CartRepository cartRepository;
+
+    @Value("${google.recaptcha.site-key}")
+    private String siteKey;
+
 
     @GetMapping("/sign-up")
     public String signUpForm(Model model) {
@@ -129,8 +135,10 @@ public class AuthController {
     }
 
 
+
     @GetMapping("/sign-in")
     public String signIn(Model model ) {
+        model.addAttribute("siteKey", siteKey);
         model.addAttribute("title", "Đăng Nhập");
         return "auth/sign-in";
     }
