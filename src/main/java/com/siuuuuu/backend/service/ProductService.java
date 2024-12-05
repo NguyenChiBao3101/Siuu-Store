@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import com.siuuuuu.backend.repository.ProductRepository;
 import org.springframework.web.multipart.MultipartFile;
@@ -52,11 +53,19 @@ public class ProductService {
 
     }
 
+    public Page<Product> getFilteredProducts(int page, int size, List<String> categoryIds, List<String> brandIds) {
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        if (categoryIds != null && !categoryIds.isEmpty()) {
+            return productRepository.findByCategoryIdIn(pageable, categoryIds);
+        }
+        if (brandIds != null && !brandIds.isEmpty()) {
+            return productRepository.findByBrandIdIn(pageable, brandIds);
+        }
+        return productRepository.findAll(pageable);
+    }
     public Product findProductById(String productId) {
         return productRepository.findById(productId).orElse(null);
     }
-
-
     public void createProduct(Product product) {
         productRepository.save(product);
     }

@@ -6,6 +6,8 @@ import com.siuuuuu.backend.repository.ProductVariantRepository;
 import com.siuuuuu.backend.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import com.siuuuuu.backend.entity.*;
+import com.siuuuuu.backend.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -30,21 +32,39 @@ public class ShopController {
 
     ProductService productService;
 
+    @Autowired
+    private SizeService sizeService;
+
+    @Autowired
+    private BrandService brandService;
+
+    @Autowired
+    private ProductImageColourService productImageColourService;
     ProductVariantRepository productVariantRepository;
 
     @GetMapping("")
     public String shop(Model model, @RequestParam(defaultValue = "1") int page,
                        @RequestParam(defaultValue = "12") int size) {
-        List<Category> categories = categoryService.getAllCategories();
-        Page<Product> products = productService.getAllProducts(page, size);
-
         model.addAttribute("title", "Cửa hàng");
-        model.addAttribute("categories", categories);
+        model.addAttribute("categories", categoryService.getAllCategories());
+        model.addAttribute("brands", brandService.getAllBrands());
+        model.addAttribute("sizes", sizeService.findAllSize());
+
+        Page<Product> products = productService.getAllProducts(page, size);
         model.addAttribute("products", products);
+
         model.addAttribute("currentPage", page);
         model.addAttribute("size", size);
         model.addAttribute("totalPages", products.getTotalPages());
         model.addAttribute("totalItems", products.getTotalElements());
+
+        List<ProductImageColour> productImageColours = productImageColourService.findAllProductImageColours();
+        Map<String, String> productThumbnails = new HashMap<>();
+        for (ProductImageColour productImageColour : productImageColours) {
+            String productId = productImageColour.getProduct().getId();
+            productThumbnails.put(productId, productImageColourService.getProductThumbnail(productImageColour));
+        }
+        model.addAttribute("productThumbnails", productThumbnails);
         return "shop/index";
     }
 
