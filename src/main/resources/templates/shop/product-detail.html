@@ -320,20 +320,20 @@
             let rateFloat = parseFloat(rateOfPro.innerText);
             if (isNaN(rateFloat)) throw new Error("Invalid rate value");
 
-            if (rateFloat < 1) {
+            if (rateFloat <= 1) {
                 starOfPro.className = "starOfPro one";
                 rateOfPro.className = "rateOfPro one";
                 rateString.className = rateString.className + " one";
 
-            } else if (rateFloat < 2) {
+            } else if (rateFloat <= 2) {
                 starOfPro.className = "starOfPro two";
                 rateOfPro.className = "rateOfPro two";
                 rateString.className = rateString.className + " two";
-            } else if (rateFloat < 3) {
+            } else if (rateFloat <= 3) {
                 starOfPro.className = "starOfPro three";
                 rateOfPro.className = "rateOfPro three";
                 rateString.className = rateString.className + " three";
-            } else if (rateFloat < 4) {
+            } else if (rateFloat <= 4) {
                 starOfPro.className = "starOfPro four";
                 rateOfPro.className = "rateOfPro four";
                 rateString.className = rateString.className + " four";
