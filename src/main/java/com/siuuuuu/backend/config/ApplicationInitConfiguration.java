@@ -54,18 +54,18 @@ public class ApplicationInitConfiguration implements CommandLineRunner {
             Account account = accountRepository.save(admin);
             Profile profile = new Profile();
             profile.setAccount(account);
-            profile.setAvatarUrl("@{/assets/image/tungchinh.jpg}");
+            profile.setAvatarUrl("/assets/image/profile-user.png");
             profile.setDateOfBirth(LocalDate.now());
             profile.setFirstName("Web");
             profile.setLastName("Admin");
             profile.setPhoneNumber("0123456789");
             profile.setIsActive(true);
             profileRepository.save(profile);
-        } else if(profileRepository.findByAccount_Email("admin@gmail.com")==null) {
-            Account account =  accountRepository.findByEmail("admin@gmail.com");
+        } else if (profileRepository.findByAccount_Email("admin@gmail.com") == null) {
+            Account account = accountRepository.findByEmail("admin@gmail.com");
             Profile profile = new Profile();
             profile.setAccount(account);
-            profile.setAvatarUrl("@{/assets/image/tungchinh.jpg}");
+            profile.setAvatarUrl("/assets/image/profile-user.png");
             profile.setDateOfBirth(LocalDate.now());
             profile.setFirstName("Web");
             profile.setLastName("Admin");
@@ -84,18 +84,18 @@ public class ApplicationInitConfiguration implements CommandLineRunner {
             Account account = accountRepository.save(customer);
             Profile profile = new Profile();
             profile.setAccount(account);
-            profile.setAvatarUrl("@{/assets/image/tungchinh.jpg}");
+            profile.setAvatarUrl("/assets/image/profile-user.png");
             profile.setDateOfBirth(LocalDate.now());
             profile.setFirstName("Web");
             profile.setLastName("Customer");
             profile.setPhoneNumber("0123456789");
             profile.setIsActive(true);
             profileRepository.save(profile);
-        }else if(profileRepository.findByAccount_Email("customer@gmail.com")==null){
+        } else if (profileRepository.findByAccount_Email("customer@gmail.com") == null) {
             Account account = accountRepository.findByEmail("customer@gmail.com");
             Profile profile = new Profile();
             profile.setAccount(account);
-            profile.setAvatarUrl("@{/assets/image/tungchinh.jpg}");
+            profile.setAvatarUrl("/assets/image/profile-user.png");
             profile.setDateOfBirth(LocalDate.now());
             profile.setFirstName("Web");
             profile.setLastName("Customer");
@@ -103,8 +103,6 @@ public class ApplicationInitConfiguration implements CommandLineRunner {
             profile.setIsActive(true);
             profileRepository.save(profile);
         }
-
-
 
         // Create cart using account id if it not exits
         accountRepository.findAll().forEach(account -> {

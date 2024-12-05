@@ -34,10 +34,16 @@ public class CartController {
         return "redirect:/cart";
     }
 
-    @RequestMapping(value="/update", method = RequestMethod.POST)
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
     public String updateProductQuantityInCart(@RequestParam("cartDetailId") String cartDetailId, @RequestParam("quantity") int quantity) {
         System.out.println("cartDetailId: " + cartDetailId);
         cartService.updateProductQuantityInCart(cartDetailId, quantity);
+        return "redirect:/cart";
+    }
+
+    @RequestMapping(value = "/remove", method = RequestMethod.POST)
+    public String removeProductFromCart(@RequestParam("cartDetailId") String cartDetailId) {
+        cartService.removeProductFromCart(cartDetailId);
         return "redirect:/cart";
     }
 }

@@ -3,9 +3,11 @@ package com.siuuuuu.backend.service;
 import com.siuuuuu.backend.constant.Roles;
 import com.siuuuuu.backend.entity.Account;
 import com.siuuuuu.backend.entity.Cart;
+import com.siuuuuu.backend.entity.Profile;
 import com.siuuuuu.backend.entity.Role;
 import com.siuuuuu.backend.repository.AccountRepository;
 import com.siuuuuu.backend.repository.CartRepository;
+import com.siuuuuu.backend.repository.ProfileRepository;
 import com.siuuuuu.backend.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -27,6 +29,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private RoleRepository roleRepository;
     @Autowired
     private CartRepository cartRepository;
+    @Autowired
+    private ProfileRepository profileRepository;
 
     @Override
     @Transactional
@@ -34,6 +38,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
         String email = oAuth2User.getAttribute("email");
+        String givenName = oAuth2User.getAttribute("given_name");
+        String familyName = oAuth2User.getAttribute("family_name");
+        String picture = oAuth2User.getAttribute("picture");
+
         Account account = accountRepository.findByEmail(email);
         if (account == null) {
             account = new Account();
@@ -46,6 +54,15 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             Cart cart = new Cart();
             cart.setAccount(account);
             cartRepository.save(cart);
+
+            Profile profile = new Profile();
+            profile.setAccount(account);
+            profile.setFirstName(givenName);
+            profile.setLastName(familyName);
+            profile.setAvatarUrl(picture);
+            profile.setIsActive(true);
+            profileRepository.save(profile);
+
         }
         return new org.springframework.security.oauth2.core.user.DefaultOAuth2User(
                 account.getRoles().stream()

@@ -1,9 +1,261 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layout/admin.html}">
+
 <body>
 <section layout:fragment="content">
-    <div>Trang quản lý</div>
+    <style>
+        .filter-container {
+            display: flex;
+            justify-content: end;
+            align-items: center;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filter-group label {
+            font-weight: bold;
+        }
+
+        .filter-group select, .filter-group input, .filter-group button {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .filter-group button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .filter-group button:hover {
+            background-color: #0056b3;
+        }
+
+        .content-container {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .table-container, .chart-container {
+            flex: 1;
+        }
+
+        #orderStatusChart {
+            max-width: 350px;
+            max-height: 350px;
+            width: 100%; /* Makes it responsive */
+            height: auto; /* Maintains aspect ratio */
+            margin: 0 auto; /* Centers the chart */
+        }
+    </style>
+    <div class="flex items-center gap-x-2 text-2xl font-bold">
+        <i class="fa-solid fa-layer-group"></i>
+        <h1>Thống Kê</h1>
+    </div>
+
+    <!-- Statics item -->
+    <div class="flex gap-5 justify-between mt-6">
+        <div class="bg-white border border-gray-200 rounded-lg shadow-md text-center p-6 w-100">
+            <h1 class="text-lg font-semibold text-gray-700">Số khách hàng</h1>
+            <p th:text="${totalCustomers}" class="text-2xl font-bold text-red-500 mt-2">0</p>
+        </div>
+        <div class="bg-white border border-gray-200 rounded-lg shadow-md text-center p-6 w-100">
+            <h1 class="text-lg font-semibold text-gray-700">Số đơn hàng chờ xác nhận</h1>
+            <p th:text="${totalOrdersPending}" class="text-2xl font-bold text-blue-500 mt-2">0</p>
+        </div>
+        <div class="bg-white border border-gray-200 rounded-lg shadow-md text-center p-6 w-100">
+            <h1 class="text-lg font-semibold text-gray-700">Tổng số sản phẩm đã bán</h1>
+            <p th:text="${totalProductsSold}" class="text-2xl font-bold text-yellow-500 mt-2">0</p>
+        </div>
+    </div>
+
+    <!-- Filter Options -->
+    <div class="filter-container">
+        <div class="filter-group">
+            <form action="/admin" method="get">
+                <label for="filter">Lọc theo:</label>
+                <select id="filter" name="filter">
+                    <option value="today" th:selected="${filter == 'today'}">Hôm nay</option>
+                    <option value="week" th:selected="${filter == 'week'}">Tuần</option>
+                    <option value="month" th:selected="${filter == 'month'}">Tháng</option>
+                    <option value="year" th:selected="${filter == 'year'}">Năm</option>
+                </select>
+                <button>Lọc</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Chart to statics order -->
+    <div class="w-full bg-[#FFFFFF] mt-5 p-2.5 rounded-md">
+        <h1 class="text-center text-2xl font-bold">Biểu Đồ Thống Kê Đơn Hàng</h1>
+        <canvas id="completedOrdersChart"></canvas>
+    </div>
+
+    <!-- Content container for table and chart -->
+    <div class="content-container">
+        <!-- Top product sold table -->
+        <div class="table-container">
+            <div class="w-full bg-white p-2.5 rounded-md shadow-md">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-x-2 text-xl font-semibold">
+                        <i class="fa-solid fa-table-list"></i>
+                        <p>Top sản phẩm bán chạy</p>
+                    </div>
+                </div>
+                <hr class="mb-4">
+                <table class="w-full table-auto border-collapse">
+                    <thead class="bg-gray-100">
+                    <tr>
+                        <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#e4641a] rounded-tl-lg">
+                            STT
+                        </th>
+                        <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#e4641a]">Sản phẩm
+                        </th>
+                        <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#e4641a]">Giá bán
+                        </th>
+                        <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#e4641a] rounded-tr-lg">
+                            Số lượng bán
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="productInfo, iterStat : ${topProductSolds}">
+                        <td th:text="${iterStat.index + 1}" class="py-3 px-4 border-b"></td>
+                        <td th:text="${productInfo.product.name}" class="py-3 px-4 border-b"></td>
+                        <td th:text="${#numbers.formatCurrency(productInfo.product.price)}" class="py-3 px-4 border-b"></td>
+
+                        <td th:text="${productInfo.totalSold}" class="py-3 px-4 border-b"></td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(topProductSolds)}">
+                        <td colspan="5" class="py-3 px-4 text-center">No data available.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Chart container -->
+        <div class="chart-container">
+            <div class="w-full bg-white p-2.5 rounded-md shadow-md">
+                <h1 class="text-center text-2xl font-bold">Biểu Đồ Trạng Thái Đơn Hàng</h1>
+                <canvas id="orderStatusChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            const ctx = document.getElementById('completedOrdersChart').getContext('2d');
+            const completedOrdersData = /*[[${completedOrdersData}]]*/ {};
+            const labels = Object.keys(completedOrdersData);
+            const data = Object.values(completedOrdersData);
+
+            // Create bar chart
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Đơn hàng hoàn thành',
+                        data: data,
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1,
+                        barThickness: labels.length === 1 ? 50 : 'flex'
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            const ctxPie = document.getElementById('orderStatusChart').getContext('2d');
+
+            const orderStatusData = /*[[${orderStatusPercentages}]]*/ {};
+            const pieLabels = Object.keys(orderStatusData);
+            const pieData = Object.values(orderStatusData);
+
+            // Translate labels to Vietnamese
+            const translatedLabels = pieLabels.map(label => {
+                switch (label) {
+                    case 'PENDING':
+                        return 'Đang chờ';
+                    case 'CONFIRMED':
+                        return 'Đã xác nhận';
+                    case 'SHIPPING':
+                        return 'Đang giao';
+                    case 'COMPLETED':
+                        return 'Hoàn thành';
+                    case 'CANCELLED':
+                        return 'Đã hủy';
+                    default:
+                        return label;
+                }
+            });
+
+            // Create pie chart
+            new Chart(ctxPie, {
+                type: 'pie',
+                data: {
+                    labels: translatedLabels,
+                    datasets: [{
+                        label: 'Phần trăm trạng thái đơn hàng',
+                        data: pieData,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    return `${label}: ${value.toFixed(2)}%`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
 </section>
 </body>
 </html>

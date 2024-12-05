@@ -15,42 +15,69 @@
         <hr class="my-4">
         <div class="mb-6">
             <label for="orderId" class="block text-sm font-medium text-gray-600 mb-2">Tìm kiếm theo mã đơn hàng:</label>
-            <div class="relative">
-                <i class="fa-solid fa-search absolute top-1/2 left-3 -translate-y-1/2 text-gray-400"></i>
-                <input type="text"
-                       id="orderId"
-                       class="w-full border border-gray-300 rounded-lg py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                       placeholder="Nhập mã đơn hàng" name="orderId">
-            </div>
+            <form action="/admin/order/search" method="get" class="flex gap-x-2 items-center">
+                <div class="relative flex-1">
+                    <i class="fa-solid fa-search absolute top-1/2 left-3 -translate-y-1/2 text-gray-400"></i>
+                    <input type="text"
+                           id="orderId"
+                           th:value="${orderId}"
+                           class="w-full border border-gray-300 rounded-lg py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           placeholder="Nhập mã đơn hàng" name="orderId">
+                </div>
+                <button type="submit"
+                        class="bg-blue-500 hover:bg-blue-600 text-white font-medium px-5 py-2 rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    Tìm kiếm
+                </button>
+            </form>
         </div>
 
         <!-- Filter by Date Range -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-                <label for="startDate" class="block text-sm font-medium text-gray-600 mb-2">Ngày bắt đầu:</label>
-                <input type="date"
-                       id="startDate"
-                       class="w-full border border-gray-300 rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                       name="startDate">
+        <form action="/admin/order" method="get">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label for="startDate" class="block text-sm font-medium text-gray-600 mb-2">Ngày bắt đầu:</label>
+                    <input type="date"
+                           id="startDate"
+                           class="w-full border border-gray-300 rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           name="startDate"
+                           th:value="${startDate}">
+                </div>
+                <div>
+                    <label for="endDate" class="block text-sm font-medium text-gray-600 mb-2">Ngày kết thúc:</label>
+                    <input type="date"
+                           id="endDate"
+                           class="w-full border border-gray-300 rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           name="endDate"
+                           th:value="${endDate}">
+                </div>
+                <!--Status-->
+                <div>
+                    <label for="status" class="block text-sm font-medium text-gray-600 mb-2">Trạng thái:</label>
+                    <select id="status"
+                            name="status"
+                            class="w-full border border-gray-300 rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">Tất cả</option>
+                        <option value="PENDING" th:selected="${status == 'PENDING'}">Đang chờ xác nhận</option>
+                        <option value="CONFIRMED" th:selected="${status == 'CONFIRMED'}">Đã xác nhận</option>
+                        <option value="SHIPPING" th:selected="${status == 'SHIPPING'}">Đang giao hàng</option>
+                        <option value="COMPLETED" th:selected="${status == 'COMPLETED'}">Hoàn thành</option>
+                        <option value="CANCELLED" th:selected="${status == 'CANCELLED'}">Đã hủy</option>
+                    </select>
+                </div>
             </div>
-            <div>
-                <label for="endDate" class="block text-sm font-medium text-gray-600 mb-2">Ngày kết thúc:</label>
-                <input type="date"
-                       id="endDate"
-                       class="w-full border border-gray-300 rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                       name="endDate">
-            </div>
-        </div>
 
-        <!-- Button Actions -->
-        <div class="flex justify-end mt-6 gap-3">
-            <button class="bg-blue-500 hover:bg-blue-600 text-white font-medium px-5 py-2 rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                Lọc
-            </button>
-            <button class="bg-red-500 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 ml-2">
-                Làm mới
-            </button>
-        </div>
+            <!-- Button Actions -->
+            <div class="flex justify-end mt-6 gap-3">
+                <button type="submit"
+                        class="bg-blue-500 hover:bg-blue-600 text-white font-medium px-5 py-2 rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    Lọc
+                </button>
+                <a th:href="@{/admin/order}"
+                   class="bg-red-500 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 ml-2">
+                    Làm mới
+                </a>
+            </div>
+        </form>
     </div>
 
     <!-- Table -->
@@ -62,8 +89,7 @@
             </div>
         </div>
         <hr class="mb-4">
-
-        <table class="w-full table-auto border-collapse">
+        <table class="w-full table-auto border-collapse mt-4">
             <thead class="bg-gray-100">
             <tr>
                 <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#e4641a] rounded-tl-lg">
@@ -121,11 +147,62 @@
                         <i class="fa-solid fa-eye"></i>
                     </a>
                 </td>
-            <tr th:if="${#lists.isEmpty(orders)}">
-                <td colspan="7" class="py-3 px-4 text-center">Không có dữ liệu để hiển thị.</td>
-            </tr>
+                <!--            <tr th:if="${orders.size() == 0 }">-->
+                <!--                <td colspan="7" class="py-3 px-4 text-center">Không có dữ liệu để hiển thị.</td>-->
+                <!--            </tr>-->
             </tbody>
         </table>
+        <!-- Pagination controls -->
+        <div th:if="${totalPages > 0}" class="flex items-center justify-between mt-4">
+            <div>
+                <p class="text-sm text-gray-600">
+                    Trang <span th:text="${currentPage}"></span> / <span th:text="${totalPages}"></span>
+                </p>
+            </div>
+            <div>
+                <nav>
+                    <ul class="flex items-center gap-x-2">
+                        <!-- Previous Page Link -->
+                        <li th:if="${currentPage > 1}">
+                            <a th:href="@{/admin/order(page=${currentPage - 1}, size=${size})}"
+                               class="bg-blue-500 text-white px-3 py-1 rounded-lg shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <i class="fa-solid fa-angle-left"></i>
+                            </a>
+                        </li>
+
+                        <!-- Page Number Links -->
+                        <li th:if="${currentPage > 3}">
+                            <a th:href="@{/admin/order(page=1, size=${size})}"
+                               class="text-white px-3 py-1 rounded-lg bg-blue-500">1</a>
+                            <span class="text-gray-600">...</span>
+                        </li>
+
+                        <li th:each="i : ${#numbers.sequence(currentPage - 2, currentPage + 2)}"
+                            th:if="${i > 0 && i <= totalPages}">
+                            <a th:href="@{/admin/order(page=${i}, size=${size})}"
+                               th:text="${i}"
+                               th:classappend="${i == currentPage} ? 'bg-[#e4641a]' : 'bg-blue-500'"
+                               class="text-white px-3 py-1 rounded-lg shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </a>
+                        </li>
+
+                        <li th:if="${currentPage < totalPages - 2}">
+                            <span class="text-gray-600">...</span>
+                            <a th:href="@{/admin/order(page=${totalPages}, size=${size})}"
+                               class="text-white px-3 py-1 rounded-lg bg-blue-500" th:text="${totalPages}"></a>
+                        </li>
+
+                        <!-- Next Page Link -->
+                        <li th:if="${currentPage < totalPages}">
+                            <a th:href="@{/admin/order(page=${currentPage + 1}, size=${size})}"
+                               class="bg-blue-500 text-white px-3 py-1 rounded-lg shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <i class="fa-solid fa-angle-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
     </div>
 </section>
 </body>

@@ -48,27 +48,25 @@ public class ShopController {
 
     @GetMapping("")
     public String shop(Model model, @RequestParam(defaultValue = "1") int page,
-                       @RequestParam(defaultValue = "12") int size) {
+                       @RequestParam(defaultValue = "12") int size, @RequestParam(value = "q", required = false) String q) {
+        List<Category> categories = categoryService.getAllCategories();
+        Page<Product> products;
+        if (q != null && !q.isEmpty()) {
+            products = productService.searchByName(q, page, size);
+        } else {
+            products = productService.getAllProducts(page, size);
+        }
+
+
         model.addAttribute("title", "Cửa hàng");
-        model.addAttribute("categories", categoryService.getAllCategories());
+        model.addAttribute("categories", categories);
         model.addAttribute("brands", brandService.getAllBrands());
         model.addAttribute("sizes", sizeService.findAllSize());
-
-        Page<Product> products = productService.getAllProducts(page, size);
         model.addAttribute("products", products);
-
         model.addAttribute("currentPage", page);
         model.addAttribute("size", size);
         model.addAttribute("totalPages", products.getTotalPages());
         model.addAttribute("totalItems", products.getTotalElements());
-
-        List<ProductImageColour> productImageColours = productImageColourService.findAllProductImageColours();
-        Map<String, String> productThumbnails = new HashMap<>();
-        for (ProductImageColour productImageColour : productImageColours) {
-            String productId = productImageColour.getProduct().getId();
-            productThumbnails.put(productId, productImageColourService.getProductThumbnail(productImageColour));
-        }
-        model.addAttribute("productThumbnails", productThumbnails);
         return "shop/index";
     }
 

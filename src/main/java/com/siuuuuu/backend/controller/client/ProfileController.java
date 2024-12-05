@@ -1,5 +1,6 @@
 package com.siuuuuu.backend.controller.client;
 
+import com.siuuuuu.backend.constant.OrderStatus;
 import com.siuuuuu.backend.entity.Order;
 import com.siuuuuu.backend.entity.OrderDetail;
 import com.siuuuuu.backend.entity.OrderHistory;
@@ -38,10 +39,16 @@ public class ProfileController {
     }
 
     @RequestMapping("/purchase")
-    public String purchase(Model model) {
-        List<Order> orders = orderService.getOrdersForCurrentUser();
+    public String purchase(@RequestParam(value = "status", required = false) OrderStatus status, Model model) {
+        List<Order> orders;
+        if (status != null) {
+            orders = orderService.getOrdersByStatusAndUser(status);
+        } else {
+            orders = orderService.getOrdersForCurrentUser();
+        }
         model.addAttribute("title", "Lịch sử mua hàng");
         model.addAttribute("orders", orders);
+        model.addAttribute("selectedStatus", status);
         return "profile/purchase";
     }
 
@@ -62,15 +69,16 @@ public class ProfileController {
     }
 
     @GetMapping("/purchase/feedback/{id}")
-    public String feedbackForm (@PathVariable("id") String id, Model model) {
+    public String feedbackForm(@PathVariable("id") String id, Model model) {
         OrderDetail orderDetail = orderDetailService.getOrderDetail(id);
         List<OrderHistory> orderHistories = orderHistoryService.getOrderHistoriesByOrderId(id);
         model.addAttribute("title", "Đánh giá sản phẩm");
         model.addAttribute("orderDetail", orderDetail);
         return "profile/feedback-form";
     }
+
     @PostMapping("/purchase/feedback/{id}")
-    public String createFeedback (@PathVariable("id") String id, @RequestParam("comment") String comment, @RequestParam("rate") int rate, @RequestParam("images") MultipartFile[] images, Model model) {
+    public String createFeedback(@PathVariable("id") String id, @RequestParam("comment") String comment, @RequestParam("rate") int rate, @RequestParam("images") MultipartFile[] images, Model model) {
         feedbackService.createFeedback(id, images, comment, rate);
         return "redirect:/profile/purchase";
     }

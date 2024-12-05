@@ -50,7 +50,11 @@ public class ProductService {
     public Page<Product> getAllProducts(int page, int size) {
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         return productRepository.findAll(pageable);
+    }
 
+    public Page<Product> searchByName(String name, int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        return productRepository.searchByName(name, pageable);
     }
 
     public Page<Product> getFilteredProducts(int page, int size, List<String> categoryIds, List<String> brandIds) {

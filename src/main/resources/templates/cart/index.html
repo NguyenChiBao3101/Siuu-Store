@@ -44,11 +44,13 @@
                                     <div class="decrease-quantity cursor-pointer">-</div>
                                     <input id="cart-detail-quantity"
                                            class="w-16 h-10 border-[1px] border-solid border-[#e4e4e4] text-center"
-                                           type="number" th:value="${item.getQuantity()}" th:data-id="${item.getId()}">
+                                           type="number" th:value="${item.getQuantity()}" th:data-id="${item.getId()}"
+                                           disabled>
                                     <div class="increase-quantity cursor-pointer">+</div>
                                     <span class="text-lg font-semibold"
                                           th:text="${#numbers.formatCurrency(item.getProductVariant().getProduct().getPrice())}"></span>
-                                    <button type="button" class="text-red-500 hover:text-red-600">
+                                    <button type="button" class="text-red-500 hover:text-red-600 remove-item-button"
+                                            th:data-id="${item.getId()}">
                                         <i class="fa-solid fa-trash"></i>
                                     </button>
                                 </div>
@@ -81,6 +83,17 @@
                 </div>
             </div>
         </form>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmation-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+        <div class="bg-white p-4 rounded-md shadow-md">
+            <p class="text-lg">Bạn có chắc muốn xoá sản phẩm này ra khỏi giỏ hàng?</p>
+            <div class="flex justify-end gap-4 mt-4">
+                <button id="cancel-button" class="bg-gray-500 text-white px-4 py-2 rounded-md">Huỷ</button>
+                <button id="confirm-remove-button" class="bg-red-500 text-white px-4 py-2 rounded-md">Xoá</button>
+            </div>
+        </div>
     </div>
     <style>
         .disabled-button {
@@ -170,6 +183,31 @@
         });
         // Initial check to disable the button if no items are selected
         updateSummary();
+
+        document.querySelectorAll('.remove-item-button').forEach(button => {
+            button.addEventListener('click', function () {
+                const itemId = this.dataset.id;
+                const modal = document.getElementById('confirmation-modal');
+                modal.classList.remove('hidden');
+                document.getElementById('confirm-remove-button').dataset.id = itemId;
+            });
+        });
+
+        document.getElementById('cancel-button').addEventListener('click', function () {
+            document.getElementById('confirmation-modal').classList.add('hidden');
+        });
+
+        document.getElementById('confirm-remove-button').addEventListener('click', function () {
+            const itemId = this.dataset.id;
+            const csrfToken = document.getElementById('csrf-token').value;
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/cart/remove';
+            form.innerHTML = `<input type="hidden" name="_csrf" value="${csrfToken}">
+                          <input type="hidden" name="cartDetailId" value="${itemId}">`;
+            document.body.appendChild(form);
+            form.submit();
+        });
     </script>
 </section>
 </body>

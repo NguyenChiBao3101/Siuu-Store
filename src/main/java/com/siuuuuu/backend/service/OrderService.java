@@ -9,6 +9,10 @@ import com.siuuuuu.backend.repository.OrderDetailRepository;
 import com.siuuuuu.backend.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -30,6 +34,40 @@ public class OrderService {
     CartDetailService cartDetailService;
 
     AccountRepository accountRepository;
+
+    // getOrdersByStatusAndUser
+    public List<Order> getOrdersByStatusAndUser(OrderStatus status) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserEmail = authentication.getName();
+        Account account = accountRepository.findByEmail(currentUserEmail);
+        return orderRepository.findByCustomerAndStatus(account, status);
+    }
+
+    // Get order with pagination
+    public Page<Order> getOrders(int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        return orderRepository.findAll(pageable);
+    }
+
+
+    public List<Order> searchOrdersById(String orderId) {
+        return orderRepository.searchOrdersById(orderId);
+    }
+
+    public Page<Order> findOrdersByDateRange(LocalDateTime startDate, LocalDateTime endDate, int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        return orderRepository.findOrdersByDateRange(startDate, endDate, pageable);
+    }
+
+    public Page<Order> findOrdersByStatusAndDateRange(OrderStatus status, LocalDateTime startDate, LocalDateTime endDate, int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        return orderRepository.findOrdersByStatusAndDateRange(status, startDate, endDate, pageable);
+    }
+
+    public Page<Order> findOrdersByStatus(OrderStatus status, int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        return orderRepository.findOrdersByStatus(status, pageable);
+    }
 
     // Get order by current user and sort by created date
     public List<Order> getOrdersForCurrentUser() {

@@ -1,5 +1,6 @@
 package com.siuuuuu.backend.controller.admin;
 
+import org.springframework.data.domain.Page;
 import org.springframework.ui.Model;
 import com.siuuuuu.backend.entity.*;
 import com.siuuuuu.backend.service.*;
@@ -29,8 +30,13 @@ public class ProductController {
     private ProductImageColourService productImageColourService;
 
     @RequestMapping("")
-    public String index(Model model) {
-        List<Product> products = productService.findAllProduct();
+    public String index(Model model, @RequestParam(defaultValue = "1") int page,
+                        @RequestParam(defaultValue = "10") int size) {
+        Page<Product> products = productService.getAllProducts(page, size);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("size", size);
+        model.addAttribute("totalPages", products.getTotalPages());
+        model.addAttribute("totalItems", products.getTotalElements());
         model.addAttribute("title", "Quản Lý Sản Phẩm");
         model.addAttribute("products", products);
         return "admin/product/index";

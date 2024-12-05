@@ -22,8 +22,33 @@
                             <input type="email" id="email" name="email"
                                    class="w-full border-[1px] border-solid border-[#e4e4e4] p-2" required>
                         </div>
+                        <!--province-->
                         <div class="mt-4">
-                            <label for="address" class="block text-lg">Địa chỉ</label>
+                            <label for="province" class="block text-lg">Tỉnh/Thành Phố</label>
+                            <select id="province" class="w-full border-[1px] border-solid border-[#e4e4e4] p-2"
+                                    required>
+                                <option value="">Chọn tỉnh/thành phố</option>
+                            </select>
+                        </div>
+                        <!--district-->
+                        <div class="mt-4">
+                            <label for="district" class="block text-lg">Quận/Huyện</label>
+                            <select id="district" class="w-full border-[1px] border-solid border-[#e4e4e4] p-2"
+                                    required>
+                                <option value="">Chọn quận/huyện</option>
+                            </select>
+                        </div>
+                        <!--Ward-->
+                        <div class="mt-4">
+                            <label for="ward" class="block text-lg">Phường/Xã</label>
+                            <select id="ward" class="w-full border-[1px] border-solid border-[#e4e4e4] p-2"
+                                    required>
+                                <option value="">Chọn phường/xã</option>
+                            </select>
+                        </div>
+                        <!--Address detail-->
+                        <div class="mt-4">
+                            <label for="address" class="block text-lg">Địa chỉ cụ thể</label>
                             <input type="text" id="address" name="address"
                                    class="w-full border-[1px] border-solid border-[#e4e4e4] p-2" required>
                         </div>
@@ -47,6 +72,7 @@
                                     <img class="w-[40px]" th:src="@{/assets/image/vnpay.png}">
                                 </label>
                             </div>
+                            <div id="payment-method-error"></div>
                         </div>
 
                     </div>
@@ -106,54 +132,166 @@
             });
         });
 
+        // Call api to get provinces. Add token in header
+        fetch('https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/province', {
+            headers: {
+                'Token': '54677459-ccb5-11ed-ab31-3eeb4194879e'
+            }
+        })
+            .then(response => response.json())
+            .then(provinces => {
+                const provinceSelect = document.getElementById('province');
+                provinces.data.forEach(province => {
+                    const option = document.createElement('option');
+                    option.value = province.ProvinceID;
+                    option.textContent = province.ProvinceName;
+                    provinceSelect.appendChild(option);
+                });
+                provinceSelect.addEventListener('change', function () {
+                    const provinceId = this.value;
+                    fetch(`https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/district?province_id=${provinceId}`, {
+                        headers: {
+                            'Token': '54677459-ccb5-11ed-ab31-3eeb4194879e'
+                        }
+                    })
+                        .then(response => response.json())
+                        .then(districts => {
+                            const districtSelect = document.getElementById('district');
+                            districtSelect.innerHTML = '<option value="">Chọn quận/huyện</option>';
+                            districts.data.forEach(district => {
+                                const option = document.createElement('option');
+                                option.value = district.DistrictID;
+                                option.textContent = district.DistrictName;
+                                districtSelect.appendChild(option);
+                            });
+                            districtSelect.addEventListener('change', function () {
+                                const districtId = this.value;
+                                fetch(`https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/ward?district_id=${districtId}`, {
+                                    headers: {
+                                        'Token': '54677459-ccb5-11ed-ab31-3eeb4194879e'
+                                    }
+                                })
+                                    .then(response => response.json())
+                                    .then(wards => {
+                                        const wardSelect = document.getElementById('ward');
+                                        wardSelect.innerHTML = '<option value="">Chọn phường/xã</option>';
+                                        wards.data.forEach(ward => {
+                                            const option = document.createElement('option');
+                                            option.value = ward.WardCode;
+                                            option.textContent = ward.WardName;
+                                            wardSelect.appendChild(option);
+                                        });
+                                    });
+                            });
+                        });
+                });
+            });
+
+
         document.getElementById('checkout-button').addEventListener('click', function (event) {
-            if (document.getElementById('vnpay').checked) {
-                event.preventDefault();
+            event.preventDefault();
+
+            let hasError = false;
+
+            // Helper function to display an error message
+            const displayError = (input, message) => {
+                let errorElement = input.nextElementSibling;
+                if (!errorElement || !errorElement.classList.contains('error-message')) {
+                    errorElement = document.createElement('div');
+                    errorElement.className = 'error-message text-red-500 text-sm mt-1';
+                    input.parentNode.appendChild(errorElement);
+                }
+                errorElement.textContent = message;
+                hasError = true;
+            };
+
+            // Helper function to clear error message
+            const clearError = (input) => {
+                const errorElement = input.nextElementSibling;
+                if (errorElement && errorElement.classList.contains('error-message')) {
+                    errorElement.remove();
+                }
+            };
+
+            // Validate required fields
+            const requiredFields = ['name', 'email', 'province', 'district', 'ward', 'address', 'phone'];
+            requiredFields.forEach(fieldId => {
+                const input = document.getElementById(fieldId);
+                clearError(input);
+                if (!input.value) {
+                    displayError(input, 'Trường này là bắt buộc.');
+                }
+            });
+
+            // Validate email format and required
+            const emailInput = document.getElementById('email');
+            clearError(emailInput);
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailInput.value) {
+                displayError(emailInput, 'Email không được để trống.');
+            } else if (!emailRegex.test(emailInput.value)) {
+                displayError(emailInput, 'Vui lòng nhập email hợp lệ.');
+            }
+
+
+            // Validate phone number format and required
+            const phoneInput = document.getElementById('phone');
+            clearError(phoneInput);
+            const phoneRegex = /^\d{10,11}$/;
+            if (!phoneInput.value) {
+                displayError(phoneInput, 'Số điện thoại không được để trống.');
+            } else if (!phoneRegex.test(phoneInput.value)) {
+                displayError(phoneInput, 'Vui lòng nhập số điện thoại hợp lệ (10-11 chữ số).');
+            }
+
+            // Validate payment method
+            const paymentMethod = document.querySelector('input[name="payment-method"]:checked');
+            if (!paymentMethod) {
+                displayError(document.getElementById('payment-method-error'), 'Vui lòng chọn phương thức thanh toán.');
+            }
+
+            // Proceed only if no errors
+            if (!hasError) {
+                const addressDetail = document.getElementById('address').value;
+                const ward = document.getElementById('ward').options[document.getElementById('ward').selectedIndex].text;
+                const district = document.getElementById('district').options[document.getElementById('district').selectedIndex].text;
+                const province = document.getElementById('province').options[document.getElementById('province').selectedIndex].text;
+                const fullAddress = `${addressDetail}, ${ward}, ${district}, ${province}`;
+
+                // Prepare data for form submission based on payment method
+                const paymentMethod = document.querySelector('input[name="payment-method"]:checked').value;
                 const totalPrice = document.getElementById('total').textContent.replace(/\D/g, '');
                 const name = document.getElementById('name').value;
                 const email = document.getElementById('email').value;
-                const address = document.getElementById('address').value;
                 const phone = document.getElementById('phone').value;
                 const csrfToken = document.getElementById('csrf-token').value;
                 const cartDetailIds = Array.from(document.querySelectorAll('input[name="cartDetailIds"]')).map(input => input.value);
+
                 const form = document.createElement('form');
                 form.method = 'POST';
-                form.action = '/checkout/payment/vnpay';
-                form.innerHTML = `<input type="hidden" name="_csrf" value="${csrfToken}">
-                                  <input type="hidden" name="totalPrice" value="${totalPrice}">
-                                  <input type="hidden" name="name" value="${name}">
-                                  <input type="hidden" name="email" value="${email}">
-                                  <input type="hidden" name="address" value="${address}">
-                                  <input type="hidden" name="phone" value="${phone}">
-                                  <input type="hidden" name="paymentMethod" value="VN_PAY">
-                                  ${cartDetailIds.map(id => `<input type="hidden" name="cartDetailIds" value="${id}">`).join('')}`;
-                document.body.appendChild(form);
-                form.submit();
-            } else  {
-                event.preventDefault();
-                const totalPrice = document.getElementById('total').textContent.replace(/\D/g, '');
-                const name = document.getElementById('name').value;
-                const email = document.getElementById('email').value;
-                const address = document.getElementById('address').value;
-                const phone = document.getElementById('phone').value;
-                const csrfToken = document.getElementById('csrf-token').value;
-                const cartDetailIds = Array.from(document.querySelectorAll('input[name="cartDetailIds"]')).map(input => input.value);
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = '/checkout/payment/cod';
-                form.innerHTML = `<input type="hidden" name="_csrf" value="${csrfToken}">
-                                  <input type="hidden" name="totalPrice" value="${totalPrice}">
-                                  <input type="hidden" name="name" value="${name}">
-                                  <input type="hidden" name="email" value="${email}">
-                                  <input type="hidden" name="address" value="${address}">
-                                  <input type="hidden" name="phone" value="${phone}">
-                                  <input type="hidden" name="paymentMethod" value="COD">
-                                  ${cartDetailIds.map(id => `<input type="hidden" name="cartDetailIds" value="${id}">`).join('')}`;
+                form.action = paymentMethod === 'vnpay' ? '/checkout/payment/vnpay' : '/checkout/payment/cod';
+                form.innerHTML = `
+                <input type="hidden" name="_csrf" value="${csrfToken}">
+                <input type="hidden" name="totalPrice" value="${totalPrice}">
+                <input type="hidden" name="name" value="${name}">
+                <input type="hidden" name="email" value="${email}">
+                <input type="hidden" name="address" value="${fullAddress}">
+                <input type="hidden" name="phone" value="${phone}">
+                <input type="hidden" name="paymentMethod" value="${paymentMethod}">
+                ${cartDetailIds.map(id => `<input type="hidden" name="cartDetailIds" value="${id}">`).join('')}
+            `;
                 document.body.appendChild(form);
                 form.submit();
             }
         });
     </script>
+    <style>
+        .error-message {
+            color: #f87171; /* Light red */
+            font-size: 0.875rem; /* Small text */
+            margin-top: 0.25rem; /* Space above error */
+        }
+    </style>
 </section>
 </body>
 </html>

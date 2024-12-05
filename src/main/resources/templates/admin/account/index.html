@@ -58,7 +58,7 @@
                 <p>Danh Sách Tài Khoản</p>
             </div>
             <a th:href="@{/admin/account/register}"
-                    class="bg-[#E4641A] text-white px-4 py-2 rounded-lg shadow-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 addAccountModal">
+               class="bg-[#E4641A] text-white px-4 py-2 rounded-lg shadow-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 addAccountModal">
                 <i class="fa-solid fa-plus"></i>
                 <span>Thêm tài khoản mới</span>
             </a>
@@ -68,36 +68,43 @@
         <table class="w-full table-auto border-collapse">
             <thead class="bg-gray-100">
             <tr>
-                <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#E4641A] rounded-tl-lg">STT</th>
+                <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#E4641A] rounded-tl-lg">
+                    STT
+                </th>
                 <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#E4641A]">Họ và tên</th>
                 <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#E4641A]">Vai trò</th>
-                <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#E4641A]">Tên tài khoản</th>
+                <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#E4641A]">Tên tài khoản
+                </th>
                 <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#E4641A]">Ngày sinh</th>
-                <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#E4641A]">Số điện thoại</th>
-                <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#E4641A] rounded-tr-lg">Hành động</th>
+                <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#E4641A]">Số điện thoại
+                </th>
+                <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#E4641A] rounded-tr-lg">
+                    Hành động
+                </th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="account, iterStat : ${accounts}">
                 <td th:text="${iterStat.index + 1}" class="py-3 px-4 border-b"></td>
-                <td th:text="${account.profile.firstName} + ' ' + ${account.profile.lastName}" class="py-3 px-4 border-b"></td>
+                <td th:text="${account.getProfile().getFirstName()} + ' ' + ${account.getProfile().getLastName()}"
+                    class="py-3 px-4 border-b"></td>
                 <td th:each="role, iterStat: ${account.roles}" class="py-3 px-4 border-b ">
                     <div th:text="${role.name}"></div>
                 </td>
                 <td th:text="${account.email}" class="py-3 px-4 border-b"></td>
                 <td th:text="${account.profile.dateOfBirth}" class="py-3 px-4 border-b"></td>
                 <td th:text="${account.profile.phoneNumber}" class="py-3 px-4 border-b"></td>
-                <td class="py-3 px-4 border-b flex gap-2">
+                <td class="py-3 px-4 border-b gap-2">
                     <a class="bg-blue-500 text-white px-2 py-1 rounded-lg shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 edit-category"
                        th:href="@{'/admin/account/update/' + ${account.email}}">
                         <i class="fa-solid fa-edit"></i>
                     </a>
-<!--                    <a class="bg-red-500 text-white px-2 py-1 rounded-lg shadow hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"-->
+                    <!--                    <a class="bg-red-500 text-white px-2 py-1 rounded-lg shadow hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"-->
 
-<!--                       th:href="@{'/'}"-->
-<!--                       th:onclick="return confirm('Bạn có chắc muốn xoá danh mục sản phẩm này không?')">-->
-<!--                        <i class="fa-solid fa-trash"></i>-->
-<!--                    </a>-->
+                    <!--                       th:href="@{'/'}"-->
+                    <!--                       th:onclick="return confirm('Bạn có chắc muốn xoá danh mục sản phẩm này không?')">-->
+                    <!--                        <i class="fa-solid fa-trash"></i>-->
+                    <!--                    </a>-->
                 </td>
             </tr>
             <tr th:if="${#lists.isEmpty(accounts)}">

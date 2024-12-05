@@ -40,7 +40,10 @@ public class CartService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUserEmail = authentication.getName();
         Account account = accountRepository.findByEmail(currentUserEmail);
-        return account.getCart().getCartDetails();
+        Cart cart = account.getCart();
+        List<CartDetail> cartDetails = cart.getCartDetails();
+        cartDetails.sort((cartDetail1, cartDetail2) -> cartDetail2.getCreatedAt().compareTo(cartDetail1.getCreatedAt()));
+        return cartDetails;
     }
 
     public CartDetail getCartDetailById(String cartId) {

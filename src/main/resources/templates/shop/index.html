@@ -46,7 +46,8 @@
                             <div class="filter-item" th:each="brand : ${brands}">
                                 <div class="form-check">
                                     <label><input class="form-check-input" type="checkbox" th:id="${brand.id}"></label>
-                                    <label class="form-check-label" th:for="${brand.id}" th:text="${brand.name}"></label>
+                                    <label class="form-check-label" th:for="${brand.id}"
+                                           th:text="${brand.name}"></label>
                                 </div>
                             </div>
                         </div>
@@ -63,22 +64,6 @@
                                     <label class="form-check-label" th:for="${size.id}" th:text="${size.name}"></label>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="colour">
-                    <h3 class="widget-title">Màu</h3>
-                    <div class="widget-body">
-                        <div class="filter-colors">
-                            <a href="#" style="background: #b87145;"><span class="sr-only">Color Name</span></a>
-                            <a href="#" style="background: #f0c04a;"><span class="sr-only">Color Name</span></a>
-                            <a href="#" style="background: #333333;"><span class="sr-only">Color Name</span></a>
-                            <a href="#" class="selected" style="background: #cc3333;"><span
-                                    class="sr-only">Color Name</span></a>
-                            <a href="#" style="background: #3399cc;"><span class="sr-only">Color Name</span></a>
-                            <a href="#" style="background: #669933;"><span class="sr-only">Color Name</span></a>
-                            <a href="#" style="background: #f2719c;"><span class="sr-only">Color Name</span></a>
-                            <a href="#" style="background: #ebebeb;"><span class="sr-only">Color Name</span></a>
                         </div>
                     </div>
                 </div>
@@ -155,13 +140,19 @@
                                         <p class="product-price"
                                            th:text="${#numbers.formatCurrency(product.price)}">
                                         </p>
-                                        <div th:id="'divRateOfPro-' + ${iterStat.index}" class="flex justify-end gap-1 text-2xl">
-                                            <span th:id="'rateOfPro-' + ${iterStat.index}" class="rateOfPro" th:text="${product.getRate()}"></span>
+                                        <div th:id="'divRateOfPro-' + ${iterStat.index}"
+                                             class="flex justify-end gap-1 text-2xl">
+                                            <span th:id="'rateOfPro-' + ${iterStat.index}" class="rateOfPro"
+                                                  th:text="${product.getRate()}"></span>
                                             <span th:id="'starOfPro-' + ${iterStat.index}" class="starOfPro">★</span>
                                         </div>
                                     </div>
                                 </a>
                             </div>
+                        </div>
+                        <!--Empty product-->
+                        <div th:if="${products.getTotalElements() == 0}" class="col-12">
+                            <div class="alert alert-warning">Không tìm thấy sản phẩm nào</div>
                         </div>
                     </div>
                     <!-- Pagination -->
@@ -213,24 +204,25 @@
     <style>
 
         .one, .star-1 {
-          color: rgb(255, 0, 0);
+            color: rgb(255, 0, 0);
         }
 
         .two, .star-2 {
-          color: rgb(255, 106, 0);
+            color: rgb(255, 106, 0);
         }
 
         .three, .star-3 {
-          color: rgb(255, 224, 101);
+            color: rgb(255, 224, 101);
         }
 
         .four, .star-4 {
-          color: rgb(255, 245, 0);
+            color: rgb(255, 245, 0);
         }
 
         .five, .star-5 {
-          color: rgb(24, 159, 14);
+            color: rgb(24, 159, 14);
         }
+
         .pagination-link {
             display: inline-flex;
             align-items: center;
@@ -262,48 +254,47 @@
     </style>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-        const products = document.querySelectorAll(".rateOfPro");
+            const products = document.querySelectorAll(".rateOfPro");
 
-        products.forEach((rateOfPro) => {
-            let divRateOfPro;
-            try {
-                const index = rateOfPro.id.split("-")[1];
-                divRateOfPro = document.getElementById(`divRateOfPro-${index}`);
-                const starOfPro = document.getElementById(`starOfPro-${index}`);
-                const rateFloat = parseFloat(rateOfPro.innerText);
+            products.forEach((rateOfPro) => {
+                let divRateOfPro;
+                try {
+                    const index = rateOfPro.id.split("-")[1];
+                    divRateOfPro = document.getElementById(`divRateOfPro-${index}`);
+                    const starOfPro = document.getElementById(`starOfPro-${index}`);
+                    const rateFloat = parseFloat(rateOfPro.innerText);
 
-                if (isNaN(rateFloat)) throw new Error("Invalid rate value");
+                    if (isNaN(rateFloat)) throw new Error("Invalid rate value");
 
-                if (rateFloat > 0) {
-                    if (rateFloat < 1) {
-                        starOfPro.className += " one";
-                        rateOfPro.className += " one";
-                    } else if (rateFloat < 2) {
-                        starOfPro.className += " two";
-                        rateOfPro.className += " two";
-                    } else if (rateFloat < 3) {
-                        starOfPro.className += " three";
-                        rateOfPro.className += " three";
-                    } else if (rateFloat < 4) {
-                        starOfPro.className += " four";
-                        rateOfPro.className += " four";
+                    if (rateFloat > 0) {
+                        if (rateFloat < 1) {
+                            starOfPro.className += " one";
+                            rateOfPro.className += " one";
+                        } else if (rateFloat < 2) {
+                            starOfPro.className += " two";
+                            rateOfPro.className += " two";
+                        } else if (rateFloat < 3) {
+                            starOfPro.className += " three";
+                            rateOfPro.className += " three";
+                        } else if (rateFloat < 4) {
+                            starOfPro.className += " four";
+                            rateOfPro.className += " four";
+                        } else {
+                            starOfPro.className += " five";
+                            rateOfPro.className += " five";
+                        }
                     } else {
-                        starOfPro.className += " five";
-                        rateOfPro.className += " five";
+                        divRateOfPro.className = divRateOfPro.className + " !text-white";
                     }
-                } else {
-                    divRateOfPro.className = divRateOfPro.className + " !text-white";
-                }
-            } catch (e) {
-                //console.error("Error processing product rating:", e);
-                if (divRateOfPro) {
-                    divRateOfPro.className = divRateOfPro.className + " !text-white";
-                }
+                } catch (e) {
+                    //console.error("Error processing product rating:", e);
+                    if (divRateOfPro) {
+                        divRateOfPro.className = divRateOfPro.className + " !text-white";
+                    }
 
-            }
+                }
+            });
         });
-    });
-
 
 
     </script>

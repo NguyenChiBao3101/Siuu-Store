@@ -107,10 +107,9 @@
 }
 
 .size {
-    height: calc(283px + 20px);
     border-bottom: .1rem solid #ebebeb;
     margin-top: 20px;
-
+    padding-bottom: 40px;
 }
 
 .colour {

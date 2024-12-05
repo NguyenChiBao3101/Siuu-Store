@@ -38,7 +38,7 @@
             margin-bottom: 35px;
         }
 
-        .right-image-group{
+        .right-image-group {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             row-gap: 15px;
@@ -104,30 +104,33 @@
         .add-card-button:hover {
             opacity: 0.6;
         }
+
         .starOfPro {
             font-size: 20px;
         }
+
         .rateOfPro {
             font-size: 20px;
         }
+
         .one, .star-1 {
-          color: rgb(255, 0, 0);
+            color: rgb(255, 0, 0);
         }
 
         .two, .star-2 {
-          color: rgb(255, 106, 0);
+            color: rgb(255, 106, 0);
         }
 
         .three, .star-3 {
-          color: rgb(255, 224, 101);
+            color: rgb(255, 224, 101);
         }
 
         .four, .star-4 {
-          color: rgb(255, 245, 0);
+            color: rgb(255, 245, 0);
         }
 
         .five, .star-5 {
-          color: rgb(24, 159, 14);
+            color: rgb(24, 159, 14);
         }
 
         /* Đặt chế độ che phủ */
@@ -164,21 +167,21 @@
             </div>
             <div class="right">
 
-                    <div class="w-full flex justify-between">
-                        <div class="flex text-sm items-end">
-                            Lượt đánh giá:
-                            <span class="ml-1" th:text="${feedbacksTotal}"></span>
-                        </div>
-                        <div class="flex">
-                            <span id="rateOfPro"  class="rateOfPro" th:text="${rate}"></span>
-                            <span id="starOfPro" class="starOfPro">★</span>
-                        </div>
-                    </div>
-                    <h3 class="right-header font-bold mb-1 mt-2" th:text="${product.getName()}"></h3>
+                <div class="w-full flex justify-between">
                     <div class="flex text-sm items-end">
-                        Đã bán:
-                        <span class="ml-1" th:text="${sold}"></span>
+                        Lượt đánh giá:
+                        <span class="ml-1" th:text="${feedbacksTotal}"></span>
                     </div>
+                    <div class="flex">
+                        <span id="rateOfPro" class="rateOfPro" th:text="${rate}"></span>
+                        <span id="starOfPro" class="starOfPro">★</span>
+                    </div>
+                </div>
+                <h3 class="right-header font-bold mb-1 mt-2" th:text="${product.getName()}"></h3>
+                <div class="flex text-sm items-end">
+                    Đã bán:
+                    <span class="ml-1" th:text="${sold}"></span>
+                </div>
 
 
                 <p th:text="${#numbers.formatCurrency(productImageColours.get(0).getProduct().getPrice())}"
@@ -188,7 +191,7 @@
                         <a th:href="@{/shop/product(slug=${product.getSlug()}, colourId=${productImageColour.getId()})}"
                            tabindex="0"
                            th:style="${productImageColour.getId()==colourSelected?'border-color:#e7511a':''}">
-                            <img th:src="${productImageColour.getProductImages()[3].getImageUrl()}"
+                            <img th:src="${productImageColour.getProductImages()[0].getImageUrl()}"
                                  class="right-images" alt="Product Image"
                             />
                         </a>
@@ -203,7 +206,8 @@
                     </div>
                 </div>
 
-                <form th:action="@{/cart/add}" method="post">
+                <form id="addToCartForm" th:action="@{/cart/add}" method="post"
+                      onsubmit="return validateSizeSelection()">
                     <input type="hidden" id="productVariantId" name="productVariantId" value=""/>
                     <button type="submit" class="add-card-button">
                         Thêm vào giỏ hàng
@@ -235,14 +239,14 @@
                     </div>
                     <div class="flex flex-col">
                         <div th:each="feedback, iter : ${feedbacks}"
-                            th:class="${'flex mt-3 pb-3 '}+${iter.last?'':'border-b border-gray-100'}">
+                             th:class="${'flex mt-3 pb-3 '}+${iter.last?'':'border-b border-gray-100'}">
                             <div class="w-[10%] flex justify-end pr-2">
                                 <div th:unless="${feedback.getProfile().getAvatarUrl()}"
-                                    class="bg-gray-200 w-16 h-16 object-cover rounded-full flex justify-center items-center">
+                                     class="bg-gray-200 w-16 h-16 object-cover rounded-full flex justify-center items-center">
                                     <i class="fa-solid fa-user text-[2.5rem] text-white"></i>
                                 </div>
                                 <img th:if="${feedback.getProfile().getAvatarUrl()}"
-                                     th:src="@{feedback.getProfile().getAvatarUrl()}" alt="User Avatar"
+                                     th:src="${feedback.getProfile().getAvatarUrl()}" alt="User Avatar"
                                      class="w-16 h-16 object-cover rounded-full">
                             </div>
                             <div class="w-[90%] flex flex-col pl-4">
@@ -251,11 +255,12 @@
                                     <span th:text="${feedback.getProfile().getLastName()}"></span>
                                 </div>
                                 <div class="flex" th:class="${'star-'}+${feedback.getRate()}">
-                                     <span  th:each="i : ${#numbers.sequence( 1, feedback.getRate()/1)}">
+                                     <span th:each="i : ${#numbers.sequence( 1, feedback.getRate()/1)}">
                                         ★
                                      </span>
                                 </div>
-                                <span class="text-xs text-gray-400" th:text="${#temporals.format(feedback.getCreatedAt(), 'dd-MM-yyyy HH:mm')}"></span>
+                                <span class="text-xs text-gray-400"
+                                      th:text="${#temporals.format(feedback.getCreatedAt(), 'dd-MM-yyyy HH:mm')}"></span>
 
                                 <span class="mt-2" th:text="${feedback.getComment()}"></span>
 
@@ -275,8 +280,9 @@
             </div>
         </div>
     </div>
-    <div id="imageModal" class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center hidden"
-        onclick="closeImage()">
+    <div id="imageModal"
+         class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center hidden"
+         onclick="closeImage()">
         <div class="">
             <img id="zoomedImage" src="" alt="" class="max-w-full max-h-screen rounded">
             <button onclick="closeImage()"
@@ -286,6 +292,23 @@
         </div>
     </div>
 
+    <div class="modal fade" id="sizeModal" tabindex="-1" aria-labelledby="sizeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="sizeModalLabel">Chọn size</h5>
+                </div>
+                <div class="modal-body">
+                    Vui lòng chọn size trước khi thêm vào giỏ hàng
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="closeSizeModal()">
+                        Đóng
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
         let starOfCmtHead = document.getElementById("starOfCmtHead");
         let rateString = document.getElementById("rateString");
@@ -321,11 +344,10 @@
             }
 
 
-
         } catch (e) {
-           starOfPro.className = "text-gray-200";
-           rateOfPro.className = "text-gray-200";
-           rateOfPro.innerText = "0";
+            starOfPro.className = "text-gray-200";
+            rateOfPro.className = "text-gray-200";
+            rateOfPro.innerText = "0";
         }
 
 
@@ -342,17 +364,33 @@
         }
 
 
+        function changeMainImage(imageSrc) {
+            const mainImage = document.querySelector(".middle-image");
+            mainImage.src = imageSrc;
+        }
 
+        function selectSize(element) {
+            const productVariantId = element.getAttribute("data-id");
+            document.getElementById("productVariantId").value = productVariantId;
+        }
 
-       function changeMainImage(imageSrc) {
-           const mainImage = document.querySelector(".middle-image");
-           mainImage.src = imageSrc;
-       }
+        function validateSizeSelection() {
+            const productVariantId = document.getElementById("productVariantId").value;
+            if (!productVariantId) {
+                $('#sizeModal').modal('show');
+                return false;
+            }
+            return true;
+        }
 
-       function selectSize(element) {
-           const productVariantId = element.getAttribute("data-id");
-           document.getElementById("productVariantId").value = productVariantId;
-       }
+        function closeSizeModal() {
+            $('#sizeModal').modal('hide');
+        }
+
+        function selectSize(element) {
+            const productVariantId = element.getAttribute("data-id");
+            document.getElementById("productVariantId").value = productVariantId;
+        }
     </script>
 </section>
 </body>

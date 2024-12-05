@@ -40,22 +40,37 @@
         <main class="w-full lg:w-3/4">
             <!-- Tabs -->
             <div class="flex border-b mb-4 space-x-4">
-                <button class="px-4 py-2 text-gray-700 border-b-2 border-orange-500 focus:outline-none">Tất cả</button>
-                <button class="px-4 py-2 text-gray-700 hover:border-b-2 hover:border-orange-500 focus:outline-none">Chờ
-                    xác nhận
-                </button>
-                <button class="px-4 py-2 text-gray-700 hover:border-b-2 hover:border-orange-500 focus:outline-none">Đang
-                    vận chuyển
-                </button>
-                <button class="px-4 py-2 text-gray-700 hover:border-b-2 hover:border-orange-500 focus:outline-none">Hoàn
-                    thành
-                </button>
-                <button class="px-4 py-2 text-gray-700 hover:border-b-2 hover:border-orange-500 focus:outline-none">Đã
-                    hủy
-                </button>
+                <a th:href="@{/profile/purchase}"
+                   th:classappend="${selectedStatus == null} ? 'border-b-2 border-orange-500' : ''"
+                   class="px-2 py-2 text-gray-700 hover:border-b-2 hover:border-orange-500 focus:outline-none">Tất
+                    cả</a>
+                <a th:href="@{/profile/purchase(status='PENDING')}"
+                   th:classappend="${selectedStatus != null and selectedStatus.name() == 'PENDING'} ? 'border-b-2 border-orange-500' : ''"
+                   class="px-2 py-2 text-gray-700 hover:border-b-2 hover:border-orange-500 focus:outline-none">Chờ xác
+                    nhận</a>
+                <a th:href="@{/profile/purchase(status='CONFIRMED')}"
+                   th:classappend="${selectedStatus != null and selectedStatus.name() == 'CONFIRMED'} ? 'border-b-2 border-orange-500' : ''"
+                   class="px-2 py-2 text-gray-700 hover:border-b-2 hover:border-orange-500 focus:outline-none">Đã xác
+                    nhận</a>
+                <a th:href="@{/profile/purchase(status='SHIPPING')}"
+                   th:classappend="${selectedStatus != null and selectedStatus.name() == 'SHIPPING'} ? 'border-b-2 border-orange-500' : ''"
+                   class="px-2 py-2 text-gray-700 hover:border-b-2 hover:border-orange-500 focus:outline-none">Đang vận
+                    chuyển</a>
+                <a th:href="@{/profile/purchase(status='COMPLETED')}"
+                   th:classappend="${selectedStatus != null and selectedStatus.name() == 'COMPLETED'} ? 'border-b-2 border-orange-500' : ''"
+                   class="px-2 py-2 text-gray-700 hover:border-b-2 hover:border-orange-500 focus:outline-none">Hoàn
+                    thành</a>
+                <a th:href="@{/profile/purchase(status='CANCELLED')}"
+                   th:classappend="${selectedStatus != null and selectedStatus.name() == 'CANCELLED'} ? 'border-b-2 border-orange-500' : ''"
+                   class="px-2 py-2 text-gray-700 hover:border-b-2 hover:border-orange-500 focus:outline-none">Đã
+                    hủy</a>
             </div>
 
             <!-- Orders List -->
+            <div th:if="${#lists.isEmpty(orders)}"
+                 class="bg-white shadow-lg rounded-lg overflow-hidden border border-gray-200 mb-6 p-4">
+                <p class="text-center text-gray-500">Không có đơn hàng nào.</p>
+            </div>
             <div th:each="order: ${orders}"
                  class="bg-white shadow-lg rounded-lg overflow-hidden border border-gray-200 mb-6">
                 <!-- Order Status -->
@@ -108,7 +123,7 @@
 
                         <div th:if="${order.getStatus().name() == 'COMPLETED'}">
                             <div th:if="${orderDetail.getFeedback() != null}"
-                               class="px-2 rounded-md flex justify-center items-center feedbackbtn-nonactive">
+                                 class="px-2 rounded-md flex justify-center items-center feedbackbtn-nonactive">
                                 Đã đánh giá
                             </div>
                             <a th:unless="${orderDetail.getFeedback() != null}"
@@ -149,10 +164,12 @@
             color: rgb(52 171 93);
             border: 1px solid rgb(52 171 93);
         }
+
         .feedbackbtn-active:hover {
             background: rgb(52 171 93);
             color: white;
         }
+
         .feedbackbtn-nonactive {
             cursor: default;
             background: rgb(224 224 224);
