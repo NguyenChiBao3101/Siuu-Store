@@ -267,16 +267,16 @@
                     if (isNaN(rateFloat)) throw new Error("Invalid rate value");
 
                     if (rateFloat > 0) {
-                        if (rateFloat < 1) {
+                        if (rateFloat <= 1) {
                             starOfPro.className += " one";
                             rateOfPro.className += " one";
-                        } else if (rateFloat < 2) {
+                        } else if (rateFloat <= 2) {
                             starOfPro.className += " two";
                             rateOfPro.className += " two";
-                        } else if (rateFloat < 3) {
+                        } else if (rateFloat <= 3) {
                             starOfPro.className += " three";
                             rateOfPro.className += " three";
-                        } else if (rateFloat < 4) {
+                        } else if (rateFloat <= 4) {
                             starOfPro.className += " four";
                             rateOfPro.className += " four";
                         } else {
