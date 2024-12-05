@@ -31,6 +31,9 @@ public class OrderDetail {
     @EqualsAndHashCode.Exclude
     private Order order;
 
+    @OneToOne(mappedBy = "orderDetail", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private Feedback feedback;
     /**
      * The product variant associated with this detail.
      */
