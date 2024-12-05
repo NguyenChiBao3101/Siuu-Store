@@ -138,7 +138,7 @@
                 <!--List of products-->
                 <div class="container">
                     <div class="row">
-                        <div class="col-6 col-md-4 col-lg-4 col-xl-4" th:each="product : ${products}">
+                        <div class="col-6 col-md-4 col-lg-4 col-xl-4" th:each="product, iterStat : ${products}">
                             <div class="product" th:if="${product.getProductVariants().size() > 0}">
                                 <a th:href="@{/shop/product(slug=${product.slug}, colourId=${product.getProductImageColours().get(0).getId()})}">
                                     <figure class="product-media">
@@ -155,6 +155,10 @@
                                         <p class="product-price"
                                            th:text="${#numbers.formatCurrency(product.price)}">
                                         </p>
+                                        <div th:id="'divRateOfPro-' + ${iterStat.index}" class="flex justify-end gap-1 text-2xl">
+                                            <span th:id="'rateOfPro-' + ${iterStat.index}" class="rateOfPro" th:text="${product.getRate()}"></span>
+                                            <span th:id="'starOfPro-' + ${iterStat.index}" class="starOfPro">★</span>
+                                        </div>
                                     </div>
                                 </a>
                             </div>
@@ -207,6 +211,26 @@
         </div>
     </div>
     <style>
+
+        .one, .star-1 {
+          color: rgb(255, 0, 0);
+        }
+
+        .two, .star-2 {
+          color: rgb(255, 106, 0);
+        }
+
+        .three, .star-3 {
+          color: rgb(255, 224, 101);
+        }
+
+        .four, .star-4 {
+          color: rgb(255, 245, 0);
+        }
+
+        .five, .star-5 {
+          color: rgb(24, 159, 14);
+        }
         .pagination-link {
             display: inline-flex;
             align-items: center;
@@ -236,6 +260,53 @@
         }
 
     </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+        const products = document.querySelectorAll(".rateOfPro");
+
+        products.forEach((rateOfPro) => {
+            let divRateOfPro;
+            try {
+                const index = rateOfPro.id.split("-")[1];
+                divRateOfPro = document.getElementById(`divRateOfPro-${index}`);
+                const starOfPro = document.getElementById(`starOfPro-${index}`);
+                const rateFloat = parseFloat(rateOfPro.innerText);
+
+                if (isNaN(rateFloat)) throw new Error("Invalid rate value");
+
+                if (rateFloat > 0) {
+                    if (rateFloat < 1) {
+                        starOfPro.className += " one";
+                        rateOfPro.className += " one";
+                    } else if (rateFloat < 2) {
+                        starOfPro.className += " two";
+                        rateOfPro.className += " two";
+                    } else if (rateFloat < 3) {
+                        starOfPro.className += " three";
+                        rateOfPro.className += " three";
+                    } else if (rateFloat < 4) {
+                        starOfPro.className += " four";
+                        rateOfPro.className += " four";
+                    } else {
+                        starOfPro.className += " five";
+                        rateOfPro.className += " five";
+                    }
+                } else {
+                    divRateOfPro.className = divRateOfPro.className + " !text-white";
+                }
+            } catch (e) {
+                //console.error("Error processing product rating:", e);
+                if (divRateOfPro) {
+                    divRateOfPro.className = divRateOfPro.className + " !text-white";
+                }
+
+            }
+        });
+    });
+
+
+
+    </script>
 </section>
 </body>
 </html>

@@ -50,6 +50,14 @@ public class Product {
     @ToString.Exclude
     private List<ProductImageColour> productImageColours;
 
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
+    private List<Feedback> feedbacks;
+
+    @Column(name = "rate", columnDefinition = "INT DEFAULT 0")
+    private Float rate;
+
+    @Column(name = "rated_total" , columnDefinition = "INT DEFAULT 0")
+    private int ratedTotal;
 
     @CreatedDate
     @Column(updatable = false)

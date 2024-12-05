@@ -123,4 +123,21 @@ public class ProductService {
         }
         return images.get(0).getImageUrl();
     }
+
+    public void solvingRating(Feedback feedback) {
+        Product product = feedback.getProduct();
+        int preRateTotal = product.getRatedTotal();
+        product.setRatedTotal(preRateTotal+1);
+        float rate;
+        if(Objects.nonNull(product.getRate()) && product.getRate()>0) {
+            float preRate = product.getRate();
+            rate = (preRate*preRateTotal + feedback.getRate()) / ((float) product.getRatedTotal());
+        }else{
+            rate = (float) feedback.getRate();
+        }
+
+        product.setRate(rate);
+
+        productRepository.save(product);
+    }
 }

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/customer.html}">
+<body>
+<section layout:fragment="content">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Order Items -->
+        <div class="w-full bg-white mt-1 p-6 rounded-lg shadow-md">
+            <div class="flex flex-col ">
+                <div class="flex items-center gap-x-2 text-xl font-semibold">
+                    <i class="fa-solid fa-box"></i>
+                    <p>Thông tin sản phẩm đã mua</p>
+                </div>
+                <hr class="my-4">
+                <table class="w-full text-left">
+                    <thead>
+                    <tr class="border-b">
+                        <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#e4641a] rounded-tl-lg">
+                            Sản Phẩm
+                        </th>
+                        <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#e4641a]">Size</th>
+                        <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#e4641a]">Giá Bán
+                        </th>
+                        <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#e4641a]">Số
+                            Lượng
+                        </th>
+                        <th class="py-3 px-4 text-left text-sm font-semibold text-white border-b bg-[#e4641a] rounded-tr-lg">
+                            Thành Tiền
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody th:if="${orderDetail}">
+                    <tr>
+                        <td class="py-3 px-4 border-b">
+                            <!--Include product image and name-->
+                            <div class="flex items-center gap-x-2">
+                                <img class="w-12 h-12 object-cover rounded-md"
+                                     th:src="@{${orderDetail.getProductVariant().getProductImageColour().getProductImages().get(0).getImageUrl()}}"
+                                     alt="product-image">
+                                <span th:text="${orderDetail.getProductVariant().getProduct().getName()}"></span>
+                            </div>
+                        </td>
+                        <td class="py-3 px-4 border-b" th:text="${orderDetail.getProductVariant().getSize().getName()}"></td>
+                        <td class="py-3 px-4 border-b"
+                            th:text="${#numbers.formatCurrency(orderDetail.getProductVariant().getProduct().getPrice())}"></td>
+                        <td class="py-3 px-4 border-b" th:text="${orderDetail.getQuantity()}"></td>
+                        <td class="py-3 px-4 border-b"
+                            th:text="${#numbers.formatCurrency(orderDetail.getQuantity() * orderDetail.getProductVariant().getProduct().getPrice())}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div>
+        <div class="w-full bg-white mt-5 p-6 rounded-lg shadow-md">
+            <div class="flex flex-col">
+                <div class="flex items-center gap-x-2 text-xl font-semibold">
+                    <i class="fa-regular fa-star-half-stroke"></i>
+                    <p>Đánh giá sản phẩm</p>
+                </div>
+                <hr class="my-4">
+                <form th:action="@{/profile/purchase/feedback/{id}(id=${orderDetail.getId()})}" method="post"
+                      id="uploadImageForm"
+                      enctype="multipart/form-data"
+                      class="flex flex-col"
+                >
+                    <div class="flex flex-col justify-center items-center mb-5">
+                        <div class="flex flex-row justify-around items-center max-w-[30rem] w-full">
+                            <span onclick="gfg(1)"
+                                  class="star">★</span>
+                            <span onclick="gfg(2)"
+                                  class="star">★</span>
+                            <span onclick="gfg(3)"
+                                  class="star">★</span>
+                            <span onclick="gfg(4)"
+                                  class="star">★</span>
+                            <span onclick="gfg(5)"
+                                  class="star">★</span>
+                        </div>
+                        <h3 id="output" class="text-3xl">
+                            5/5
+                        </h3>
+                        <input id="rate" name="rate" hidden>
+                    </div>
+
+
+                    <label class="flex justify-center text-xl font-bold mb-3" for="comment">
+                        <div class="mr-2">Viết đánh giá cho sản phẩm này</div>
+                        <div class="text-red-400">*</div>
+                    </label>
+
+                    <div class="flex w-full justify-center mb-5">
+                        <textarea
+                                required
+                                class="w-[80%] h-[200px] border-1 border-gray-400 hover:border-gray-900 hover:border-2 bg-gray-200 rounded-md p-4 "
+                                name="comment" id="comment" cols="30" rows="10"
+                                placeholder="Bạn thích hoặc không thích điều gì về sản phẩm này? (Bắt buộc)"
+
+                        ></textarea>
+                    </div>
+
+                    <!-- Image upload input -->
+                    <div class="flex flex-col items-center justify-center w-full">
+                        <input type="file" id="images" name="images" accept="image/*" multiple hidden>
+                        <label class="w-[80%] h-[100px] flex flex-col items-center justify-center bg-gray-200 border-1 border-gray-400 hover:border-gray-900 hover:border-2 rounded-md mb-2"
+                               for="images">
+                            <i class="fa-solid fa-camera"></i>
+                            <div>Thêm hình ảnh</div>
+                        </label>
+                        <!-- Image preview container -->
+                        <div id="imagePreview" class="d-flex flex-wrap mt-3"></div>
+                        <!-- Submit button -->
+                        <div class="mt-3 w-[80%] flex justify-center">
+                            <button type="submit" class="py-2 px-5 bg-green-600 text-white hover:bg-green-800 rounded-md" id="uploadButton">Gửi</button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        // To access the stars
+        let stars =
+            document.getElementsByClassName("star");
+        let output =
+            document.getElementById("output");
+        let rate =
+            document.getElementById("rate");
+        gfg(5);
+        // Funtion to update rating
+        function gfg(n) {
+            remove();
+            for (let i = 0; i < n; i++) {
+                if (n == 1) cls = "one";
+                else if (n == 2) cls = "two";
+                else if (n == 3) cls = "three";
+                else if (n == 4) cls = "four";
+                else if (n == 5) cls = "five";
+                stars[i].className = "star " + cls;
+                output.className = "text-3xl " + cls;
+            }
+            output.innerText = n + "/5";
+            rate.value = n;
+        }
+
+        // To remove the pre-applied styling
+        function remove() {
+            let i = 0;
+            while (i < 5) {
+                stars[i].className = "star";
+                i++;
+            }
+        }
+
+        // Add image preview feature
+        const imageInput = document.getElementById('images');
+        const imagePreview = document.getElementById('imagePreview');
+        let filesArray = [];
+
+        imageInput.addEventListener('change', function (event) {
+            filesArray = Array.from(event.target.files);
+            updateImagePreview();
+        });
+
+        function updateImagePreview() {
+            imagePreview.innerHTML = '';
+
+            filesArray.forEach((file, index) => {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    const imgContainer = document.createElement('div');
+                    imgContainer.className = 'position-relative m-2';
+
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = 'img-thumbnail';
+                    img.style.maxWidth = '150px';
+                    img.style.maxHeight = '150px';
+
+                    const removeButton = document.createElement('button');
+                    removeButton.className = 'btn btn-danger btn-sm position-absolute top-0 end-0';
+                    removeButton.innerHTML = '&times;';
+                    removeButton.onclick = function () {
+                        filesArray.splice(index, 1);
+                        updateFileList();
+                        updateImagePreview();
+                    };
+
+                    imgContainer.appendChild(img);
+                    imgContainer.appendChild(removeButton);
+                    imagePreview.appendChild(imgContainer);
+                };
+
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function updateFileList() {
+            const dataTransfer = new DataTransfer();
+            filesArray.forEach(file => dataTransfer.items.add(file));
+            imageInput.files = dataTransfer.files;
+        }
+
+
+    </script>
+    <style>
+        .card {
+          max-width: 50rem;
+          //background: #fff;
+          //margin: 0 1rem;
+          //padding: 1rem;
+          //box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+          width: 100%;
+          //border-radius: 0.5rem;
+        }
+
+        .star {
+          width: fit-content;
+          color: rgb(209 213 219 / var(--tw-text-opacity, 1));
+          font-size: 15vh;
+          cursor: pointer;
+        }
+
+        .one {
+          color: rgb(255, 0, 0);
+        }
+
+        .two {
+          color: rgb(255, 106, 0);
+        }
+
+        .three {
+          color: rgb(255, 224, 101);
+        }
+
+        .four {
+          color: rgb(255, 245, 0);
+        }
+
+        .five {
+          color: rgb(24, 159, 14);
+        }
+
+        .colour-btn {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .colour-btn input[type="radio"]:checked + img {
+            border: 3px solid #007bff;
+            box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+            transform: scale(1.05);
+        }
+
+        .colour-btn img {
+            transition: all 0.3s ease;
+        }
+
+        .size-btn {
+            transition: all 0.3s ease;
+            margin-bottom: 10px;
+        }
+
+        .size-btn.active {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .size-btn:hover {
+            cursor: pointer;
+            transform: scale(1.05);
+        }
+
+        .size-btn.active:hover {
+            transform: scale(1.1);
+        }
+
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px; /* Add space between the buttons */
+        }
+
+        input[type=file] {
+            width: 350px;
+            max-width: 100%;
+            color: #444;
+            padding: 5px;
+            background: #fff;
+            border-radius: 10px;
+            border: 1px solid #555;
+        }
+
+        input[type=file]::file-selector-button {
+            margin-right: 20px;
+            border: none;
+            background: #084cdf;
+            padding: 10px 20px;
+            border-radius: 10px;
+            color: #fff;
+            cursor: pointer;
+            transition: background .2s ease-in-out;
+        }
+
+        input[type=file]::file-selector-button:hover {
+            background: #0d45a5;
+        }
+    </style>
+</section>
+</body>
+</html>

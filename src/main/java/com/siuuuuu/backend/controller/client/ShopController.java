@@ -42,6 +42,10 @@ public class ShopController {
     private ProductImageColourService productImageColourService;
     ProductVariantRepository productVariantRepository;
 
+    OrderDetailService orderDetailService;
+
+    FeedbackService feedbackService;
+
     @GetMapping("")
     public String shop(Model model, @RequestParam(defaultValue = "1") int page,
                        @RequestParam(defaultValue = "12") int size) {
@@ -82,10 +86,13 @@ public class ShopController {
                     }
                 }
             }
-            System.out.println(slug + "---" + colourId);
+
             List<ProductVariant> productVariants = productVariantRepository.findAllByProduct_IdAndProductImageColour_IdOrderBySize_NameAsc(product.getId(), colourId);
-
-
+            List<Feedback> feedbacks = feedbackService.getFeedbacksByProduct(product);
+            model.addAttribute("feedbacks", feedbacks);
+            model.addAttribute("rate", product.getRate());
+            model.addAttribute("feedbacksTotal", feedbackService.countfeedbacksByProduct(product.getId()));
+            model.addAttribute("sold", orderDetailService.countOrderDetailsByProduct(product.getId()));
             model.addAttribute("title", product.getName());
             model.addAttribute("imageUrls", imageUrls);
             model.addAttribute("product", product);

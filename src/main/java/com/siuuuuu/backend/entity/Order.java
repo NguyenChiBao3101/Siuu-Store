@@ -59,6 +59,7 @@ public class Order {
     @Column(name = "status", nullable = false)
     private OrderStatus status;
 
+
     /**
      * The payment method used for the order.
      */
