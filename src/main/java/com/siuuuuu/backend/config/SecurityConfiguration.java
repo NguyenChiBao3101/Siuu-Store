@@ -45,6 +45,7 @@ public class SecurityConfiguration {
     public SecurityConfiguration(RecaptchaService recaptchaService) {
         this.recaptchaService = recaptchaService;
     }
+
     /**
      * Configures the security filter chain, which defines how HTTP requests are secured.
      *
@@ -59,7 +60,7 @@ public class SecurityConfiguration {
                 .csrf(Customizer.withDefaults())
                 .authorizeHttpRequests(req -> req
                         .requestMatchers(WHITE_LIST_URL).permitAll()            // Permit requests to the whitelist URLs
-                        .requestMatchers("/admin/**").hasAuthority("ADMIN")      // Only users with 'ADMIN' role can access admin routes
+                        .requestMatchers("/admin/**").hasAnyAuthority("ADMIN", "EMPLOYEE")  // Users with 'ADMIN' and Employee role can access admin routes
                         .anyRequest().authenticated()                           // All other requests require authentication
                 ).oauth2Login(oauth2 -> oauth2
                         .loginPage("/auth/sign-in")

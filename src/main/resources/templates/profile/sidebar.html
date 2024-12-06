@@ -1,0 +1,43 @@
+<!-- src/main/resources/templates/fragments/sidebar.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<aside class="w-full lg:w-1/4 bg-white shadow-md rounded-lg p-6 h-[300px]">
+  <div class="flex items-center gap-x-2 mb-6">
+    <img th:src="${profile.getAvatarUrl() != null ? profile.getAvatarUrl() : '/assets/image/tungchinh.jpg'}"
+         alt="User Avatar"
+         class="w-16 h-16 object-cover rounded-full">
+    <div>
+      <h3 class="text-lg font-bold text-gray-800">
+        <span th:text="${profile.getLastName()} + ' ' + ${profile.getFirstName()}"></span>
+      </h3>
+      <p class="text-gray-600">
+        <span th:text="${profile.getAccount().getEmail()}"></span>
+      </p>
+    </div>
+  </div>
+  <nav>
+    <ul class="space-y-4 text-lg">
+      <li>
+        <a href="/profile" class="flex items-center text-orange-500 hover:text-orange-600">
+          <i class="fas fa-user-circle mr-2"></i>
+          Tài khoản của tôi
+        </a>
+      </li>
+      <li>
+        <a href="/profile/purchase" class="flex items-center text-gray-700 hover:text-orange-500">
+          <i class="fas fa-shopping-bag mr-2"></i>
+          Đơn mua
+        </a>
+      </li>
+      <li>
+        <a th:href="@{/auth/sign-out}" class="flex items-center text-gray-700 hover:text-orange-500">
+          <i class="fas fa-sign-out-alt mr-2"></i>
+          Đăng xuất
+        </a>
+      </li>
+    </ul>
+  </nav>
+</aside>
+</body>
+</html>

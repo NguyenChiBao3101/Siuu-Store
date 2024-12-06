@@ -83,4 +83,9 @@ public class CartService {
         cartDetail.setQuantity(quantity);
         cartDetailRepository.save(cartDetail);
     }
+
+    public void removeItemsFromCart(List<String> cartDetailIds) {
+        cartDetailIds.forEach(cartDetailRepository::deleteById);
+    }
+
 }

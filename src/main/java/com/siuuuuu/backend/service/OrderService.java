@@ -73,7 +73,6 @@ public class OrderService {
     public List<Order> getOrdersForCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUserEmail = authentication.getName();
-        System.out.println(authentication);
         Account account = accountRepository.findByEmail(currentUserEmail);
         return orderRepository.findByCustomerOrderByCreatedAtDesc(account);
     }

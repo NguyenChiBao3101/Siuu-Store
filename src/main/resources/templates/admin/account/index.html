@@ -95,7 +95,7 @@
                 <td th:text="${account.profile.dateOfBirth}" class="py-3 px-4 border-b"></td>
                 <td th:text="${account.profile.phoneNumber}" class="py-3 px-4 border-b"></td>
                 <td class="py-3 px-4 border-b gap-2">
-                    <a class="bg-blue-500 text-white px-2 py-1 rounded-lg shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 edit-category"
+                    <a th:each="role, iterStat: ${account.roles}" th:if="${role.name == 'EMPLOYEE'}" class="bg-blue-500 text-white px-2 py-1 rounded-lg shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 edit-category"
                        th:href="@{'/admin/account/update/' + ${account.email}}">
                         <i class="fa-solid fa-edit"></i>
                     </a>

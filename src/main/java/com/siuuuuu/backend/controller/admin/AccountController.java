@@ -12,6 +12,7 @@ import com.siuuuuu.backend.service.AccountService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -24,6 +25,7 @@ import java.util.Set;
 
 @Controller
 @RequestMapping("/admin/account")
+@PreAuthorize("hasAuthority('ADMIN')")
 public class AccountController {
 
     @Autowired
@@ -37,7 +39,7 @@ public class AccountController {
 
     @GetMapping("")
     public String accounts(Model model,
-                           @RequestParam (defaultValue = "1")Boolean isActive,
+                           @RequestParam(defaultValue = "1") Boolean isActive,
                            @RequestParam(defaultValue = "1") int page,
                            @RequestParam(defaultValue = "5") int size) {
         Page<AccountDto> accountDtoPage = accountService.getAllAccountsWithPagination(page, size, isActive);
@@ -52,11 +54,11 @@ public class AccountController {
 
     // Hiển thị form đăng ký tài khoản
     @GetMapping("/register")
-    public String showRegisterForm(Model model){
+    public String showRegisterForm(Model model) {
 
         Set<Role> allRoles = new LinkedHashSet<>();
-        for(Role role : roleRepository.findAllRolesAsSet()) {
-            if(!role.getName().equals(Roles.ADMIN.name())){
+        for (Role role : roleRepository.findAllRolesAsSet()) {
+            if (!role.getName().equals(Roles.ADMIN.name())) {
                 allRoles.add(role);
             }
         }
@@ -74,8 +76,8 @@ public class AccountController {
                                   BindingResult bindingResult, Model model,
                                   RedirectAttributes redirectAttributes) {
         Set<Role> allRoles = new HashSet<>();
-        for(Role role : roleRepository.findAllRolesAsSet()) {
-            if(!role.getName().equals(Roles.ADMIN.name())){
+        for (Role role : roleRepository.findAllRolesAsSet()) {
+            if (!role.getName().equals(Roles.ADMIN.name())) {
                 allRoles.add(role);
             }
         }
@@ -98,10 +100,10 @@ public class AccountController {
     @GetMapping("/update/{email}")
     public String getUpdateForm(@PathVariable String email, Model model) {
         RegisterDto registerDto = accountService.showUpdateForm(email);
-        System.out.print("get dto "+ registerDto.toString());
+        System.out.print("get dto " + registerDto.toString());
         Set<Role> allRoles = new LinkedHashSet<>();
-        for(Role role : roleRepository.findAllRolesAsSet()) {
-            if(!role.getName().equals(Roles.ADMIN.name())){
+        for (Role role : roleRepository.findAllRolesAsSet()) {
+            if (!role.getName().equals(Roles.ADMIN.name())) {
                 allRoles.add(role);
             }
         }
@@ -120,8 +122,8 @@ public class AccountController {
                                 Model model,
                                 RedirectAttributes redirectAttributes) {
         Set<Role> allRoles = new HashSet<>();
-        for(Role role : roleRepository.findAllRolesAsSet()) {
-            if(!role.getName().equals(Roles.ADMIN.name())){
+        for (Role role : roleRepository.findAllRolesAsSet()) {
+            if (!role.getName().equals(Roles.ADMIN.name())) {
                 allRoles.add(role);
             }
         }

@@ -10,12 +10,12 @@
                             <i class="fa-solid fa-phone"></i> Liên hệ: +84 123 456 789
                         </a>
                     </li>
-                    <li>
-                        <a class="flex items-center gap-x-2 hover:text-[#e7511a] transition-colors duration-300"
-                           href="wishlist.html">
-                            <i class="fa-regular fa-heart"></i> Yêu thích <span>(3)</span>
-                        </a>
-                    </li>
+                    <!--                    <li>-->
+                    <!--                        <a class="flex items-center gap-x-2 hover:text-[#e7511a] transition-colors duration-300"-->
+                    <!--                           href="wishlist.html">-->
+                    <!--                            <i class="fa-regular fa-heart"></i> Yêu thích <span>(3)</span>-->
+                    <!--                        </a>-->
+                    <!--                    </li>-->
                     <li sec:authorize="!isAuthenticated()">
                         <a class="flex items-center gap-x-2 hover:text-[#e7511a] transition-colors duration-300"
                            th:href="@{/auth/sign-in}">
@@ -70,15 +70,15 @@
                     </li>
                     <li>
                         <a class="block text-[#333] hover:text-[#e7511a] uppercase text-base transition-colors duration-300"
-                           href="product.html">Nam</a>
+                           th:href="@{/shop?page=1&size=9}">Nam</a>
                     </li>
                     <li>
                         <a class="block text-[#333] hover:text-[#e7511a] uppercase text-base transition-colors duration-300"
-                           href="product.html">Nữ</a>
+                           th:href="@{/shop?page=1&size=9}">Nữ</a>
                     </li>
                     <li>
                         <a class="block text-[#333] hover:text-[#e7511a] uppercase text-base transition-colors duration-300"
-                           href="product.html">Sale</a>
+                           th:href="@{/shop?page=1&size=9}">Sale</a>
                     </li>
                 </ul>
             </nav>

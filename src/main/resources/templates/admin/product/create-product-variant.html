@@ -40,7 +40,7 @@
                     <div th:each="size : ${sizes}">
                         <label class="btn btn-outline-primary size-btn" th:id="'size' + ${size.id} + 'Label'">
                             <input type="checkbox" class="btn-check" th:id="'size' + ${size.id}" th:name="'sizes'"
-                                   th:value="${size.id}" required>
+                                   th:value="${size.id}">
                             <span th:text="${size.name}">Size</span>
                         </label>
                     </div>

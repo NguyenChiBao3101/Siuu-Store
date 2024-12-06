@@ -50,7 +50,7 @@ public class AccountService {
         return mapToListDto(accountRepository.findByIsActive(isActive));
     }
 
-    // Get all accounts with Pagination
+    // Get all accounts with Pagination and role is EMPLOYEE
     public Page<AccountDto> getAllAccountsWithPagination(int page, int size, Boolean isActive) {
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<Account> accountDtoPage = accountRepository.findAll(pageable);

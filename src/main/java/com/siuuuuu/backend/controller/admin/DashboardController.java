@@ -5,6 +5,7 @@ import com.siuuuuu.backend.entity.Product;
 import com.siuuuuu.backend.service.DashboardService;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.ui.Model;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +20,7 @@ import java.util.Map;
 @Controller
 @RequestMapping("/admin")
 @RequiredArgsConstructor
+@PreAuthorize("hasAuthority('ADMIN')")
 @FieldDefaults(makeFinal = true, level = lombok.AccessLevel.PRIVATE)
 public class DashboardController {
     DashboardService dashboardService;

@@ -65,6 +65,7 @@ public class CheckoutController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUserEmail = authentication.getName();
         String subject = "Thông báo đơn hàng #" + order.getId() + " của quý khách đã được tiếp nhận";
+        cartService.removeItemsFromCart(cartDetailIds);
         emailService.sendOrderConfirmationEmail(currentUserEmail, subject, order);
         return "checkout/success";
     }
@@ -80,6 +81,7 @@ public class CheckoutController {
                                HttpServletRequest request) {
         String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
         Order order = orderService.createOrder(name, email, address, phone, totalPrice, cartDetailIds, paymentMethod);
+        cartService.removeItemsFromCart(cartDetailIds);
         String paymentUrl = vnPayService.createOrder(totalPrice, order.getId(), baseUrl + "/checkout", request);
         orderService.updatePaymentUrl(order.getId(), paymentUrl);
         return "redirect:" + paymentUrl;

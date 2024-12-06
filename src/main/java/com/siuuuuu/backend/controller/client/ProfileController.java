@@ -4,10 +4,8 @@ import com.siuuuuu.backend.constant.OrderStatus;
 import com.siuuuuu.backend.entity.Order;
 import com.siuuuuu.backend.entity.OrderDetail;
 import com.siuuuuu.backend.entity.OrderHistory;
-import com.siuuuuu.backend.service.FeedbackService;
-import com.siuuuuu.backend.service.OrderDetailService;
-import com.siuuuuu.backend.service.OrderHistoryService;
-import com.siuuuuu.backend.service.OrderService;
+import com.siuuuuu.backend.entity.Profile;
+import com.siuuuuu.backend.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
@@ -33,10 +31,29 @@ public class ProfileController {
 
     OrderDetailService orderDetailService;
 
+    ProfileService profileService;
+
     @RequestMapping("")
-    public String index() {
+    public String index(Model model) {
+        Profile profile = profileService.getProfileCurrentUser();
+        model.addAttribute("title", "Thông tin cá nhân");
+        model.addAttribute("profile", profile);
+        model.addAttribute("currentPage", "profile");
         return "profile/index";
     }
+
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    public String updateProfile(@ModelAttribute Profile profile) {
+        profileService.updateProfile(profile);
+        return "redirect:/profile";
+    }
+
+    @RequestMapping(value = "/update-password", method = RequestMethod.POST)
+    public String updatePassword(@RequestParam("password") String password, Model model) {
+        profileService.updatePassword(password);
+        return "redirect:/profile";
+    }
+
 
     @RequestMapping("/purchase")
     public String purchase(@RequestParam(value = "status", required = false) OrderStatus status, Model model) {
@@ -46,9 +63,12 @@ public class ProfileController {
         } else {
             orders = orderService.getOrdersForCurrentUser();
         }
+        Profile profile = profileService.getProfileCurrentUser();
         model.addAttribute("title", "Lịch sử mua hàng");
         model.addAttribute("orders", orders);
+        model.addAttribute("profile", profile);
         model.addAttribute("selectedStatus", status);
+        model.addAttribute("currentPage", "purchase");
         return "profile/purchase";
     }
 

@@ -208,6 +208,8 @@
 
                 <form id="addToCartForm" th:action="@{/cart/add}" method="post"
                       onsubmit="return validateSizeSelection()">
+                    <!--csrf token-->
+                    <input type="hidden" id="csrf-token" name="_csrf" th:value="${_csrf.token}"/>
                     <input type="hidden" id="productVariantId" name="productVariantId" value=""/>
                     <button type="submit" class="add-card-button">
                         Thêm vào giỏ hàng
