@@ -9,6 +9,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -53,4 +54,8 @@ public class Account {
     @OneToOne(mappedBy = "account")
     @ToString.Exclude
     private Cart cart;
+
+    @OneToMany(mappedBy = "account", fetch = FetchType.EAGER)
+    @ToString.Exclude
+    private List<Feedback> feedbacks;
 }

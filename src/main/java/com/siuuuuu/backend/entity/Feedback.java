@@ -26,9 +26,9 @@ public class Feedback {
     private Product product;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "profile_id", nullable = false)
+    @JoinColumn(name = "account_id", nullable = false)
     @ToString.Exclude
-    private Profile profile;
+    private Account account;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_detail_id", nullable = false, unique = true)

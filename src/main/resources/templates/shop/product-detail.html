@@ -243,18 +243,18 @@
                         <div th:each="feedback, iter : ${feedbacks}"
                              th:class="${'flex mt-3 pb-3 '}+${iter.last?'':'border-b border-gray-100'}">
                             <div class="w-[10%] flex justify-end pr-2">
-                                <div th:unless="${feedback.getProfile().getAvatarUrl()}"
+                                <div th:unless="${feedback.getAccount().getProfile().getAvatarUrl()}"
                                      class="bg-gray-200 w-16 h-16 object-cover rounded-full flex justify-center items-center">
                                     <i class="fa-solid fa-user text-[2.5rem] text-white"></i>
                                 </div>
-                                <img th:if="${feedback.getProfile().getAvatarUrl()}"
-                                     th:src="${feedback.getProfile().getAvatarUrl()}" alt="User Avatar"
+                                <img th:if="${feedback.getAccount().getProfile().getAvatarUrl()}"
+                                     th:src="${feedback.getAccount().getProfile().getAvatarUrl()}" alt="User Avatar"
                                      class="w-16 h-16 object-cover rounded-full">
                             </div>
                             <div class="w-[90%] flex flex-col pl-4">
                                 <div class="flex gap-1 font-semibold">
-                                    <span th:text="${feedback.getProfile().getFirstName()}"></span>
-                                    <span th:text="${feedback.getProfile().getLastName()}"></span>
+                                    <span th:text="${feedback.getAccount().getProfile().getFirstName()}"></span>
+                                    <span th:text="${feedback.getAccount().getProfile().getLastName()}"></span>
                                 </div>
                                 <div class="flex" th:class="${'star-'}+${feedback.getRate()}">
                                      <span th:each="i : ${#numbers.sequence( 1, feedback.getRate()/1)}">
