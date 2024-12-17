@@ -42,7 +42,7 @@ public class FeedbackService {
         Feedback feedback = new Feedback();
         feedback.setOrderDetail(orderDetail);
         feedback.setProduct(orderDetail.getProductVariant().getProduct());
-        feedback.setProfile(profileRepository.findByAccount_Id(orderDetail.getOrder().getCustomer().getId()));
+        feedback.setAccount(orderDetail.getOrder().getCustomer());
         feedback.setRate(rate);
         feedback.setComment(comment);
 
