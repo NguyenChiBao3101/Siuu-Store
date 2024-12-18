@@ -50,6 +50,7 @@ public class ApplicationInitConfiguration implements CommandLineRunner {
             admin.setEmail("admin@gmail.com");
             admin.setPassword(passwordEncoder.encode("admin"));
             admin.setIsActive(true);
+            admin.setIsVerified(true);
             admin.getRoles().add(adminRole);
             Account account = accountRepository.save(admin);
             Profile profile = new Profile();
@@ -80,6 +81,7 @@ public class ApplicationInitConfiguration implements CommandLineRunner {
             customer.setEmail("customer@gmail.com");
             customer.setPassword(passwordEncoder.encode("customer"));
             customer.setIsActive(true);
+            customer.setIsVerified(true);
             customer.getRoles().add(customerRole);
             Account account = accountRepository.save(customer);
             Profile profile = new Profile();

@@ -62,7 +62,7 @@
     </style>
     <div class="flex items-center gap-x-2 text-2xl font-bold">
         <i class="fa-solid fa-layer-group"></i>
-        <h1>Thống Kê</h1>
+        <h1>Trang tổng quan</h1>
     </div>
 
     <!-- Statics item -->
@@ -84,7 +84,7 @@
     <!-- Filter Options -->
     <div class="filter-container">
         <div class="filter-group">
-            <form action="/admin" method="get">
+            <form action="/admin/dashboard" method="get">
                 <label for="filter">Lọc theo:</label>
                 <select id="filter" name="filter">
                     <option value="today" th:selected="${filter == 'today'}">Hôm nay</option>
@@ -134,7 +134,8 @@
                     <tr th:each="productInfo, iterStat : ${topProductSolds}">
                         <td th:text="${iterStat.index + 1}" class="py-3 px-4 border-b"></td>
                         <td th:text="${productInfo.product.name}" class="py-3 px-4 border-b"></td>
-                        <td th:text="${#numbers.formatCurrency(productInfo.product.price)}" class="py-3 px-4 border-b"></td>
+                        <td th:text="${#numbers.formatCurrency(productInfo.product.price)}"
+                            class="py-3 px-4 border-b"></td>
 
                         <td th:text="${productInfo.totalSold}" class="py-3 px-4 border-b"></td>
                     </tr>

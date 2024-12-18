@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xác Thực Tài Khoản</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #4CAF50;
+        }
+
+        p {
+            font-size: 16px;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: #fff !important;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        a:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Xác Thực Tài Khoản</h2>
+    <p>Chào bạn,</p>
+    <p>Cảm ơn bạn đã đăng ký tài khoản với chúng tôi. Vui lòng nhấp vào liên kết dưới đây để xác thực tài khoản của
+        bạn:</p>
+    <p><a th:href="${verificationUrl}">Xác Thực Tài Khoản</a></p>
+    <p>Nếu bạn không đăng ký tài khoản này, vui lòng bỏ qua email này.</p>
+    <p>Trân trọng,</p>
+</div>
+</body>
+</html>

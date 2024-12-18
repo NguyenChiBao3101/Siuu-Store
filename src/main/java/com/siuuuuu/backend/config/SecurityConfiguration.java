@@ -6,6 +6,7 @@ import com.siuuuuu.backend.service.RecaptchaService;
 import com.siuuuuu.backend.service.CustomOAuth2UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -35,6 +36,7 @@ public class SecurityConfiguration {
             "/",                  // Home page
             "/auth/sign-in",       // Sign-in page
             "/auth/sign-up",
+            "/auth/verify",
             "/oauth2/**",
             "assets/**",
             "/shop/**",
@@ -132,6 +134,16 @@ public class SecurityConfiguration {
                 // Throw exception if user not found
                 throw new UsernameNotFoundException("User not found");
             }
+
+            if (Boolean.FALSE.equals(account.getIsActive())) {
+                throw new DisabledException("Account is inactive");
+            }
+
+            // Check account verification status
+            if (Boolean.FALSE.equals(account.getIsVerified())) {
+                throw new DisabledException("Account is not verified");
+            }
+
             // Return a User object containing email, password, and roles
             return new org.springframework.security.core.userdetails.User(
                     account.getEmail(),

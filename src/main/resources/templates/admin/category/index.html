@@ -81,12 +81,12 @@
                        th:href="@{'/admin/category/update/' + ${category.id}}">
                         <i class="fa-solid fa-edit"></i>
                     </a>
-                    <a class="bg-red-500 text-white px-2 py-1 rounded-lg shadow hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+<!--                    <a class="bg-red-500 text-white px-2 py-1 rounded-lg shadow hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"-->
 
-                       th:href="@{'category/delete/' + ${category.id}}"
-                       th:onclick="return confirm('Bạn có chắc muốn xoá danh mục sản phẩm này không?')">
-                        <i class="fa-solid fa-trash"></i>
-                    </a>
+<!--                       th:href="@{'category/delete/' + ${category.id}}"-->
+<!--                       th:onclick="return confirm('Bạn có chắc muốn xoá danh mục sản phẩm này không?')">-->
+<!--                        <i class="fa-solid fa-trash"></i>-->
+<!--                    </a>-->
                 </td>
             </tr>
             <tr th:if="${#lists.isEmpty(categories)}">

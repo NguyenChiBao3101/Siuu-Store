@@ -1,4 +1,5 @@
-<div th:fragment="sidebar" class="pb-3 w-60 bg-[#001529] text-white fixed top-0 left-0 bottom-0 w-[240px]">
+<div xmlns:sec="http://www.w3.org/1999/xhtml" th:fragment="sidebar"
+     class="pb-3 w-60 bg-[#001529] text-white fixed top-0 left-0 bottom-0 w-[240px]">
     <div class="mb-1.5 pb-2.5 text-center border-b-2 border-slate-300">
         <div class="flex justify-center">
             <img th:src="@{/assets/image/user.png}"
@@ -6,18 +7,19 @@
                  class="rounded-full w-[150px] h-[150px] object-cover my-2"
             >
         </div>
-<!--        <h2 class="text-xl font-bold my-2">Admin's Name</h2>-->
-<!--        <h4 class="text-sx opacity-50 font-semibold">Admin</h4>-->
+        <!--        <h2 class="text-xl font-bold my-2">Admin's Name</h2>-->
+        <!--        <h4 class="text-sx opacity-50 font-semibold">Admin</h4>-->
     </div>
     <div>
         <ul>
             <li>
                 <a class="sidebar-item border-l-4 block px-3.5 py-2.5 cursor-pointer hover:bg-[#1777ff]"
-                   th:href="@{/admin}"><i class="mr-2 fa-solid fa-table-columns"></i> Tổng quan</a></li>
+                   th:href="@{/admin/dashboard}" sec:authorize="hasAuthority('ADMIN')"><i
+                        class="mr-2 fa-solid fa-table-columns"></i> Tổng quan</a></li>
             <li class="hr">Quản lý</li>
             <li>
                 <a class="sidebar-item border-l-4 block px-3.5 py-2.5 cursor-pointer hover:bg-[#1777ff]"
-                   th:href="@{/admin/category?page=1&size=5}">Danh Mục</a>
+                   th:href="@{/admin/category}">Danh Mục</a>
             </li>
             <li>
                 <a class="sidebar-item border-l-4 block px-3.5 py-2.5 cursor-pointer hover:bg-[#1777ff]"
@@ -29,7 +31,7 @@
             </li>
             <li>
                 <a class="sidebar-item border-l-4 block px-3.5 py-2.5 cursor-pointer hover:bg-[#1777ff]"
-                   th:href="@{/admin/account}">Quản lý tài khoản</a>
+                   th:href="@{/admin/account}" sec:authorize="hasAuthority('ADMIN')">Quản lý nhân viên</a>
             </li>
 
             <!--            <li class="px-3.5 py-2.5 flex justify-between items-center sidebar-item cursor-pointer hover:bg-red-50 hover:text-red-500">-->
@@ -79,13 +81,12 @@
             item.classList.add("text-xs", "my-2", "border-b-2", "border-slate-300", "opacity-60", "font-semibold", "mx-2");
         });
 
-
         // Highlight the current page in the sidebar
         let currentPath = window.location.pathname;
         let sidebarItems = document.querySelectorAll(".sidebar-item");
         sidebarItems.forEach(item => {
             let href = item.getAttribute("href");
-            if (href === currentPath) {
+            if (currentPath.startsWith(href)) {
                 item.classList.add("sidebar-link-active");
             }
         });

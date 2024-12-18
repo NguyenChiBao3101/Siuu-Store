@@ -32,14 +32,10 @@ public class ShopController {
 
     ProductService productService;
 
-    @Autowired
-    private SizeService sizeService;
+    SizeService sizeService;
 
-    @Autowired
-    private BrandService brandService;
+    BrandService brandService;
 
-    @Autowired
-    private ProductImageColourService productImageColourService;
     ProductVariantRepository productVariantRepository;
 
     OrderDetailService orderDetailService;
@@ -47,19 +43,28 @@ public class ShopController {
     FeedbackService feedbackService;
 
     @GetMapping("")
-    public String shop(Model model, @RequestParam(defaultValue = "1") int page,
-                       @RequestParam(defaultValue = "12") int size, @RequestParam(value = "q", required = false) String q) {
-        List<Category> categories = categoryService.getAllCategories();
+    public String shop(Model model,
+                       @RequestParam(defaultValue = "1") int page,
+                       @RequestParam(defaultValue = "9") int size,
+                       @RequestParam(value = "q", required = false) String q,
+                       @RequestParam(value = "categories", required = false) List<String> categories,
+                       @RequestParam(value = "brands", required = false) List<String> brands,
+                       @RequestParam(value = "sizes", required = false) List<String> sizes,
+                       @RequestParam(value = "sort", required = false) String sort
+    ) {
+
+
         Page<Product> products;
         if (q != null && !q.isEmpty()) {
             products = productService.searchByName(q, page, size);
+        } else if ((categories != null && !categories.isEmpty()) || (brands != null && !brands.isEmpty()) || (sizes != null && !sizes.isEmpty())) {
+            products = productService.getFilteredProducts(page, size, categories, brands, sizes, sort);
         } else {
             products = productService.getAllProducts(page, size);
         }
 
-
         model.addAttribute("title", "Cửa hàng");
-        model.addAttribute("categories", categories);
+        model.addAttribute("categories", categoryService.getAllCategories());
         model.addAttribute("brands", brandService.getAllBrands());
         model.addAttribute("sizes", sizeService.findAllSize());
         model.addAttribute("products", products);
@@ -67,6 +72,9 @@ public class ShopController {
         model.addAttribute("size", size);
         model.addAttribute("totalPages", products.getTotalPages());
         model.addAttribute("totalItems", products.getTotalElements());
+        model.addAttribute("selectedCategories", categories != null ? categories : new ArrayList<>());
+        model.addAttribute("selectedBrands", brands != null ? brands : new ArrayList<>());
+        model.addAttribute("sort", sort);
         return "shop/index";
     }
 

@@ -49,6 +49,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             account.setEmail(email);
             account.setPassword("");
             account.getRoles().add(customerRole);
+            account.setIsActive(true);
+            account.setIsVerified(true);
             accountRepository.save(account);
 
             Cart cart = new Cart();

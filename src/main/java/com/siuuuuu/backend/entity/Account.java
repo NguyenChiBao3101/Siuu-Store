@@ -30,7 +30,10 @@ public class Account {
     @Column(name="is_active", columnDefinition = "BIT")
     private Boolean isActive;
 
-    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Column(name="is_verified", columnDefinition = "BIT")
+    private Boolean isVerified;
+
+    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @ToString.Exclude
     private Profile profile;
 

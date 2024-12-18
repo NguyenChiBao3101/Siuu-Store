@@ -37,4 +37,20 @@ public class EmailService {
             e.printStackTrace();
         }
     }
+
+    public void sendVerificationEmail(String to, String subject, String verificationUrl) {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+        try {
+            helper.setTo(to);
+            helper.setSubject(subject);
+            Context context = new Context(new Locale("vi", "VN"));
+            context.setVariable("verificationUrl", verificationUrl);
+            String html = templateEngine.process("email/verification-email", context);
+            helper.setText(html, true);
+            mailSender.send(message);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+    }
 }

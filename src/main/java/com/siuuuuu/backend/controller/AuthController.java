@@ -1,4 +1,5 @@
 package com.siuuuuu.backend.controller;
+
 import com.siuuuuu.backend.repository.AccountRepository;
 import com.siuuuuu.backend.service.AuthService;
 import org.slf4j.Logger;
@@ -7,14 +8,10 @@ import com.siuuuuu.backend.dto.request.SignUpDto;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 
 @Controller
@@ -70,7 +67,7 @@ public class AuthController {
             model.addAttribute("title", "Đăng nhập");
             return "auth/sign-in";
 
-        }catch(Exception e) {
+        } catch (Exception e) {
             logger.error("Đăng ký thất bại", e);
             result.reject("error.global", "Đã xảy ra lỗi trong quá trình đăng ký");
             model.addAttribute("title", "Đăng Ký");
@@ -79,12 +76,23 @@ public class AuthController {
     }
 
 
-
     @GetMapping("/sign-in")
-    public String signIn(Model model ) {
+    public String signIn(Model model) {
         model.addAttribute("siteKey", siteKey);
         model.addAttribute("title", "Đăng Nhập");
         return "auth/sign-in";
+    }
+
+    @RequestMapping(value = "/verify", method = RequestMethod.GET)
+    public String verifyAccount(@RequestParam("token") String token, Model model) {
+        System.out.println("Token: " + token);
+        try {
+            authService.verifyAccount(token);
+            return "auth/verify-success";
+        } catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+            return "auth/verify-fail";
+        }
     }
 
     @GetMapping("/access-denied")

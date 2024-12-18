@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+<html xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layout/customer.html}">
 <body>
 <section layout:fragment="content">
@@ -99,6 +100,7 @@
             text-align: center;
             border-radius: 30px;
             margin-bottom: 30px;
+            display: block;
         }
 
         .add-card-button:hover {
@@ -206,7 +208,7 @@
                     </div>
                 </div>
 
-                <form id="addToCartForm" th:action="@{/cart/add}" method="post"
+                <form sec:authorize="isAuthenticated()" id="addToCartForm" th:action="@{/cart/add}" method="post"
                       onsubmit="return validateSizeSelection()">
                     <!--csrf token-->
                     <input type="hidden" id="csrf-token" name="_csrf" th:value="${_csrf.token}"/>
@@ -215,6 +217,10 @@
                         Thêm vào giỏ hàng
                     </button>
                 </form>
+
+                <a sec:authorize="!isAuthenticated()" href="auth/sign-in" class="add-card-button">
+                    Thêm vào giỏ hàng
+                </a>
 
                 <div class="description">
                     <p th:text="${product.getDescription()}" class="text-justify"></p>

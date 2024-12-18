@@ -3,6 +3,7 @@ package com.siuuuuu.backend.controller.admin;
 import com.siuuuuu.backend.constant.Roles;
 import com.siuuuuu.backend.dto.request.AccountDto;
 import com.siuuuuu.backend.dto.request.RegisterDto;
+import com.siuuuuu.backend.dto.request.UpdateProfileDto;
 import com.siuuuuu.backend.entity.Profile;
 import com.siuuuuu.backend.entity.Role;
 import com.siuuuuu.backend.repository.AccountRepository;
@@ -41,14 +42,23 @@ public class AccountController {
     public String accounts(Model model,
                            @RequestParam(defaultValue = "1") Boolean isActive,
                            @RequestParam(defaultValue = "1") int page,
-                           @RequestParam(defaultValue = "5") int size) {
-        Page<AccountDto> accountDtoPage = accountService.getAllAccountsWithPagination(page, size, isActive);
+                           @RequestParam(defaultValue = "5") int size,
+                           @RequestParam(value = "status", required = false) String status
+    ) {
+        Page<AccountDto> accountDtoPage;
+        if (status != null && !status.isEmpty()) {
+            accountDtoPage = accountService.getEmployeeByStatus(page, size, Boolean.parseBoolean(status));
+        } else {
+            accountDtoPage = accountService.getEmployeeAccounts(page, size);
+        }
+
         model.addAttribute("title", "Tài khoản");
         model.addAttribute("currentPage", page);
         model.addAttribute("size", size);
         model.addAttribute("totalPages", accountDtoPage.getTotalPages());
         model.addAttribute("totalItems", accountDtoPage.getTotalElements());
         model.addAttribute("accounts", accountDtoPage.getContent());
+        model.addAttribute("status", status);
         return "admin/account/index";
     }
 
@@ -117,7 +127,7 @@ public class AccountController {
 
     @PostMapping("/update/{email}")
     public String updateAccount(@PathVariable String email,
-                                @Valid RegisterDto registerDto,
+                                @Valid UpdateProfileDto updateProfileDto,
                                 BindingResult bindingResult,
                                 Model model,
                                 RedirectAttributes redirectAttributes) {
@@ -128,26 +138,21 @@ public class AccountController {
             }
         }
 
-        if (!registerDto.getPassword().equals(registerDto.getConfirmPassword())) {
-            bindingResult.rejectValue("confirmPassword", "errorMessage.registerDto", "Mật khẩu xác nhận không khớp");
-        }
-        System.out.println(registerDto.toString());
         if (bindingResult.hasErrors()) {
             model.addAttribute("errorMessage", "Vui lòng kiểm tra lại thông tin nhập vào.");
             model.addAttribute("allRoles", allRoles);
             model.addAttribute("accountEmail", email);
-            model.addAttribute("registerDto", registerDto);
-            System.out.println(registerDto.toString());
-
+            model.addAttribute("registerDto", updateProfileDto);
+            System.out.println(updateProfileDto.toString());
             return "admin/account/update-account";
         }
         try {
-            accountService.updateAccount(registerDto, email);
+            accountService.updateAccount(updateProfileDto, email);
             redirectAttributes.addFlashAttribute("message", "Cập nhật tài khoản thành công!");
             return "redirect:/admin/account";
         } catch (RuntimeException ex) {
             model.addAttribute("allRoles", allRoles);
-            model.addAttribute("registerDto", registerDto);
+            model.addAttribute("registerDto", updateProfileDto);
             model.addAttribute("errorMessage", ex.getMessage() != null ? ex.getMessage() : "Đã xảy ra lỗi không xác định.");
             return "admin/account/update-account";
         }

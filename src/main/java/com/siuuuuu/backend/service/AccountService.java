@@ -3,6 +3,7 @@ package com.siuuuuu.backend.service;
 import com.siuuuuu.backend.constant.Roles;
 import com.siuuuuu.backend.dto.request.AccountDto;
 import com.siuuuuu.backend.dto.request.RegisterDto;
+import com.siuuuuu.backend.dto.request.UpdateProfileDto;
 import com.siuuuuu.backend.entity.Account;
 import com.siuuuuu.backend.entity.Cart;
 import com.siuuuuu.backend.entity.Profile;
@@ -50,12 +51,27 @@ public class AccountService {
         return mapToListDto(accountRepository.findByIsActive(isActive));
     }
 
+    // Get account is employee
+    public Page<AccountDto> getEmployeeAccounts(int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        Page<Account> accountDtoPage = accountRepository.findByRoleEmployee(pageable);
+        return accountDtoPage.map(this::mapToDto);
+    }
+
+    public Page<AccountDto> getEmployeeByStatus(int page, int size, boolean status) {
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        Page<Account> accountDtoPage = accountRepository.findByRoleEmployeeAndIsActive(status, pageable);
+        return accountDtoPage.map(this::mapToDto);
+    }
+
+
     // Get all accounts with Pagination and role is EMPLOYEE
     public Page<AccountDto> getAllAccountsWithPagination(int page, int size, Boolean isActive) {
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<Account> accountDtoPage = accountRepository.findAll(pageable);
         return accountDtoPage.map(this::mapToDto);
     }
+
     @Transactional
     public AccountDto register(RegisterDto registerDto) {
         // Check input
@@ -67,10 +83,10 @@ public class AccountService {
         newAccount.setPassword(passwordEncoder.encode(registerDto.getPassword()));
 
         Set<Role> roles = new HashSet<>();
-        roles.add(roleRepository.findByName(registerDto.getRoleName()));
+        roles.add(roleRepository.findByName("EMPLOYEE"));
 
         newAccount.setRoles(roles);
-        newAccount.setIsActive(registerDto.getIsActive());
+        newAccount.setIsActive(true);
 
         Account accountCreated = accountRepository.save(newAccount);
 
@@ -88,11 +104,9 @@ public class AccountService {
 
         profileRepository.save(profile);
 
-        System.out.print(accountCreated.toString());
 
         return mapToDto(accountCreated);
     }
-
 
 
     public RegisterDto showUpdateForm(String email) {
@@ -115,41 +129,35 @@ public class AccountService {
         return registerDto;
     }
 
-    public AccountDto updateAccount(RegisterDto registerDto, String email) {
+    public AccountDto updateAccount(UpdateProfileDto updateProfileDto, String email) {
 
         // Update account's information
         Account currentAccount = accountRepository.findByEmail(email);
-        if(currentAccount.getPassword() != null) {
-            currentAccount.setPassword(passwordEncoder.encode(registerDto.getPassword()));
+
+
+        if (currentAccount.getIsActive() != null) {
+            currentAccount.setIsActive(updateProfileDto.getIsActive());
         }
-        if(currentAccount.getRoles() != null) {
-            Set<Role> roles = new HashSet<>();
-            roles.add(roleRepository.findByName(registerDto.getRoleName()));
-            currentAccount.setRoles(roles);
-        }
-        if(currentAccount.getIsActive() != null) {
-            currentAccount.setIsActive(registerDto.getIsActive());
-        }
-         Account newAccount = accountRepository.save(currentAccount);
+        Account newAccount = accountRepository.save(currentAccount);
 
         // update currentProfile's information
         Profile currentProfile = profileRepository.findByAccount_Email(email);
-        if(currentProfile.getFirstName() != null) {
-            currentProfile.setFirstName(registerDto.getFirstName());
+        if (currentProfile.getFirstName() != null) {
+            currentProfile.setFirstName(updateProfileDto.getFirstName());
         }
-        if(currentProfile.getLastName() != null) {
-            currentProfile.setLastName(registerDto.getLastName());
+        if (currentProfile.getLastName() != null) {
+            currentProfile.setLastName(updateProfileDto.getLastName());
         }
-        if(currentProfile.getDateOfBirth() != null) {
-            currentProfile.setDateOfBirth(registerDto.getDateOfBirth());
+        if (currentProfile.getDateOfBirth() != null) {
+            currentProfile.setDateOfBirth(updateProfileDto.getDateOfBirth());
         }
-        if(currentProfile.getPhoneNumber() != null) {
-            currentProfile.setPhoneNumber(registerDto.getPhoneNumber());
+        if (currentProfile.getPhoneNumber() != null) {
+            currentProfile.setPhoneNumber(updateProfileDto.getPhoneNumber());
         }
-        if(currentProfile.getIsActive() != null) {
-            currentProfile.setIsActive(registerDto.getIsActive());
+        if (currentProfile.getIsActive() != null) {
+            currentProfile.setIsActive(updateProfileDto.getIsActive());
         }
-        if(currentProfile.getAccount() != null) {
+        if (currentProfile.getAccount() != null) {
             currentProfile.setAccount(newAccount);
         }
         profileRepository.save(currentProfile);

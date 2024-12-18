@@ -5,6 +5,9 @@ import com.siuuuuu.backend.entity.*;
 import com.siuuuuu.backend.repository.ProductImageRepository;
 import com.siuuuuu.backend.repository.ProductVariantRepository;
 import com.siuuuuu.backend.repository.SizeRepository;
+import com.siuuuuu.backend.specification.ProductSpecification;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,28 +25,44 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = lombok.AccessLevel.PRIVATE)
 public class ProductService {
-    @Autowired
-    private ProductRepository productRepository;
+    ProductRepository productRepository;
 
-    @Autowired
-    private SizeRepository sizeRepository;
+    SizeRepository sizeRepository;
 
-    @Autowired
-    private ProductImageColourService productImageColourService;
+    ProductImageColourService productImageColourService;
 
-    @Autowired
-    private CloudinaryService cloudinaryService;
+    CloudinaryService cloudinaryService;
 
-    @Autowired
-    private ProductImageService productImageService;
+    ProductImageService productImageService;
 
-    @Autowired
-    private ProductVariantService productVariantService;
+    ProductVariantService productVariantService;
 
 
     public List<Product> findAllProduct() {
         return productRepository.findAll();
+    }
+
+    public Page<Product> getFilteredProducts(int page, int size, List<String> categoryIds, List<String> brandIds, List<String> sizeIds, String sort) {
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "price"));
+        Specification<Product> spec = Specification.where(null);
+        if (sort != null && sort.equals("1")) {
+            pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.ASC, "price"));
+        }
+
+        if (categoryIds != null && !categoryIds.isEmpty()) {
+            spec = spec.and(ProductSpecification.filterByCategories(categoryIds));
+        }
+        if (brandIds != null && !brandIds.isEmpty()) {
+            spec = spec.and(ProductSpecification.filterByBrands(brandIds));
+        }
+        if (sizeIds != null && !sizeIds.isEmpty()) {
+            spec = spec.and(ProductSpecification.filterBySizes(sizeIds));
+        }
+
+        return productRepository.findAll(spec, pageable);
     }
 
     //Get all products with pagination
@@ -67,9 +86,11 @@ public class ProductService {
         }
         return productRepository.findAll(pageable);
     }
+
     public Product findProductById(String productId) {
         return productRepository.findById(productId).orElse(null);
     }
+
     public void createProduct(Product product) {
         productRepository.save(product);
     }
@@ -131,12 +152,12 @@ public class ProductService {
     public void solvingRating(Feedback feedback) {
         Product product = feedback.getProduct();
         int preRateTotal = product.getRatedTotal();
-        product.setRatedTotal(preRateTotal+1);
+        product.setRatedTotal(preRateTotal + 1);
         float rate;
-        if(Objects.nonNull(product.getRate()) && product.getRate()>0) {
+        if (Objects.nonNull(product.getRate()) && product.getRate() > 0) {
             float preRate = product.getRate();
-            rate = (preRate*preRateTotal + feedback.getRate()) / ((float) product.getRatedTotal());
-        }else{
+            rate = (preRate * preRateTotal + feedback.getRate()) / ((float) product.getRatedTotal());
+        } else {
             rate = (float) feedback.getRate();
         }
 

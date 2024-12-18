@@ -22,83 +22,42 @@
                     <label>Lọc:</label>
                     <a href="">Xoá tất cả </a>
                 </div>
-                <div class="category">
-                    <h3 class="widget-title">Danh mục</h3>
-                    <div class="widget-body">
-                        <div class="filter-items filter-items-count">
-                            <div class="filter-item" th:each="category : ${categories}">
-                                <div class="form-check">
-                                    <label><input class="form-check-input" type="checkbox"
-                                                  th:id="'cat-' + ${category.id}"></label>
-                                    <label class="form-check-label first-letter:uppercase"
-                                           th:for="'cat-' + ${category.id}"
-                                           th:text="${category.name}"></label>
+                <form action="/shop" id="filter-form">
+                    <div class="category">
+                        <h3 class="widget-title">Danh mục</h3>
+                        <div class="widget-body">
+                            <div class="filter-items filter-items-count">
+                                <div class="filter-item" th:each="category : ${categories}">
+                                    <div class="form-check">
+                                        <input th:checked="${#lists.contains(selectedCategories, category.getId())}"
+                                               class="form-check-input" type="checkbox" th:id="'cat-' + ${category.id}"
+                                               name="categories" th:value="${category.id}">
+                                        <label class="form-check-label first-letter:uppercase"
+                                               th:for="'cat-' + ${category.id}" th:text="${category.name}"></label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="brand" style="border-bottom: .1rem solid #ebebeb; padding-bottom: 40px">
-                    <h3 class="widget-title">Thương Hiệu</h3>
-                    <div class="widget-body">
-                        <div class="filter-items filter-items-count">
-                            <div class="filter-item" th:each="brand : ${brands}">
-                                <div class="form-check">
-                                    <label><input class="form-check-input" type="checkbox" th:id="${brand.id}"></label>
-                                    <label class="form-check-label" th:for="${brand.id}"
-                                           th:text="${brand.name}"></label>
+                    <div class="brand">
+                        <h3 class="widget-title">Thương Hiệu</h3>
+                        <div class="widget-body">
+                            <div class="filter-items filter-items-count">
+                                <div class="filter-item" th:each="brand : ${brands}">
+                                    <div class="form-check">
+                                        <input th:checked="${#lists.contains(selectedBrands, brand.getId())}"
+                                               class="form-check-input" type="checkbox" th:id="'brand-' + ${brand.id}"
+                                               name="brands" th:value="${brand.id}">
+                                        <label class="form-check-label first-letter:uppercase"
+                                               th:for="'brand-' + ${brand.id}"
+                                               th:text="${brand.name}"></label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="size">
-                    <h3 class="widget-title">Kích cỡ</h3>
-                    <div class="widget-body">
-                        <div class="filter-items filter-items-count">
-                            <div class="filter-item" th:each="size : ${sizes}">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" th:id="${size.id}"/>
-                                    <label class="form-check-label" th:for="${size.id}" th:text="${size.name}"></label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="price">
-                    <h3 class="widget-title">Giá</h3>
-                    <div class="widget-body">
-                        <div class="filter-items filter-items-count">
-                            <div class="filter-item">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="cat-1">
-                                    <label class="form-check-label" for="cat-1">100,000đ - 200,000đ</label>
-                                </div>
-                            </div>
-                            <div class="filter-item">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="cat-2">
-                                    <label class="form-check-label" for="cat-2">200,000đ - 300,000đ</label>
-                                </div>
-                            </div>
-                            <div class="filter-item">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="cat-3">
-                                    <label class="form-check-label" for="cat-3">300,000đ - 400,000đ</label>
-                                </div>
-                            </div>
-                            <div class="filter-item">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="cat-4">
-                                    <label class="form-check-label" for="cat-4">400,000đ - 500,000đ</label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                </form>
             </div>
             <div class="col col-lg-9">
                 <div class="searh">
@@ -110,14 +69,18 @@
                         </div>
                     </div>
                     <div class="toolbox-right">
-                        <label>Sắp xếp:</label>
-                        <div class="select-custom">
-                            <select name="orderby" class="form-control">
-                                <option value="popularity" selected="selected">Nổi tiếng nhất</option>
-                                <option value="rating">Đánh giá cao nhất</option>
-                                <option value="date">Ngày</option>
-                            </select>
-                        </div>
+                        <form th:action="@{/shop}" method="get">
+                            <input type="hidden" name="categories" th:each="category : ${selectedCategories}"
+                                   th:value="${category}">
+                            <input type="hidden" name="brands" th:each="brand : ${selectedBrands}" th:value="${brand}">
+                            <div class="flex items-center gap-x-2">
+                                <label>Sắp xếp:</label>
+                                <select name="sort" class="form-control" onchange="this.form.submit()">
+                                    <option value="0" th:selected="${sort == '0'}">Giá cao -> thấp</option>
+                                    <option value="1" th:selected="${sort == '1'}">Giá thấp -> cao</option>
+                                </select>
+                            </div>
+                        </form>
                     </div>
                 </div>
                 <!--List of products-->
@@ -159,7 +122,7 @@
                     <ul class="pagination flex items-center gap-2 justify-center mt-4">
                         <!-- Previous Page Link -->
                         <li th:if="${currentPage > 1}">
-                            <a th:href="@{/shop(page=${currentPage - 1}, size=${size})}"
+                            <a th:href="@{/shop(page=${currentPage - 1}, size=${size}, sort=${sort}, brands=${selectedBrands}, categories=${selectedCategories})}"
                                class="pagination-link bg-gray-200 text-gray-800 px-4 py-2 rounded-md shadow-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400">
                                 <i class="fa-solid fa-angle-left"></i>
                             </a>
@@ -167,30 +130,31 @@
 
                         <!-- Page Number Links -->
                         <li th:if="${currentPage > 3}">
-                            <a th:href="@{/shop(page=1, size=${size})}"
+                            <a th:href="@{/shop(page=1, size=${size}, brands=${selectedBrands}, categories=${selectedCategories}, sort=${sort})}"
                                class="pagination-link bg-gray-200 text-gray-800 px-4 py-2 rounded-md shadow-md hover:bg-gray-300">1</a>
                             <span class="text-gray-500 px-2">...</span>
                         </li>
 
                         <li th:each="i : ${#numbers.sequence(currentPage - 2, currentPage + 2)}"
                             th:if="${i > 0 && i <= totalPages}">
-                            <a th:href="@{/shop(page=${i}, size=${size})}"
+                            <a th:href="@{/shop(page=${i}, size=${size}, brands=${selectedBrands}, categories=${selectedCategories}, sort=${sort})}"
                                th:text="${i}"
                                th:classappend="${i == currentPage} ? 'pagination-link-active' : ''"
                                class="pagination-link bg-gray-200 text-gray-800 px-4 py-2 rounded-md shadow-md hover:bg-gray-300">
                             </a>
                         </li>
 
+
                         <li th:if="${currentPage < totalPages - 2}">
                             <span class="text-gray-500 px-2">...</span>
-                            <a th:href="@{/shop(page=${totalPages}, size=${size})}"
+                            <a th:href="@{/shop(page=${totalPages}, size=${size}, brands=${selectedBrands}, categories=${selectedCategories}, sort=${sort})}"
                                class="pagination-link bg-gray-200 text-gray-800 px-4 py-2 rounded-md shadow-md hover:bg-gray-300"
                                th:text="${totalPages}"></a>
                         </li>
 
                         <!-- Next Page Link -->
                         <li th:if="${currentPage < totalPages}">
-                            <a th:href="@{/shop(page=${currentPage + 1}, size=${size})}"
+                            <a th:href="@{/shop(page=${currentPage + 1}, size=${size}, brands=${selectedBrands}, categories=${selectedCategories}, sort=${sort})}"
                                class="pagination-link bg-gray-200 text-gray-800 px-4 py-2 rounded-md shadow-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400">
                                 <i class="fa-solid fa-angle-right"></i>
                             </a>
@@ -295,8 +259,16 @@
                 }
             });
         });
+        document.addEventListener("DOMContentLoaded", function () {
+            const filterForm = document.getElementById("filter-form");
+            const filterInputs = filterForm.querySelectorAll(".form-check-input");
 
-
+            filterInputs.forEach(input => {
+                input.addEventListener("change", function () {
+                    filterForm.submit();
+                });
+            });
+        });
     </script>
 </section>
 </body>

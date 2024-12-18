@@ -25,7 +25,7 @@ import java.util.Map;
 public class DashboardController {
     DashboardService dashboardService;
 
-    @RequestMapping(value = "", method = RequestMethod.GET)
+    @RequestMapping(value = "/dashboard", method = RequestMethod.GET)
     public String dashboard(@RequestParam(value = "filter", required = false) String filter, Model model) {
         Map<String, Long> completedOrdersData = dashboardService.getCompletedOrdersCountByDate(filter);
         int totalProductsSold = dashboardService.getTotalProductsSold();
@@ -33,8 +33,6 @@ public class DashboardController {
         int totalCustomers = dashboardService.getTotalCustomers();
         List<TopProductSold> topProductSolds = dashboardService.getTopProductSolds(filter);
         Map<String, Double> orderStatusPercentages = dashboardService.getOrderStatusPercentages(filter);
-
-        System.out.println(orderStatusPercentages);
 
         model.addAttribute("title", "Dashboard");
         model.addAttribute("filter", filter);

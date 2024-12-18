@@ -25,7 +25,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         // If the user is an admin or employee, redirect to the admin page
         if (isAdmin || isEmployee) {
             if (isAdmin) {
-                response.sendRedirect("/admin");
+                response.sendRedirect("/admin/dashboard");
             } else {
                 response.sendRedirect("/admin/order");
             }
