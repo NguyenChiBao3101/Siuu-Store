@@ -18,6 +18,8 @@ public interface ProductRepository extends JpaRepository<Product, String>, JpaSp
 
     Page<Product> findByBrandIdIn(Pageable pageable, List<String> brandIds);
 
+    boolean existsByName(String name);
+
     @Query("SELECT p FROM Product p WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%'))")
     Page<Product> searchByName(String name, Pageable pageable);
 }

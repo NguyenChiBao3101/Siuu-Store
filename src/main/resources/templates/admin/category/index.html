@@ -106,7 +106,7 @@
                     </div>
 
                     <!-- Form them danh mục -->
-                    <form id="categoryForm" th:action="@{/admin/category}" method="post">
+                    <form id="categoryForm" th:action="@{/admin/category}" th:object="${categories}" method="post">
                         <div class="modal-body">
                             <!-- Tên danh mục -->
                             <div class="mb-3">
@@ -116,7 +116,6 @@
                                 <input type="text" class="form-control w-100" id="categoryName" name="name"
                                        placeholder="Tên danh mục sản phẩm" required>
                             </div>
-
                             <!-- Trạng thái -->
                             <div class="mb-3">
                                 <label for="categoryStatus" class="form-label fw-bold">
@@ -187,7 +186,6 @@
                 </nav>
             </div>
         </div>
-
     </div>
 </section>
 </body>

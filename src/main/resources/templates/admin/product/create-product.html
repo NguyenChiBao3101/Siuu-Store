@@ -9,24 +9,30 @@
     </div>
 
     <div class="container mt-5">
-        <form th:action="@{/admin/product/create}" method="post">
+        <form th:action="@{/admin/product/create}" th:object="${productDto}" method="post">
             <div class="mb-3">
                 <label for="name" class="form-label">Tên sản phẩm:</label>
-                <input type="text" id="name" name="name" class="form-control w-full" required>
+                <input type="text" id="name" name="name" class="form-control w-full">
+                <!--Error-->
+                <p class="text-red-600 text-sm" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
             </div>
             <div class="mb-3">
                 <label for="description" class="form-label">Mô tả:</label>
                 <textarea rows="7" id="description" name="description" class="form-control w-full h-full"
-                          required></textarea>
+                          ></textarea>
+                <!--Error-->
+                <p class="text-red-600 text-sm" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></p>
             </div>
             <div class="mb-3">
                 <label for="price" class="form-label">Giá:</label>
-                <input type="number" id="price" name="price" class="form-control w-full" required>
+                <input type="number" id="price" name="price" class="form-control w-full">
+                <!--Error-->
+                <p class="text-red-600 text-sm" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></p>
             </div>
             <div class="mb-3 ">
                 <label for="category" class="form-label">Danh mục:</label>
                 <div class="flex gap-x-5 items-center">
-                    <select id="category" name="category" class="form-select w-full" required>
+                    <select id="category" name="category" class="form-select w-full">
                         <option hidden>Chọn danh mục</option>
                         <option th:each="category : ${categories}"
                                 th:value="${category.id}"
@@ -36,11 +42,13 @@
                         <i class="fa-solid fa-plus"></i>
                     </button>
                 </div>
+                <!--Error-->
+                <p class="text-red-600 text-sm" th:if="${#fields.hasErrors('category')}" th:errors="*{category}"></p>
             </div>
             <div class="mb-3">
                 <label for="brand" class="form-label">Thương hiệu:</label>
                 <div class="flex gap-x-5 items-center">
-                    <select id="brand" name="brand" class="form-select w-full" required>
+                    <select id="brand" name="brand" class="form-select w-full">
                         <option hidden>Chọn thương hiệu</option>
                         <option th:each="brand : ${brands}"
                                 th:value="${brand.id}"
@@ -50,6 +58,8 @@
                         <i class="fa-solid fa-plus"></i>
                     </button>
                 </div>
+                <!--Error-->
+                <p class="text-red-600 text-sm" th:if="${#fields.hasErrors('brand')}" th:errors="*{brand}"></p>
             </div>
             <div class="mt-4">
                 <button type="submit" class="btn btn-primary">Thêm Mới</button>

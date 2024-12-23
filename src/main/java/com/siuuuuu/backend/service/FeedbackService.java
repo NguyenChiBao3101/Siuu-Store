@@ -46,8 +46,6 @@ public class FeedbackService {
         feedback.setRate(rate);
         feedback.setComment(comment);
 
-        System.out.print(feedback);
-
         Feedback feedbackCreated = feedbackRepository.save(feedback);
 
         productService.solvingRating(feedbackCreated);

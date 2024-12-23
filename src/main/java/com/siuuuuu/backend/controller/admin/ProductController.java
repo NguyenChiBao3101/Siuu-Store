@@ -1,9 +1,13 @@
 package com.siuuuuu.backend.controller.admin;
 
+import com.siuuuuu.backend.dto.request.ProductDto;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.ui.Model;
 import com.siuuuuu.backend.entity.*;
 import com.siuuuuu.backend.service.*;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.multipart.MultipartFile;
@@ -49,11 +53,30 @@ public class ProductController {
         model.addAttribute("title", "Thêm Sản Phẩm");
         model.addAttribute("categories", categories);
         model.addAttribute("brands", brands);
+        model.addAttribute("productDto", new ProductDto());
         return "admin/product/create-product";
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public String postCreateProduct(@ModelAttribute("product") Product product) {
+    public String postCreateProduct(@Validated @ModelAttribute("productDto") ProductDto product, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            List<Category> categories = categoryService.getAllCategories();
+            List<Brand> brands = brandService.getAllBrands();
+            model.addAttribute("title", "Thêm Sản Phẩm");
+            model.addAttribute("categories", categories);
+            model.addAttribute("brands", brands);
+            return "admin/product/create-product";
+        }
+
+        if (productService.isProductExist(product.getName())) {
+            List<Category> categories = categoryService.getAllCategories();
+            List<Brand> brands = brandService.getAllBrands();
+            model.addAttribute("title", "Thêm Sản Phẩm");
+            model.addAttribute("categories", categories);
+            model.addAttribute("brands", brands);
+            result.rejectValue("name", "error.productDto", "Sản phẩm đã tồn tại");
+            return "admin/product/create-product";
+        }
         productService.createProduct(product);
         return "redirect:/admin/product";
     }

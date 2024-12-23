@@ -1,14 +1,11 @@
 package com.siuuuuu.backend.service;
 
-import com.siuuuuu.backend.dto.request.CategoryDto;
+import com.siuuuuu.backend.dto.request.ProductDto;
 import com.siuuuuu.backend.entity.*;
-import com.siuuuuu.backend.repository.ProductImageRepository;
-import com.siuuuuu.backend.repository.ProductVariantRepository;
 import com.siuuuuu.backend.repository.SizeRepository;
 import com.siuuuuu.backend.specification.ProductSpecification;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -91,8 +88,15 @@ public class ProductService {
         return productRepository.findById(productId).orElse(null);
     }
 
-    public void createProduct(Product product) {
-        productRepository.save(product);
+    public void createProduct(ProductDto product) {
+        // Map the DTO to the entity
+        Product newProduct = new Product();
+        newProduct.setName(product.getName());
+        newProduct.setPrice(product.getPrice());
+        newProduct.setDescription(product.getDescription());
+        newProduct.setCategory(product.getCategory());
+        newProduct.setBrand(product.getBrand());
+        productRepository.save(newProduct);
     }
 
     public Product getProductBySlug(String slug) {
@@ -164,5 +168,9 @@ public class ProductService {
         product.setRate(rate);
 
         productRepository.save(product);
+    }
+
+    public boolean isProductExist(String name) {
+        return productRepository.existsByName(name);
     }
 }
