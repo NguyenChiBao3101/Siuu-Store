@@ -1,6 +1,5 @@
 stages:
   - build
-  - sonarqube-check
   - deploy
 
 variables:
@@ -18,18 +17,6 @@ build:
     paths:
       - target/${APP_NAME}-${APP_VERSION}.jar
     expire_in: 1 week
-  tags:
-    - siuu-shop-shell
-  only:
-    - main
-
-sonarqube-check:
-  stage: sonarqube-check
-  variables:
-    GIT_STRATEGY: none
-  script:
-    - echo "Analyzing the code"
-    - mvn sonar:sonar -Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.host.url=${SONAR_HOST_URL} -Dsonar.login=${sqp_7b2e4e089e175ab0c365bffb7d6aa4ff266de5bb}
   tags:
     - siuu-shop-shell
   only:
