@@ -9,6 +9,7 @@ import com.siuuuuu.backend.repository.CartRepository;
 import com.siuuuuu.backend.repository.ProfileRepository;
 import com.siuuuuu.backend.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -34,10 +35,14 @@ public class ApplicationInitConfiguration implements CommandLineRunner {
     @Autowired
     private ProfileRepository profileRepository;
 
+    @Value("${jasypt.encryptor.password}")
+    private String jasyptEncryptorPassword;
+
     // Method that runs automatically after the application starts
     @Override
     @Transactional
     public void run(String... args) throws Exception {
+        System.out.println("JASYPT_ENCRYPTOR_PASSWORD from Spring: " + jasyptEncryptorPassword);
         for (Roles role : Roles.values()) {
             if (!roleRepository.existsByName(role.name())) {
                 roleRepository.save(new Role(role.name()));
