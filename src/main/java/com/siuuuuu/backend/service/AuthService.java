@@ -40,11 +40,13 @@ public class AuthService {
 
     EmailService emailService;
 
+
     @Transactional
     public void signUp(SignUpDto signUpDto) {
         // Tạo tài khoản mới
         Account account = new Account();
         account.setEmail(signUpDto.getEmail());
+
         account.setPassword(passwordEncoder.encode(signUpDto.getPassword()));
 
         // Gán role mặc định là CUSTOMER

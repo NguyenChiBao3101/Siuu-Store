@@ -14,15 +14,21 @@ import java.util.Date;
 public class SignUpDto {
     @NotEmpty(message = "Họ và tên đệm không được để trống")
     private String first_name;
+
     @NotEmpty(message = "Tên không được để trống")
     private  String last_name;
+
     @NotNull(message = "Ngày sinh không được để trống")
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private LocalDate date_of_birth;
+
     @NotEmpty(message = "Email không được để trống")
     @Email(message = "Email không đúng định dạng")
     private String email;
+
     @NotEmpty(message = "Mật khẩu không được để trống")
     private String password;
-    private  String confirm_password;
+
+    @NotEmpty(message = "Xác nhận mật khẩu không được để trống")
+    private String confirm_password;
 }
