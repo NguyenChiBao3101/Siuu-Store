@@ -4,6 +4,7 @@ import com.siuuuuu.backend.entity.Account;
 import com.siuuuuu.backend.repository.AccountRepository;
 import com.siuuuuu.backend.service.RecaptchaService;
 import com.siuuuuu.backend.service.CustomOAuth2UserService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.DisabledException;
@@ -30,7 +31,8 @@ import java.util.stream.Collectors;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfiguration {
-
+    @Value("${spring.security.rsa.privatekey}")
+    private String privateKeyBase64;
     // URLs that do not require authentication (whitelist)
     private static final String[] WHITE_LIST_URL = {
             "/",                  // Home page
@@ -114,8 +116,8 @@ public class SecurityConfiguration {
      * @return the BCryptPasswordEncoder instance
      */
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+    public PasswordEncoder passwordEncoder() throws Exception {
+        return new RsaBcryptPasswordEncoder(privateKeyBase64);
     }
 
     /**

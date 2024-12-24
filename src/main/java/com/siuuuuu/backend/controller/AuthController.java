@@ -2,6 +2,7 @@ package com.siuuuuu.backend.controller;
 
 import com.siuuuuu.backend.repository.AccountRepository;
 import com.siuuuuu.backend.service.AuthService;
+import com.siuuuuu.backend.service.RSADecryptionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.siuuuuu.backend.dto.request.SignUpDto;
@@ -13,12 +14,18 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.regex.Pattern;
+
 
 @Controller
 @RequestMapping("/auth")
 public class AuthController {
 
-    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
+    private boolean isValidPassword(String password) {
+        // Kiểm tra mật khẩu có ít nhất 8 ký tự, bao gồm chữ in, chữ thường, số và ký tự đặc biệt
+        String passwordPattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
+        return Pattern.matches(passwordPattern, password);
+    }
 
     @Autowired
     private AccountRepository accountRepository;
@@ -30,6 +37,8 @@ public class AuthController {
     @Value("${google.recaptcha.site-key}")
     private String siteKey;
 
+    @Autowired
+    private RSADecryptionService rsaDecryptionService;
 
     @GetMapping("/sign-up")
     public String signUpForm(Model model) {
@@ -41,7 +50,13 @@ public class AuthController {
 
     @PostMapping("/sign-up")
     public String signUp(@Valid SignUpDto signUpDto, BindingResult result, Model model) {
-        logger.info("Post request received for sign-up");
+        signUpDto.setPassword(rsaDecryptionService.decrypt(signUpDto.getPassword()));
+        signUpDto.setConfirm_password(rsaDecryptionService.decrypt(signUpDto.getConfirm_password()));
+
+        // Kiểm tra độ mạnh của mật khẩu
+        if (!isValidPassword(signUpDto.getPassword())) {
+            result.rejectValue("password", "error.signUpDto", "Mật khẩu phải chứa ít nhất 8 ký tự, bao gồm chữ in, chữ thường, số và ký tự đặc biệt");
+        }
 
         // Kiểm tra xác nhận mật khẩu
         if (!signUpDto.getPassword().equals(signUpDto.getConfirm_password())) {
@@ -50,14 +65,12 @@ public class AuthController {
 
         // Kiểm tra lỗi ràng buộc
         if (result.hasErrors()) {
-            logger.info("Validation errors: {}", result.getAllErrors());
             model.addAttribute("title", "Đăng Ký");
             return "auth/sign-up";
         }
 
         // Kiểm tra xem email đã tồn tại chưa
         if (accountRepository.existsByEmail(signUpDto.getEmail())) {
-            logger.warn("Email đã tồn tại: {}", signUpDto.getEmail());
             result.rejectValue("email", "error.signUpDto", "Email đã tồn tại");
             model.addAttribute("title", "Đăng Ký");
             return "auth/sign-up";
@@ -68,7 +81,7 @@ public class AuthController {
             return "auth/sign-in";
 
         } catch (Exception e) {
-            logger.error("Đăng ký thất bại", e);
+            System.out.println(e.getMessage());
             result.reject("error.global", "Đã xảy ra lỗi trong quá trình đăng ký");
             model.addAttribute("title", "Đăng Ký");
             return "auth/sign-up";
