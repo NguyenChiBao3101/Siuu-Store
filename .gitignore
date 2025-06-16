@@ -41,8 +41,9 @@ src/main/java/com/siuuuuu/.DS_Store
 src/main/resources/.DS_Store
 src/main/resources/static/.DS_Store
 src/main/resources/templates/.DS_Store
-.env
 src/main/resources/application.properties
+.env
+
 
 
 
