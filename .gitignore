@@ -42,7 +42,15 @@ src/main/resources/.DS_Store
 src/main/resources/static/.DS_Store
 src/main/resources/templates/.DS_Store
 src/main/resources/application.properties
+
+# Environment variables
 .env
+.env.local
+.env.production
+.env.staging
+
+# Keep example file
+!.env.example
 
 
 
