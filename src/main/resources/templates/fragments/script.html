@@ -79,7 +79,8 @@
             var passwordField = document.getElementById('password');
             var password = passwordField.value;
 
-            var publicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnz7f6CvUiK36ycZTp9NZb4URO57ufP4qV/rzUX80xeHF4F4HvEGgF7Dn2HcVfudTUeDklNHvwYcHfNm2eJunG/pjdapYNxzHSyt1cBFsmu33AWk1GYIw/r1abXR95moZKeyYtuzpy6y8XEWuq6cMLuLFpfd4BVr3d57oIADkPB7H0WRbG1OuYxpLi+K9UEfkUbJCDzZtd1MRqXTRQAfyQv5S2q1oLPuu16yySQsqUKTstybxzUICDia4efyTEGYFXcbD4B6DjNXPk6KqOJ86VewGRACeh6EqBHA53Jdha2775UjpdVdIwBBOKHNAK7RsqerPzDFFXIFf0niQB4ZqxQIDAQAB";
+            // Get public key from server
+            var publicKey = document.getElementById('publicKey').value;
 
             var encrypt = new JSEncrypt();
             encrypt.setPublicKey(publicKey);
@@ -93,7 +94,9 @@
         function encryptPasswordSignUp() {
             var passwordFieldSignUp = document.getElementById('password');
             var passwordSignUp = passwordFieldSignUp.value;
-            var publicKeySignUp = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnz7f6CvUiK36ycZTp9NZb4URO57ufP4qV/rzUX80xeHF4F4HvEGgF7Dn2HcVfudTUeDklNHvwYcHfNm2eJunG/pjdapYNxzHSyt1cBFsmu33AWk1GYIw/r1abXR95moZKeyYtuzpy6y8XEWuq6cMLuLFpfd4BVr3d57oIADkPB7H0WRbG1OuYxpLi+K9UEfkUbJCDzZtd1MRqXTRQAfyQv5S2q1oLPuu16yySQsqUKTstybxzUICDia4efyTEGYFXcbD4B6DjNXPk6KqOJ86VewGRACeh6EqBHA53Jdha2775UjpdVdIwBBOKHNAK7RsqerPzDFFXIFf0niQB4ZqxQIDAQAB";
+            
+            // Get public key from server
+            var publicKeySignUp = document.getElementById('publicKey').value;
 
             var encryptSignUp = new JSEncrypt();
             encryptSignUp.setPublicKey(publicKeySignUp);

@@ -10,6 +10,9 @@
                 <div class="text-2xl font-bold text-center text-gray-800 mb-5">Đăng Nhập</div>
                 <div class="form-signup">
                     <form method="post" role="form" th:action="@{/auth/sign-in}" onsubmit="encryptPassword()">
+                        <!-- Hidden field for public key -->
+                        <input type="hidden" id="publicKey" th:value="${publicKey}" />
+                        
                         <div class="mb-4">
                             <input
                                     class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-600"

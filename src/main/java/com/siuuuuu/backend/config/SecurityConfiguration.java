@@ -42,6 +42,7 @@ public class SecurityConfiguration {
             "/oauth2/**",
             "assets/**",
             "/shop/**",
+            "/swagger-ui/index.html",
     };
 
     private final RecaptchaService recaptchaService;

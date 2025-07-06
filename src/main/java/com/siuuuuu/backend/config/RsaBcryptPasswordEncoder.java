@@ -1,14 +1,13 @@
 package com.siuuuuu.backend.config;
 
-import org.springframework.beans.factory.annotation.Value;
+import java.security.KeyFactory;
+import java.security.interfaces.RSAPrivateKey;
+import java.util.Base64;
+
+import javax.crypto.Cipher;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.security.KeyFactory;
-import java.security.PrivateKey;
-import java.security.interfaces.RSAPrivateKey;
-import javax.crypto.Cipher;
-import java.util.Base64;
 
 public class RsaBcryptPasswordEncoder implements PasswordEncoder {
     private RSAPrivateKey privateKey;
@@ -31,11 +30,17 @@ public class RsaBcryptPasswordEncoder implements PasswordEncoder {
 
     // Giải mã mật khẩu RSA
     private String decrypt(String encryptedPassword) throws Exception {
-        byte[] encryptedBytes = Base64.getDecoder().decode(encryptedPassword);
-        Cipher cipher = Cipher.getInstance("RSA");
-        cipher.init(Cipher.DECRYPT_MODE, privateKey);
-        byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
-        return new String(decryptedBytes);
+        try {
+            byte[] encryptedBytes = Base64.getDecoder().decode(encryptedPassword);
+            Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+            cipher.init(Cipher.DECRYPT_MODE, privateKey);
+            byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
+            return new String(decryptedBytes);
+        } catch (Exception e) {
+            // Log the error for debugging
+            System.err.println("RSA Decryption failed: " + e.getMessage());
+            throw e;
+        }
     }
 
     @Override
@@ -51,7 +56,7 @@ public class RsaBcryptPasswordEncoder implements PasswordEncoder {
             String decryptedPassword = decrypt(rawPassword.toString());
             return bcryptPasswordEncoder.matches(decryptedPassword, encodedPassword);
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Password matching failed: " + e.getMessage());
             return false;
         }
     }

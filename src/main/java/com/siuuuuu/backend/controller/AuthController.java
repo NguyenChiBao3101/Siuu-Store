@@ -1,20 +1,22 @@
 package com.siuuuuu.backend.controller;
 
-import com.siuuuuu.backend.repository.AccountRepository;
-import com.siuuuuu.backend.service.AuthService;
-import com.siuuuuu.backend.service.RSADecryptionService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import com.siuuuuu.backend.dto.request.SignUpDto;
-import jakarta.validation.Valid;
+import java.util.regex.Pattern;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.regex.Pattern;
+import com.siuuuuu.backend.dto.request.SignUpDto;
+import com.siuuuuu.backend.repository.AccountRepository;
+import com.siuuuuu.backend.service.AuthService;
+import com.siuuuuu.backend.service.RSADecryptionService;
 
 
 @Controller
@@ -37,6 +39,9 @@ public class AuthController {
     @Value("${google.recaptcha.site-key}")
     private String siteKey;
 
+    @Value("${spring.security.rsa.publickey}")
+    private String publicKey;
+
     @Autowired
     private RSADecryptionService rsaDecryptionService;
 
@@ -44,14 +49,23 @@ public class AuthController {
     public String signUpForm(Model model) {
         model.addAttribute("title", "Đăng Ký");
         model.addAttribute("signUpDto", new SignUpDto()); // Khởi tạo SignUpDto
+        model.addAttribute("publicKey", publicKey);
         return "auth/sign-up";
     }
 
 
     @PostMapping("/sign-up")
-    public String signUp(@Valid SignUpDto signUpDto, BindingResult result, Model model) {
-        signUpDto.setPassword(rsaDecryptionService.decrypt(signUpDto.getPassword()));
-        signUpDto.setConfirm_password(rsaDecryptionService.decrypt(signUpDto.getConfirm_password()));
+    public String signUp(SignUpDto signUpDto, BindingResult result, Model model) {
+        // Decrypt passwords first
+        try {
+            signUpDto.setPassword(rsaDecryptionService.decrypt(signUpDto.getPassword()));
+            signUpDto.setConfirm_password(rsaDecryptionService.decrypt(signUpDto.getConfirm_password()));
+        } catch (Exception e) {
+            result.reject("error.global", "Lỗi giải mã mật khẩu");
+            model.addAttribute("title", "Đăng Ký");
+            model.addAttribute("publicKey", publicKey);
+            return "auth/sign-up";
+        }
 
         // Kiểm tra độ mạnh của mật khẩu
         if (!isValidPassword(signUpDto.getPassword())) {
@@ -66,6 +80,7 @@ public class AuthController {
         // Kiểm tra lỗi ràng buộc
         if (result.hasErrors()) {
             model.addAttribute("title", "Đăng Ký");
+            model.addAttribute("publicKey", publicKey);
             return "auth/sign-up";
         }
 
@@ -73,6 +88,7 @@ public class AuthController {
         if (accountRepository.existsByEmail(signUpDto.getEmail())) {
             result.rejectValue("email", "error.signUpDto", "Email đã tồn tại");
             model.addAttribute("title", "Đăng Ký");
+            model.addAttribute("publicKey", publicKey);
             return "auth/sign-up";
         }
         try {
@@ -84,6 +100,7 @@ public class AuthController {
             System.out.println(e.getMessage());
             result.reject("error.global", "Đã xảy ra lỗi trong quá trình đăng ký");
             model.addAttribute("title", "Đăng Ký");
+            model.addAttribute("publicKey", publicKey);
             return "auth/sign-up";
         }
     }
@@ -93,6 +110,7 @@ public class AuthController {
     public String signIn(Model model) {
         model.addAttribute("siteKey", siteKey);
         model.addAttribute("title", "Đăng Nhập");
+        model.addAttribute("publicKey", publicKey);
         return "auth/sign-in";
     }
 
