@@ -18,7 +18,7 @@ Edit `.env` file with your actual credentials:
 - Email credentials
 - Google OAuth credentials
 - RSA keys
-
+- JASYPT 
 
 ### 3. Run the application
 ```bash
@@ -43,3 +43,8 @@ The following environment variables need to be configured:
 - Never commit `.env` file or `application.properties` with real credentials
 - Use environment variables for all sensitive information
 - Keep your secrets secure and rotate them regularly
+## Database 
+Download db_backup.sql: https://drive.google.com/file/d/1npzIGLqG4PJ8hqmU6g2xibRBvOujlNtS/view?usp=sharing
+run file with mySQL
+
+
