@@ -43,6 +43,7 @@ public class SecurityConfiguration {
             "assets/**",
             "/shop/**",
             "/swagger-ui/index.html",
+            "/actuator/health", "/actuator/health/**"
     };
 
     private final RecaptchaService recaptchaService;
