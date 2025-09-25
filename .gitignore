@@ -45,12 +45,4 @@ src/main/resources/application.properties
 
 # Environment variables
 .env
-
-
-
-
-
-
-
-
-
+/dump_siu.sql
