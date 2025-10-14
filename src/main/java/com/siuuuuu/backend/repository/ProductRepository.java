@@ -20,6 +20,7 @@ public interface ProductRepository extends JpaRepository<Product, String>, JpaSp
 
     boolean existsByName(String name);
 
+    boolean existsBySlug(String slug);
     @Query("SELECT p FROM Product p WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%'))")
     Page<Product> searchByName(String name, Pageable pageable);
 }

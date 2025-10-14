@@ -24,6 +24,4 @@ public class UpdateProfileDto {
 
     @Pattern(regexp = "^(\\+84|0)[1-9][0-9]{8}$", message = "Số điện thoại không hợp lệ. Vui lòng nhập đúng định dạng.")
     private String phoneNumber;
-
-    private Boolean isActive;
 }

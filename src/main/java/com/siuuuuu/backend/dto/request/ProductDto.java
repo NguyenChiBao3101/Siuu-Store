@@ -12,6 +12,8 @@ public class ProductDto {
 
     @NotBlank(message = "Tên sản phẩm không được để trống.")
     private String name;
+    @NotBlank(message = "Tên định danh sản phẩm không được để trống.")
+    private String slug;
 
     @NotNull(message = "Giá sản phẩm không được để trống.")
     @Min(value = 1, message = "Giá sản phẩm phải lớn hơn 0.")

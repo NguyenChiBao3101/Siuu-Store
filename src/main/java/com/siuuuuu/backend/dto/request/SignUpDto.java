@@ -22,6 +22,9 @@ public class SignUpDto {
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private LocalDate date_of_birth;
 
+    @Pattern(regexp = "^(\\+84|0)[1-9][0-9]{8}$", message = "Số điện thoại không hợp lệ. Vui lòng nhập đúng định dạng.")
+    private String phone_number;
+
     @NotEmpty(message = "Email không được để trống")
     @Email(message = "Email không đúng định dạng")
     private String email;

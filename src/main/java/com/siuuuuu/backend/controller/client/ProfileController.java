@@ -1,6 +1,7 @@
 package com.siuuuuu.backend.controller.client;
 
 import com.siuuuuu.backend.constant.OrderStatus;
+import com.siuuuuu.backend.dto.request.UpdateProfileDto;
 import com.siuuuuu.backend.entity.Order;
 import com.siuuuuu.backend.entity.OrderDetail;
 import com.siuuuuu.backend.entity.OrderHistory;
@@ -43,7 +44,7 @@ public class ProfileController {
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public String updateProfile(@ModelAttribute Profile profile) {
+    public String updateProfile(@ModelAttribute UpdateProfileDto profile) {
         profileService.updateProfile(profile);
         return "redirect:/profile";
     }

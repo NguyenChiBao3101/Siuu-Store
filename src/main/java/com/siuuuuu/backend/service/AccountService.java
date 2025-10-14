@@ -1,9 +1,9 @@
 package com.siuuuuu.backend.service;
 
 import com.siuuuuu.backend.constant.Roles;
-import com.siuuuuu.backend.dto.request.AccountDto;
-import com.siuuuuu.backend.dto.request.RegisterDto;
-import com.siuuuuu.backend.dto.request.UpdateProfileDto;
+import com.siuuuuu.backend.dto.request.*;
+import com.siuuuuu.backend.dto.response.AccountDtoResponse;
+import com.siuuuuu.backend.dto.response.ProfileDtoResponse;
 import com.siuuuuu.backend.entity.Account;
 import com.siuuuuu.backend.entity.Cart;
 import com.siuuuuu.backend.entity.Profile;
@@ -15,18 +15,18 @@ import com.siuuuuu.backend.repository.RoleRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class AccountService {
@@ -44,43 +44,50 @@ public class AccountService {
     @Autowired
     private CartRepository cartRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
-    public List<AccountDto> getAllAccounts(Boolean isActive) {
-        return mapToListDto(accountRepository.findByIsActive(isActive));
+    @Autowired
+    private ProfileService profileService;
+
+    @Autowired
+    private PasswordEncoder plainPasswordEncoder;
+
+    public AccountService(
+            @Qualifier("plainPasswordEncoder") PasswordEncoder plainPasswordEncoder) {
+        this.plainPasswordEncoder = plainPasswordEncoder;
     }
 
-    // Get account is employee
-    public Page<AccountDto> getEmployeeAccounts(int page, int size) {
+
+    public List<AccountDtoResponse> findAllAccounts() {
+        return mapToListDto(accountRepository.findAll());
+    }
+
+    public AccountDtoResponse findByEmail(String email) {
+        Account account = accountRepository.findByEmail(email);
+        return mapToDto(account);
+    }
+
+    //Get account is employee
+    public Page<AccountDtoResponse> getEmployeeAccounts(int page, int size) {
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<Account> accountDtoPage = accountRepository.findByRoleEmployee(pageable);
         return accountDtoPage.map(this::mapToDto);
     }
 
-    public Page<AccountDto> getEmployeeByStatus(int page, int size, boolean status) {
+    public Page<AccountDtoResponse> getEmployeeByStatus(int page, int size, boolean status) {
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<Account> accountDtoPage = accountRepository.findByRoleEmployeeAndIsActive(status, pageable);
         return accountDtoPage.map(this::mapToDto);
     }
 
-
-    // Get all accounts with Pagination and role is EMPLOYEE
-    public Page<AccountDto> getAllAccountsWithPagination(int page, int size, Boolean isActive) {
-        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "createdAt"));
-        Page<Account> accountDtoPage = accountRepository.findAll(pageable);
-        return accountDtoPage.map(this::mapToDto);
-    }
-
     @Transactional
-    public AccountDto register(RegisterDto registerDto) {
+    public AccountDtoResponse register(RegisterDto registerDto) {
         // Check input
         if (accountRepository.existsByEmail(registerDto.getEmail())) {
-            throw new RuntimeException("Tài khoản email đã tồn tại");
+            throw new NoSuchElementException("Tài khoản email đã tồn tại");
         }
         Account newAccount = new Account();
         newAccount.setEmail(registerDto.getEmail());
-        newAccount.setPassword(passwordEncoder.encode(registerDto.getPassword()));
+        newAccount.setPassword(plainPasswordEncoder.encode(registerDto.getPassword()));
 
         Set<Role> roles = new HashSet<>();
         roles.add(roleRepository.findByName("EMPLOYEE"));
@@ -129,33 +136,33 @@ public class AccountService {
         return registerDto;
     }
 
-    public AccountDto updateAccount(UpdateProfileDto updateProfileDto, String email) {
+    public AccountDtoResponse updateAccount(ProfileDto profileDto, String email) {
 
         // Update account's information
         Account currentAccount = accountRepository.findByEmail(email);
 
 
         if (currentAccount.getIsActive() != null) {
-            currentAccount.setIsActive(updateProfileDto.getIsActive());
+            currentAccount.setIsActive(profileDto.getIsActive());
         }
         Account newAccount = accountRepository.save(currentAccount);
 
         // update currentProfile's information
         Profile currentProfile = profileRepository.findByAccount_Email(email);
         if (currentProfile.getFirstName() != null) {
-            currentProfile.setFirstName(updateProfileDto.getFirstName());
+            currentProfile.setFirstName(profileDto.getFirstName());
         }
         if (currentProfile.getLastName() != null) {
-            currentProfile.setLastName(updateProfileDto.getLastName());
+            currentProfile.setLastName(profileDto.getLastName());
         }
         if (currentProfile.getDateOfBirth() != null) {
-            currentProfile.setDateOfBirth(updateProfileDto.getDateOfBirth());
+            currentProfile.setDateOfBirth(profileDto.getDateOfBirth());
         }
         if (currentProfile.getPhoneNumber() != null) {
-            currentProfile.setPhoneNumber(updateProfileDto.getPhoneNumber());
+            currentProfile.setPhoneNumber(profileDto.getPhoneNumber());
         }
         if (currentProfile.getIsActive() != null) {
-            currentProfile.setIsActive(updateProfileDto.getIsActive());
+            currentProfile.setIsActive(profileDto.getIsActive());
         }
         if (currentProfile.getAccount() != null) {
             currentProfile.setAccount(newAccount);
@@ -165,26 +172,101 @@ public class AccountService {
         return mapToDto(newAccount);
     }
 
-    public boolean deleteCategory(String id) {
-        if (accountRepository.existsById(id)) {
-            accountRepository.deleteById(id);
-            return true;
+    // updated account api
+
+    public AccountDtoResponse updateAccountAPI(UpdateAccountStatusDto updateAccountStatusDto, String email) {
+        Account currentAccount = accountRepository.findByEmail(email);
+
+        if (currentAccount.getIsActive() != null) {
+            currentAccount.setIsActive(updateAccountStatusDto.getIsActive());
         }
-        return false;
+        Account newAccount = accountRepository.save(currentAccount);
+        return mapToDto(newAccount);
     }
 
-    public AccountDto mapToDto(Account account) {
-        AccountDto accountDto = new AccountDto();
-        accountDto.setEmail(account.getEmail());
-        accountDto.setIsActive(account.getIsActive());
-        accountDto.setRoles(account.getRoles());
-        accountDto.setProfile(account.getProfile());
-        return accountDto;
+    public ProfileDtoResponse updateProfileAPI(UpdateProfileDto updateProfileDto, String email) {
+        Account currentAccount = accountRepository.findByEmail(email);
+
+        Profile profile = currentAccount.getProfile();
+        profile.setFirstName(updateProfileDto.getFirstName());
+        profile.setLastName(updateProfileDto.getLastName());
+        profile.setDateOfBirth(updateProfileDto.getDateOfBirth());
+        profile.setPhoneNumber(updateProfileDto.getPhoneNumber());
+
+        accountRepository.save(currentAccount);
+        return profileService.mapToDto(currentAccount.getProfile());
     }
 
+    public void changePassword(String email, String oldPassword, String newPassword) {
+        Account account = accountRepository.findByEmail(email);
+        if (account == null) {
+            throw new NoSuchElementException("Không tìm thấy tài khoản");
+        }
+        if (oldPassword.equals(newPassword)) {
+            throw new IllegalArgumentException("Mật khẩu mới cần khác so với mật khẩu hiện tại");
+        }
 
-    public List<AccountDto> mapToListDto(List<Account> accountList) {
-        List<AccountDto> accountDtoList = new ArrayList<>();
+        if (!plainPasswordEncoder.matches(oldPassword, account.getPassword())) {
+            throw new BadCredentialsException("Mật khẩu hiện tại không chính xác");
+        }
+
+        account.setPassword(plainPasswordEncoder.encode(newPassword));
+        accountRepository.save(account);
+    }
+
+    public AccountDtoResponse updateRoles(String email, Set<String> roles) {
+        Account account = accountRepository.findByEmail(email);
+        if (account == null) {
+            throw new NoSuchElementException("Không tìm thấy tài khoản với email: " + email);
+        }
+        if (roles == null || roles.isEmpty()) {
+            throw new IllegalArgumentException("Roles không được để trống");
+        }
+        //upperCase for input
+        Set<String> normalized = roles.stream()
+                .filter(Objects::nonNull)
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .map(String::toUpperCase)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+        //Set input with Roles
+        Set<String> allowed = Arrays.stream(Roles.values())
+                .map(Enum::name)
+                .collect(Collectors.toSet());
+
+        normalized.retainAll(allowed);
+        if (normalized.isEmpty()) {
+            throw new IllegalArgumentException("Không tìm thấy tên roles hợp lệ trong yêu cầu");
+        }
+
+        Set<Role> persistedRoles = normalized.stream()
+                .map(name -> {
+                    Role existing = roleRepository.findByName(name);
+                    return (existing != null) ? existing : roleRepository.save(new Role(name));
+                })
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+
+        account.setRoles(persistedRoles);
+        Account saved = accountRepository.save(account);
+
+        return mapToDto(saved);
+    }
+
+    public AccountDtoResponse mapToDto(Account account) {
+        AccountDtoResponse accountDtoResponse = new AccountDtoResponse();
+        accountDtoResponse.setEmail(account.getEmail());
+        accountDtoResponse.setPassword(account.getPassword());
+        accountDtoResponse.setIsActive(account.getIsActive());
+        accountDtoResponse.setRoles(account.getRoles()
+                .stream()
+                .map(Role::getName)
+                .collect(Collectors.toSet()));
+        accountDtoResponse.setProfile(profileService.mapToDto(account.getProfile()));
+        return accountDtoResponse;
+    }
+
+    public List<AccountDtoResponse> mapToListDto(List<Account> accountList) {
+        List<AccountDtoResponse> accountDtoList = new ArrayList<>();
         for (Account account : accountList) {
             accountDtoList.add(mapToDto(account));
         }

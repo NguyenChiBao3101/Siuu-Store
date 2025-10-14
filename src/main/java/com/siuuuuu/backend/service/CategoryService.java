@@ -1,6 +1,7 @@
 package com.siuuuuu.backend.service;
 
 import com.siuuuuu.backend.dto.request.CategoryDto;
+import com.siuuuuu.backend.dto.response.CategoryResponseDto;
 import com.siuuuuu.backend.entity.Category;
 import com.siuuuuu.backend.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class CategoryService {
@@ -35,7 +37,7 @@ public class CategoryService {
     public Category getCategoryById(String id) {
         Category category = categoryRepository.findById(id).orElse(null);
         if (category == null) {
-            throw new RuntimeException("Không tìm thấy danh mục sản phẩm");
+            throw new NoSuchElementException("Không tìm thấy danh mục sản phẩm");
         }
         return category;
     }
@@ -45,7 +47,7 @@ public class CategoryService {
         Category category = new Category();
 
         if (categoryRepository.existsCategoriesByName(categoryDto.getName())) {
-            throw new RuntimeException("Danh mục sản phẩm này đã tồn tại");
+            throw new IllegalArgumentException("Danh mục sản phẩm này đã tồn tại");
         }
 
         category.setName(categoryDto.getName());
@@ -67,7 +69,7 @@ public class CategoryService {
 
     //update category information
     public void updateCategory(CategoryDto categoryDto, String id) {
-        Category category = categoryRepository.findById(id).orElseThrow(() -> new RuntimeException("không tìm thấy danh mục sản phẩm"));
+        Category category = categoryRepository.findById(id).orElseThrow(() -> new NoSuchElementException("không tìm thấy danh mục sản phẩm"));
         if (category.getName() != null) {
             category.setName(categoryDto.getName());
         }
@@ -93,6 +95,12 @@ public class CategoryService {
 
         return categoryDto;
     }
+     public CategoryResponseDto mapDto(Category category) {
+        CategoryResponseDto categoryResponseDto = new CategoryResponseDto();
+        categoryResponseDto.setName(category.getName());
+        categoryResponseDto.setStatus(category.getStatus());
+        return categoryResponseDto;
+     }
 
     public List<CategoryDto> mapToListDto(List<Category> categoryList) {
         List<CategoryDto> categoryDtoList = new ArrayList<>();

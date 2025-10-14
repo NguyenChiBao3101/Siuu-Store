@@ -1,12 +1,11 @@
 package com.siuuuuu.backend.controller.admin;
 
 import com.siuuuuu.backend.constant.Roles;
-import com.siuuuuu.backend.dto.request.AccountDto;
+import com.siuuuuu.backend.dto.request.ProfileDto;
 import com.siuuuuu.backend.dto.request.RegisterDto;
 import com.siuuuuu.backend.dto.request.UpdateProfileDto;
-import com.siuuuuu.backend.entity.Profile;
+import com.siuuuuu.backend.dto.response.AccountDtoResponse;
 import com.siuuuuu.backend.entity.Role;
-import com.siuuuuu.backend.repository.AccountRepository;
 import com.siuuuuu.backend.repository.ProfileRepository;
 import com.siuuuuu.backend.repository.RoleRepository;
 import com.siuuuuu.backend.service.AccountService;
@@ -45,7 +44,7 @@ public class AccountController {
                            @RequestParam(defaultValue = "5") int size,
                            @RequestParam(value = "status", required = false) String status
     ) {
-        Page<AccountDto> accountDtoPage;
+        Page<AccountDtoResponse> accountDtoPage;
         if (status != null && !status.isEmpty()) {
             accountDtoPage = accountService.getEmployeeByStatus(page, size, Boolean.parseBoolean(status));
         } else {
@@ -127,7 +126,7 @@ public class AccountController {
 
     @PostMapping("/update/{email}")
     public String updateAccount(@PathVariable String email,
-                                @Valid UpdateProfileDto updateProfileDto,
+                                @Valid ProfileDto profileDto,
                                 BindingResult bindingResult,
                                 Model model,
                                 RedirectAttributes redirectAttributes) {
@@ -142,17 +141,17 @@ public class AccountController {
             model.addAttribute("errorMessage", "Vui lòng kiểm tra lại thông tin nhập vào.");
             model.addAttribute("allRoles", allRoles);
             model.addAttribute("accountEmail", email);
-            model.addAttribute("registerDto", updateProfileDto);
-            System.out.println(updateProfileDto.toString());
+            model.addAttribute("registerDto", profileDto);
+            System.out.println(profileDto.toString());
             return "admin/account/update-account";
         }
         try {
-            accountService.updateAccount(updateProfileDto, email);
+            accountService.updateAccount(profileDto, email);
             redirectAttributes.addFlashAttribute("message", "Cập nhật tài khoản thành công!");
             return "redirect:/admin/account";
         } catch (RuntimeException ex) {
             model.addAttribute("allRoles", allRoles);
-            model.addAttribute("registerDto", updateProfileDto);
+            model.addAttribute("registerDto", profileDto);
             model.addAttribute("errorMessage", ex.getMessage() != null ? ex.getMessage() : "Đã xảy ra lỗi không xác định.");
             return "admin/account/update-account";
         }
