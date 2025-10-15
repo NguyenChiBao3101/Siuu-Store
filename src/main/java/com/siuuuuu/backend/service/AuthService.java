@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @FieldDefaults(makeFinal = true, level = lombok.AccessLevel.PRIVATE)
@@ -44,6 +43,7 @@ public class AuthService {
     private final PasswordEncoder plainPasswordEncoder;
 
     JwtService jwtService;
+    TokenStoreService tokenStoreService;
 
     public AuthService(AccountRepository accountRepository,
                        ProfileRepository profileRepository,
@@ -52,7 +52,8 @@ public class AuthService {
                        VerificationTokenService verificationTokenService,
                        EmailService emailService,
                        @Qualifier("plainPasswordEncoder") PasswordEncoder plainPasswordEncoder,
-                       JwtService jwtService) {
+                       JwtService jwtService,
+                       TokenStoreService tokenStoreService) {
         this.accountRepository = accountRepository;
         this.profileRepository = profileRepository;
         this.roleRepository = roleRepository;
@@ -61,6 +62,7 @@ public class AuthService {
         this.emailService = emailService;
         this.plainPasswordEncoder= plainPasswordEncoder;
         this.jwtService = jwtService;
+        this.tokenStoreService = tokenStoreService;
 
         // DEBUG: in xem đang inject encoder nào
         logger.info("AuthService using PasswordEncoder: {}", plainPasswordEncoder.getClass().getName());
@@ -151,64 +153,63 @@ public class AuthService {
         }
 
         var roles = account.getRoles().stream().map(Role::getName).collect(java.util.stream.Collectors.toSet());
-        var password = account.getPassword();
         var claims = new java.util.HashMap<String, Object>();
         claims.put("roles", roles);
-        claims.put("password", password);
 
-        String access  = jwtService.generateAccessToken(account.getEmail(), claims);
-        String refresh = jwtService.generateRefreshToken(account.getEmail());
+        JwtService.IssuedToken issued = jwtService.issueAccessToken(account.getEmail(), claims);
 
-        long accessMs  = 900_000L;      // đồng bộ application.properties
-        long refreshMs = 604_800_000L;
+        // lưu token đang hoạt động vào DB
+        tokenStoreService.saveActiveToken(issued.jti(), account.getEmail(), issued.expiresAt());
 
         return TokenResponse.builder()
                 .tokenType("Bearer")
-                .accessToken(access)
-                .accessTokenExpiresAt(java.time.Instant.now().plusMillis(accessMs))
-                .refreshToken(refresh)
-                .refreshTokenExpiresAt(java.time.Instant.now().plusMillis(refreshMs))
+                .accessToken(issued.token())
+                .accessTokenExpiresAt(issued.expiresAt())
                 .username(account.getEmail())
                 .roles(roles)
                 .build();
     }
-
-    public TokenResponse refresh(String refreshToken) {
-        if (!jwtService.isValid(refreshToken)) {
-            throw new IllegalArgumentException("Refresh token không hợp lệ hoặc đã hết hạn");
+    public TokenResponse refresh(String expiredAccessToken) {
+        // 1) Phải là access token HẾT HẠN (nhưng chữ ký hợp lệ)
+        if (!jwtService.isExpired(expiredAccessToken)) {
+            throw new IllegalArgumentException("Access token chưa hết hạn; chưa cần refresh");
         }
 
-        // Giải mã để lấy username/email
-        String username = jwtService.getUsername(refreshToken);
+        // 2) Lấy claims dù token đã hết hạn (đã verify chữ ký)
+        var claims = jwtService.getClaimsAllowExpired(expiredAccessToken);
+        String username = claims.getSubject();
+        String oldJti   = claims.getId();
+        Instant expAt   = claims.getExpiration().toInstant();
+
+        // 3) Kiểm tra token cũ: chưa bị revoke và còn trong 'grace window'
+        if (tokenStoreService.isRevoked(oldJti)) {
+            throw new BadCredentialsException("Token đã bị thu hồi hoặc không hợp lệ");
+        }
+        if (!jwtService.withinRefreshGrace(expAt)) {
+            throw new BadCredentialsException("Token đã hết hạn quá lâu, vui lòng đăng nhập lại");
+        }
+
+        // 4) Kiểm tra tài khoản
         Account account = accountRepository.findByEmail(username);
+        if (account == null) throw new NoSuchElementException("Tài khoản không tồn tại");
+        if (Boolean.FALSE.equals(account.getIsActive()))   throw new BadCredentialsException("Tài khoản đang bị vô hiệu hóa");
+        if (Boolean.FALSE.equals(account.getIsVerified())) throw new BadCredentialsException("Tài khoản chưa được xác thực");
 
-        if (account == null)
-            throw new NoSuchElementException("Tài khoản không tồn tại");
-        if (Boolean.FALSE.equals(account.getIsActive()))
-            throw new BadCredentialsException("Tài khoản đang bị vô hiệu hóa");
-        if (Boolean.FALSE.equals(account.getIsVerified()))
-            throw new BadCredentialsException("Tài khoản chưa được xác thực");
-
-        // Lấy roles từ DB (để gắn vào claim)
+        // 5) Cấp access token mới
         var roles = account.getRoles().stream().map(Role::getName).collect(java.util.stream.Collectors.toSet());
-        var claims = new java.util.HashMap<String, Object>();
-        claims.put("roles", roles);
+        var newClaims = new HashMap<String, Object>();
+        newClaims.put("roles", roles);
 
-        // Tạo access token mới
-        String newAccessToken = jwtService.generateAccessToken(username, claims);
+        var issued = jwtService.issueAccessToken(username, newClaims);
 
-        //rotation: sinh refresh token mới để thay thế cái cũ
-        String newRefreshToken = jwtService.generateRefreshToken(username);
-
-        long accessMs  = 900_000L;      // 15 phút
-        long refreshMs = 604_800_000L;  // 7 ngày
+        // Lưu token mới và revoke token cũ (=> "xoá" hiệu lực token cũ)
+        tokenStoreService.saveActiveToken(issued.jti(), username, issued.expiresAt());
+        tokenStoreService.revoke(oldJti, issued.jti());
 
         return TokenResponse.builder()
                 .tokenType("Bearer")
-                .accessToken(newAccessToken)
-                .accessTokenExpiresAt(java.time.Instant.now().plusMillis(accessMs))
-                .refreshToken(newRefreshToken)
-                .refreshTokenExpiresAt(java.time.Instant.now().plusMillis(refreshMs))
+                .accessToken(issued.token())
+                .accessTokenExpiresAt(issued.expiresAt())
                 .username(username)
                 .roles(roles)
                 .build();

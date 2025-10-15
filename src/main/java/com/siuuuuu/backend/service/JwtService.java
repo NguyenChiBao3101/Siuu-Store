@@ -1,5 +1,7 @@
 package com.siuuuuu.backend.service;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,24 +16,26 @@ import java.time.Instant;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class JwtService {
     private PrivateKey privateKey;
     private PublicKey publicKey;
     private long accessTtlMs;
-    private long refreshTtlMs;
+    private final long refreshGraceMs;
 
     public JwtService(
             @Value("${app.jwt.private-key}") String privateKeyPem,
             @Value("${app.jwt.public-key}") String publicKeyPem,
-            @Value("${app.jwt.access-ttl-ms:900000}") long accessTtlMs,        // 15m
-            @Value("${app.jwt.refresh-ttl-ms:604800000}") long refreshTtlMs    // 7d
+            @Value("${app.jwt.access-ttl-ms}") long accessTtlMs,        // 10m
+            @Value("${app.jwt.refresh-grace-ms}") long refreshGraceMs   //30m
+
     ) throws Exception {
         this.privateKey = parsePrivateKey(privateKeyPem);
         this.publicKey = parsePublicKey(publicKeyPem);
         this.accessTtlMs = accessTtlMs;
-        this.refreshTtlMs = refreshTtlMs;
+        this.refreshGraceMs = refreshGraceMs;
     }
 
     private PrivateKey parsePrivateKey(String pem) throws Exception {
@@ -50,38 +54,78 @@ public class JwtService {
         return KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(bytes));
     }
 
-    public String generateAccessToken(String subject, Map<String, Object> claims) {
+    public IssuedToken issueAccessToken(String subject, Map<String, Object> claims) {
         Instant now = Instant.now();
-        return Jwts.builder()
+        String jti = UUID.randomUUID().toString();
+        Instant exp = now.plusMillis(accessTtlMs);
+
+        String token = Jwts.builder()
+                .setId(jti)
                 .setSubject(subject)
                 .addClaims(claims)
                 .setIssuedAt(Date.from(now))
-                .setExpiration(Date.from(now.plusMillis(accessTtlMs)))
+                .setExpiration(Date.from(exp))
                 .signWith(privateKey, Jwts.SIG.RS256)
                 .compact();
+
+        return new IssuedToken(token, jti, exp);
     }
 
-    public String generateRefreshToken(String subject) {
-        Instant now = Instant.now();
-        return Jwts.builder()
-                .setSubject(subject)
-                .setIssuedAt(Date.from(now))
-                .setExpiration(Date.from(now.plusMillis(refreshTtlMs)))
-                .signWith(privateKey, Jwts.SIG.RS256)
-                .compact();
-    }
-
-    public boolean isValid(String token) {
+    public boolean isValidAndNotExpired(String token) {
         try {
             Jwts.parser().verifyWith(publicKey).build().parseSignedClaims(token);
-            return true;
+            return true; // hợp lệ & chưa hết hạn
+        } catch (ExpiredJwtException e) {
+            return false; // đã hết hạn
         } catch (JwtException | IllegalArgumentException e) {
+            return false; // sai chữ ký / format
+        }
+    }
+
+    public boolean isExpired(String token) {
+        try {
+            Jwts.parser().verifyWith(publicKey).build().parseSignedClaims(token);
             return false;
+        } catch (ExpiredJwtException e) {
+            return true;
+        } catch (JwtException e) {
+            // không hợp lệ khác -> coi như expired cho luồng refresh sẽ fail sớm
+            return true;
+        }
+    }
+
+    /** Lấy claims ngay cả khi token đã hết hạn (đã verify chữ ký). */
+    public Claims getClaimsAllowExpired(String token) {
+        try {
+            return Jwts.parser().verifyWith(publicKey).build()
+                    .parseSignedClaims(token).getPayload();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims(); // chữ ký hợp lệ nhưng exp
+        }
+    }
+
+    public String getJti(String token) {
+        try {
+            return Jwts.parser().verifyWith(publicKey).build()
+                    .parseSignedClaims(token).getPayload().getId();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims().getId();
         }
     }
 
     public String getUsername(String token) {
-        return Jwts.parser().verifyWith(publicKey).build().parseSignedClaims(token)
-                .getPayload().getSubject();
+        try {
+            return Jwts.parser().verifyWith(publicKey).build()
+                    .parseSignedClaims(token).getPayload().getSubject();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims().getSubject();
+        }
     }
+
+    /** Cho phép refresh trong "grace window" sau khi hết hạn. */
+    public boolean withinRefreshGrace(Instant tokenExp) {
+        return Instant.now().isBefore(tokenExp.plusMillis(refreshGraceMs));
+    }
+
+    public record IssuedToken(String token, String jti, Instant expiresAt) {}
 }

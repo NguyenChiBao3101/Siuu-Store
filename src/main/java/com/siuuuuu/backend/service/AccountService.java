@@ -184,6 +184,15 @@ public class AccountService {
         return mapToDto(newAccount);
     }
 
+    public ProfileDtoResponse getProfileAPI(String email) {
+        Account currentAccount = accountRepository.findByEmail(email);
+        if (!currentAccount.getIsActive()) {
+            throw new BadCredentialsException("Tài khoản đang bị vô hiệu hoá");
+        }
+        Profile profile = currentAccount.getProfile();
+        return profileService.mapToDto(profile);
+    }
+
     public ProfileDtoResponse updateProfileAPI(UpdateProfileDto updateProfileDto, String email) {
         Account currentAccount = accountRepository.findByEmail(email);
 

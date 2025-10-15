@@ -36,7 +36,7 @@ public class AccountApiController {
     }
 
     @GetMapping("/{email}")
-    @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE') or #email == authentication.name")
+    //@PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE') or #email == authentication.name")
     public ResponseEntity<AccountDtoResponse> getByEmail(@PathVariable String email) {
         AccountDtoResponse accountDtoResponse = accountService.findByEmail(email);
         return ResponseEntity.ok(accountDtoResponse);
@@ -51,6 +51,12 @@ public class AccountApiController {
     ) {
         AccountDtoResponse updated = accountService.updateAccountAPI(updateAccountStatusDto, email);
         return ResponseEntity.ok(updated);
+    }
+
+    @GetMapping("/{email}/profile")
+    public ResponseEntity<ProfileDtoResponse> getProfile(@PathVariable String email) {
+        ProfileDtoResponse profile = accountService.getProfileAPI(email);
+        return ResponseEntity.ok(profile);
     }
 
     @PutMapping("/{email}/profile")

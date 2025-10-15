@@ -1,6 +1,7 @@
 package com.siuuuuu.backend.security;
 
 import com.siuuuuu.backend.service.JwtService;
+import com.siuuuuu.backend.service.TokenStoreService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,6 +21,7 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
+    private final TokenStoreService tokenStoreService;
     private final UserDetailsService userDetailsService;
 
     @Override
@@ -29,12 +31,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String header = request.getHeader("Authorization");
         if (header == null || !header.startsWith("Bearer ")) {
+            SecurityContextHolder.clearContext();
             chain.doFilter(request, response);
             return;
         }
 
         String token = header.substring(7);
-        if (!jwtService.isValid(token)) {
+        // 1) token phải còn hạn
+        if (!jwtService.isValidAndNotExpired(token)) {
+            SecurityContextHolder.clearContext();
+            chain.doFilter(request, response);
+            return;
+        }
+
+        // 2) không bị revoke
+        String jti = jwtService.getJti(token);
+        if (tokenStoreService.isRevoked(jti)) {
+            SecurityContextHolder.clearContext();
             chain.doFilter(request, response);
             return;
         }

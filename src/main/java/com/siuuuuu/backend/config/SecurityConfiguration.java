@@ -107,14 +107,9 @@ public class SecurityConfiguration {
                                 "/api/v1/auth/register",
                                 "/api/v1/auth/login",
                                 "/api/v1/auth/refresh"
-
                         ).permitAll()
                         .requestMatchers(HttpMethod.GET,
-                                "/api/v1/accounts/**",
                                 "/api/v1/products/**"
-                        ).permitAll()
-                        .requestMatchers(HttpMethod.PUT,
-                                "/api/v1/accounts/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
@@ -122,11 +117,11 @@ public class SecurityConfiguration {
                         .authenticationEntryPoint(authEntryPoint)
                         .accessDeniedHandler(accessDeniedHandler)
                 )
-                .requestCache(RequestCacheConfigurer::disable)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .formLogin(AbstractHttpConfigurer::disable)
-                .httpBasic(AbstractHttpConfigurer::disable);
-
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .oauth2Login(AbstractHttpConfigurer::disable)
+                .logout(AbstractHttpConfigurer::disable);
         return http.build();
     }
 

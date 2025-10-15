@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -31,7 +32,11 @@ public class AuthApiController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<TokenResponse> refresh(@RequestParam("refreshToken") String refreshToken) {
-        return ResponseEntity.ok(authService.refresh(refreshToken));
+    public ResponseEntity<TokenResponse> refresh(@RequestHeader("Authorization") String auth) {
+        if (auth == null || !auth.startsWith("Bearer ")) {
+            throw new BadCredentialsException("Token không hợp lệ");
+        }
+        String expiredAccessToken = auth.substring(7);
+        return ResponseEntity.ok(authService.refresh(expiredAccessToken));
     }
 }
