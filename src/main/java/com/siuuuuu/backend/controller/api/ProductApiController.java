@@ -18,7 +18,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/v1/products", produces = MediaType.APPLICATION_JSON_VALUE)
-@PreAuthorize("hasAuthority('ADMIN')")
 public class ProductApiController {
     @Autowired
     private ProductApiService productApiService;
@@ -35,12 +34,14 @@ public class ProductApiController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ProductResponseDto> createProduct(@Valid @RequestBody CreateProductRequest createProductRequest) {
         ProductResponseDto created= productApiService.createProduct(createProductRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @PutMapping("/{slug}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ProductResponseDto> updateProduct(@PathVariable String slug,
                                                   @Valid @RequestBody UpdateProductRequest request) {
         ProductResponseDto updated = productApiService.updateProduct(slug, request);

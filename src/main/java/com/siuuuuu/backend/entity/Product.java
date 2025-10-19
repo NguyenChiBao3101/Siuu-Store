@@ -43,6 +43,9 @@ public class Product {
     @JoinColumn(name = "brand_id", nullable = false)
     private Brand brand;
 
+    @Column(name = "quantity", nullable = false)
+    private int quantity;
+
     @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
     private List<ProductVariant> productVariants;
 

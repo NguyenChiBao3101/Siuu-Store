@@ -1,6 +1,9 @@
 package com.siuuuuu.backend.service;
 
 import com.siuuuuu.backend.constant.OrderStatus;
+import com.siuuuuu.backend.dto.response.OrderDetailResponse;
+import com.siuuuuu.backend.dto.response.OrderHistoryResponse;
+import com.siuuuuu.backend.dto.response.OrderResponse;
 import com.siuuuuu.backend.entity.Account;
 import com.siuuuuu.backend.entity.Order;
 import com.siuuuuu.backend.entity.OrderHistory;
@@ -10,7 +13,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -34,5 +39,26 @@ public class OrderHistoryService {
             orderHistory.setActionBy(actionBy);
             orderHistoryRepository.save(orderHistory);
         }
+    }
+
+    public OrderHistoryResponse mapToDto(OrderHistory orderHistory) {
+        if (orderHistory == null)  {
+            throw new NoSuchElementException("Lịch sử đơn đặt hàng không tồn tại");
+        }
+        OrderHistoryResponse response = OrderHistoryResponse.builder()
+                .orderId(orderHistory.getId())
+                .status(orderHistory.getStatus())
+                .note(orderHistory.getOrder().getShippingNote())
+                .createdAt(orderHistory.getCreatedAt().toString())
+                .build();
+        return response;
+    }
+    public List<OrderHistoryResponse> mapToListDto(List<OrderHistory> list) {
+        List<OrderHistoryResponse> responseList = new ArrayList<>();
+        for(OrderHistory order: list) {
+            OrderHistoryResponse response = mapToDto(order);
+            responseList.add(response);
+        }
+        return responseList;
     }
 }

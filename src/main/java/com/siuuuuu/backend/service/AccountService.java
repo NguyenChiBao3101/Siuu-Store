@@ -266,6 +266,7 @@ public class AccountService {
         accountDtoResponse.setEmail(account.getEmail());
         accountDtoResponse.setPassword(account.getPassword());
         accountDtoResponse.setIsActive(account.getIsActive());
+        accountDtoResponse.setIsVerified(account.getIsVerified());
         accountDtoResponse.setRoles(account.getRoles()
                 .stream()
                 .map(Role::getName)

@@ -16,7 +16,12 @@ public class CreateProductRequest {
     @NotNull
     @Min(1)
     Integer price;
-    @NotBlank String description;
-    @NotBlank String categoryId;
-    @NotBlank String brandId;
+    @NotBlank
+    String description;
+    @NotBlank
+    String categoryId;
+    @NotBlank
+    String brandId;
+    @NotBlank
+    int quantity;
 }

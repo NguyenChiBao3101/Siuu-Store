@@ -25,6 +25,8 @@ public class ProductResponseDto {
     @NotNull
     private CategoryResponseDto category;
     @NotNull
+    private int quantity;
+    @NotNull
     private Float rate;
     @NotNull
     private Integer ratedTotal;

@@ -45,6 +45,7 @@ public class ProductApiService {
             p.setDescription(dto.getDescription());
             p.setCategory(categoryService.getCategoryById(dto.getCategoryId()));
             p.setBrand(brandService.getBrandById(dto.getBrandId()));
+            p.setQuantity(dto.getQuantity());
             return mapToDto(productRepository.save(p));
         } else {
             throw new IllegalArgumentException("Sản phẩm đã tồn tại với slug");
@@ -63,6 +64,7 @@ public class ProductApiService {
          product.setPrice(dto.getPrice());
          product.setCategory(categoryService.getCategoryById(dto.getCategoryId()));
          product.setBrand(brandService.getBrandById(dto.getBrandId()));
+         product.setQuantity(dto.getQuantity());
          productRepository.save(product);
          return mapToDto(product);
     }
@@ -76,6 +78,7 @@ public class ProductApiService {
         productResponseDto.setStatus(product.getStatus().toString());
         productResponseDto.setCategory(categoryService.mapDto(product.getCategory()));
         productResponseDto.setBrand(brandService.mapToDto(product.getBrand()));
+        productResponseDto.setQuantity(product.getQuantity());
         productResponseDto.setRate(product.getRate());
         productResponseDto.setRatedTotal(product.getRatedTotal());
         return productResponseDto;

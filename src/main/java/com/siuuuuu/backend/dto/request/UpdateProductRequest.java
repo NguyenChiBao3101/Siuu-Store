@@ -19,4 +19,5 @@ public class UpdateProductRequest {
     @NotBlank String description;
     @NotBlank String categoryId;
     @NotBlank String brandId;
+    @NotBlank int quantity;
 }

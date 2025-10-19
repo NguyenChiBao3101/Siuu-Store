@@ -20,6 +20,8 @@ public class AccountDtoResponse {
     @NotNull
     private Boolean isActive;
     @NotNull
+    private Boolean isVerified;
+    @NotNull
     private Set<String> roles;
 
     @NotNull

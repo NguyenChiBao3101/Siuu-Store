@@ -85,17 +85,17 @@ public class AuthService {
             logger.error("Role CUSTOMER không tồn tại trong database!");
             throw new NoSuchElementException("Role CUSTOMER không tồn tại");
         }
-        account.setIsActive(false);
-        account.setIsVerified(false);
+        account.setIsActive(true);
+        account.setIsVerified(true);
         account.setRoles(roles);
 
         Account accountCreated = accountRepository.save(account);
         logger.info("Tài khoản được tạo thành công: {}", accountCreated);
 
         // Tạo mã xác thực
-        String token = verificationTokenService.createVerificationToken(accountCreated);
-        String verificationUrl = "http://localhost:8080/auth/verify?token=" + token;
-        emailService.sendVerificationEmail(accountCreated.getEmail(), "Xác thực tài khoản", verificationUrl);
+//        String token = verificationTokenService.createVerificationToken(accountCreated);
+//        String verificationUrl = "http://localhost:8080/auth/verify?token=" + token;
+//        emailService.sendVerificationEmail(accountCreated.getEmail(), "Xác thực tài khoản", verificationUrl);
 
         // Tạo profile mới liên kết với tài khoản
         Profile profile = new Profile();
