@@ -1,9 +1,7 @@
 package com.siuuuuu.backend.service;
 
 import com.siuuuuu.backend.constant.OrderStatus;
-import com.siuuuuu.backend.dto.response.OrderDetailResponse;
 import com.siuuuuu.backend.dto.response.OrderHistoryResponse;
-import com.siuuuuu.backend.dto.response.OrderResponse;
 import com.siuuuuu.backend.entity.Account;
 import com.siuuuuu.backend.entity.Order;
 import com.siuuuuu.backend.entity.OrderHistory;
@@ -24,6 +22,12 @@ public class OrderHistoryService {
     OrderRepository orderRepository;
 
     OrderHistoryRepository orderHistoryRepository;
+
+    AccountService accountService;
+
+    public List<OrderHistory> getOrderHistoriesByCustomerEmail(String email) {
+        return orderHistoryRepository.findByCustomerEmailOrderByCreatedAtAsc(email);
+    }
 
     // Get order history by order id and sort by created date
     public List<OrderHistory> getOrderHistoriesByOrderId(String orderId) {
@@ -47,6 +51,7 @@ public class OrderHistoryService {
         }
         OrderHistoryResponse response = OrderHistoryResponse.builder()
                 .orderId(orderHistory.getId())
+                .accountDtoResponse(accountService.mapToDto(orderHistory.getActionBy()))
                 .status(orderHistory.getStatus())
                 .note(orderHistory.getOrder().getShippingNote())
                 .createdAt(orderHistory.getCreatedAt().toString())

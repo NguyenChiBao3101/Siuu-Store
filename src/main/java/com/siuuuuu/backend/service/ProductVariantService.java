@@ -1,5 +1,6 @@
 package com.siuuuuu.backend.service;
 
+import com.siuuuuu.backend.dto.response.ProductVariantResponse;
 import com.siuuuuu.backend.entity.ProductVariant;
 import com.siuuuuu.backend.repository.ProductVariantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,4 +21,12 @@ public class ProductVariantService {
         productVariantRepository.save(productVariant);
     }
 
+    public ProductVariantResponse mapToDto(ProductVariant productVariant) {
+        ProductVariantResponse response = new ProductVariantResponse();
+        response.setSku(productVariant.getSku());
+//        response.setQuantity(productVariant.getQuantity());
+        response.setCreatedAt(productVariant.getCreatedAt());
+
+        return response;
+    }
 }

@@ -17,5 +17,6 @@ public class OrderHistoryResponse {
     private final String note;
     @NotNull
     private final String createdAt;
-
+    @NotNull
+    private final AccountDtoResponse accountDtoResponse;
 }

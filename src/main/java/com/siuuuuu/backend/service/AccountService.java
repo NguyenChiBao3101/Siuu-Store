@@ -61,9 +61,9 @@ public class AccountService {
         return mapToListDto(accountRepository.findAll());
     }
 
-    public AccountDtoResponse findByEmail(String email) {
+    public Account findByEmail(String email) {
         Account account = accountRepository.findByEmail(email);
-        return mapToDto(account);
+        return account;
     }
 
     //Get account is employee

@@ -20,9 +20,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderApiService {
@@ -60,44 +59,72 @@ public class OrderApiService {
     }
 
     public OrderResponse createOrder(CreateOrderRequest request) {
-
         Account account = accountRepository.findByEmail(request.getEmail());
         if(account == null) {
             throw new NoSuchElementException("Tài khoản không tồn tại");
         }
+
+        List<String> requestedIds = request.getCartDetailIds();
+        if (requestedIds == null || requestedIds.isEmpty()) {
+            throw new IllegalArgumentException("cartDetailIds không được rỗng");
+        }
+
+        List<CartDetail> cartDetails = cartDetailService.getCartDetailsByIds(requestedIds);
+
+        Set<String> foundIds = cartDetails.stream().map(CartDetail::getId).collect(Collectors.toSet());
+        List<String> missing = requestedIds.stream().filter(id -> !foundIds.contains(id)).toList();
+        if (!missing.isEmpty()) {
+            throw new NoSuchElementException("Không tìm thấy cartDetailIds: " + missing);
+        }
+
+        List<String> foreign = cartDetails.stream()
+                .filter(cd -> cd.getCart() == null
+                        || cd.getCart().getAccount() == null
+                        || !Objects.equals(cd.getCart().getAccount().getId(), account.getId()))
+                .map(CartDetail::getId)
+                .toList();
+        if (!foreign.isEmpty()) {
+            throw new NoSuchElementException ("cartDetailIds không thuộc tài khoản hiện tại: " + foreign);
+        }
+
+        int computedTotal = cartDetails.stream().mapToInt(cd -> {
+            int price = cd.getProductVariant().getProduct().getPrice();
+            return price * cd.getQuantity();
+        }).sum();
+
+        // 4) Tạo Order
         Order order = new Order();
         order.setShippingName(request.getName());
         order.setShippingEmail(request.getEmail());
         order.setShippingAddress(request.getAddress());
         order.setShippingPhone(request.getPhone());
-        order.setTotalPrice(request.getTotalPrice());
+        order.setTotalPrice(computedTotal);
         order.setCustomer(account);
-        if (request.getPaymentMethod().equals("VN_PAY")) {
+
+        if ("VN_PAY".equalsIgnoreCase(request.getPaymentMethod())) {
             order.setPaymentMethod(PaymentMethod.VN_PAY);
             order.setPaymentStatus(PaymentStatus.PENDING);
-
         } else {
             order.setPaymentMethod(PaymentMethod.COD);
             order.setPaymentStatus(PaymentStatus.UNPAID);
         }
 
         order = orderRepository.save(order);
-        final Order finalOrder = order;
 
-        List<CartDetail> cartDetails = cartDetailService.getCartDetailsByIds(request.getCartDetailIds());
-        List<OrderDetail> responseList = new ArrayList<>();
-        cartDetails.forEach(cartDetail -> {
-            OrderDetail orderDetail = new OrderDetail();
-            orderDetail.setOrder(finalOrder);
-            orderDetail.setProductVariant(cartDetail.getProductVariant());
-            orderDetail.setQuantity(cartDetail.getQuantity());
-            orderDetail.setPrice(cartDetail.getProductVariant().getProduct().getPrice());
-            orderDetail.setTotalPrice(cartDetail.getProductVariant().getProduct().getPrice() * cartDetail.getQuantity());
-            // Save order detail
-            responseList.add(orderDetail);
-            orderDetailRepository.save(orderDetail);
-        });
-        order.setOrderDetails(responseList);
+        // 5) Tạo OrderDetail
+        List<OrderDetail> createdDetails = new ArrayList<>(cartDetails.size());
+        for (CartDetail cd : cartDetails) {
+            OrderDetail od = new OrderDetail();
+            od.setOrder(order);
+            od.setProductVariant(cd.getProductVariant());
+            od.setQuantity(cd.getQuantity());
+            int unitPrice = cd.getProductVariant().getProduct().getPrice();
+            od.setPrice(unitPrice);
+            od.setTotalPrice(unitPrice * cd.getQuantity());
+            orderDetailRepository.save(od);
+            createdDetails.add(od);
+        }
+        order.setOrderDetails(createdDetails);
         return mapToDto(order);
     }
 

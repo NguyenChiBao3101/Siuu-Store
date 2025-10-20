@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 public class OrderDetailResponse {
     private String productName;
     private int quantity;
-    private int price;
+    private int totalPrice;
 }

@@ -1,12 +1,9 @@
 package com.siuuuuu.backend.controller.api;
 
-import com.siuuuuu.backend.constant.OrderStatus;
 import com.siuuuuu.backend.dto.request.CreateOrderRequest;
 import com.siuuuuu.backend.dto.response.OrderHistoryResponse;
 import com.siuuuuu.backend.dto.response.OrderResponse;
-import com.siuuuuu.backend.entity.Order;
 import com.siuuuuu.backend.entity.OrderHistory;
-import com.siuuuuu.backend.repository.OrderRepository;
 import com.siuuuuu.backend.service.OrderApiService;
 import com.siuuuuu.backend.service.OrderHistoryService;
 import jakarta.validation.Valid;
@@ -29,7 +26,6 @@ public class OrderApiController {
 
     private final OrderApiService orderApiService;
     private final OrderHistoryService orderHistoryService;
-    private final OrderRepository orderRepository;
     @GetMapping("/all")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<List<OrderResponse>> getAllOrders() {
@@ -43,16 +39,13 @@ public class OrderApiController {
         List<OrderResponse> all = orderApiService.getAllOrdersAccount(email);
         return ResponseEntity.ok(all);
     }
-
-
-    @GetMapping("/{email}/history/{id}")
+    @GetMapping("/{email}/history")
     @PreAuthorize("#email == authentication.name or hasAnyAuthority('ADMIN')")
-    public ResponseEntity<List<OrderHistoryResponse>> getHistory(@PathVariable String id, @PathVariable String email) {
-        List<OrderHistory> histories = orderHistoryService.getOrderHistoriesByOrderId(id);
+    public ResponseEntity<List<OrderHistoryResponse>> getHistoryByEmail(@PathVariable String email) {
+        List<OrderHistory> histories = orderHistoryService.getOrderHistoriesByCustomerEmail(email);
         return ResponseEntity.ok(orderHistoryService.mapToListDto(histories));
     }
 
-    /** POST /api/orders */
     @PostMapping
     public ResponseEntity<OrderResponse> create(@Valid @RequestBody CreateOrderRequest req) {
         OrderResponse created = orderApiService.createOrder(req);

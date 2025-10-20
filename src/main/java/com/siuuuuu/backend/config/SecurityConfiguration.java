@@ -111,7 +111,8 @@ public class SecurityConfiguration {
                         ).permitAll()
                         .requestMatchers(HttpMethod.GET,
                                 "/api/v1/products/**",
-                                "/api/v1/orders/**"
+                                "/api/v1/orders/**",
+                                "/api/v1/carts/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

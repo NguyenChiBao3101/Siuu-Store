@@ -38,8 +38,8 @@ public class AccountApiController {
     @GetMapping("/{email}")
     //@PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE') or #email == authentication.name")
     public ResponseEntity<AccountDtoResponse> getByEmail(@PathVariable String email) {
-        AccountDtoResponse accountDtoResponse = accountService.findByEmail(email);
-        return ResponseEntity.ok(accountDtoResponse);
+        Account account = accountService.findByEmail(email);
+        return ResponseEntity.ok(accountService.mapToDto(account));
     }
 
 

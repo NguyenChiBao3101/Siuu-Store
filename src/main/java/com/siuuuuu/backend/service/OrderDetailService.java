@@ -26,7 +26,7 @@ public class OrderDetailService {
         OrderDetailResponse orderDetailResponse = new OrderDetailResponse();
         String nameProduct = orderDetail.getProductVariant().getProduct().getName();
         orderDetailResponse.setProductName(nameProduct);
-        orderDetailResponse.setPrice(orderDetail.getPrice());
+        orderDetailResponse.setTotalPrice(orderDetail.getTotalPrice());
         orderDetailResponse.setQuantity(orderDetail.getQuantity());
         return orderDetailResponse;
     }
