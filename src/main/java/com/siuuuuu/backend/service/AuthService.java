@@ -6,6 +6,7 @@ import com.siuuuuu.backend.dto.request.SignInDto;
 import com.siuuuuu.backend.dto.request.SignUpDto;
 import com.siuuuuu.backend.dto.response.TokenResponse;
 import com.siuuuuu.backend.entity.*;
+import com.siuuuuu.backend.exception.DuplicateEmailException;
 import com.siuuuuu.backend.repository.AccountRepository;
 import com.siuuuuu.backend.repository.CartRepository;
 import com.siuuuuu.backend.repository.ProfileRepository;
@@ -15,10 +16,12 @@ import lombok.experimental.FieldDefaults;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
 import java.util.*;
@@ -70,6 +73,9 @@ public class AuthService {
 
     @Transactional
     public void signUp(SignUpDto signUpDto) {
+        if(accountRepository.existsByEmail(signUpDto.getEmail())) {
+            throw new DuplicateEmailException("Đã tồn tại tài khoản với địa chỉ email: " + signUpDto.getEmail());
+        }
         // Tạo tài khoản mới
         Account account = new Account();
         account.setEmail(signUpDto.getEmail());
@@ -92,10 +98,6 @@ public class AuthService {
         Account accountCreated = accountRepository.save(account);
         logger.info("Tài khoản được tạo thành công: {}", accountCreated);
 
-        // Tạo mã xác thực
-//        String token = verificationTokenService.createVerificationToken(accountCreated);
-//        String verificationUrl = "http://localhost:8080/auth/verify?token=" + token;
-//        emailService.sendVerificationEmail(accountCreated.getEmail(), "Xác thực tài khoản", verificationUrl);
 
         // Tạo profile mới liên kết với tài khoản
         Profile profile = new Profile();

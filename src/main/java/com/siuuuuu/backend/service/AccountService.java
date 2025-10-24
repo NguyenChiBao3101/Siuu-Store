@@ -223,16 +223,16 @@ public class AccountService {
         accountRepository.save(account);
     }
 
-    public AccountDtoResponse updateRoles(String email, Set<String> roles) {
-        Account account = accountRepository.findByEmail(email);
+    public AccountDtoResponse updateRoles(UpdateRolesRequest request) {
+        Account account = accountRepository.findByEmail(request.getEmail());
         if (account == null) {
-            throw new NoSuchElementException("Không tìm thấy tài khoản với email: " + email);
+            throw new NoSuchElementException("Không tìm thấy tài khoản với email: " + request.getEmail());
         }
-        if (roles == null || roles.isEmpty()) {
+        if (request.getRoles() == null || request.getRoles().isEmpty()) {
             throw new IllegalArgumentException("Roles không được để trống");
         }
         //upperCase for input
-        Set<String> normalized = roles.stream()
+        Set<String> normalized = request.getRoles().stream()
                 .filter(Objects::nonNull)
                 .map(String::trim)
                 .filter(s -> !s.isEmpty())

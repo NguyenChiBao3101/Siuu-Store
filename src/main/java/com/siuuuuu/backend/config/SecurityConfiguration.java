@@ -111,9 +111,10 @@ public class SecurityConfiguration {
                         ).permitAll()
                         .requestMatchers(HttpMethod.GET,
                                 "/api/v1/products/**",
-                                "/api/v1/orders/**",
-                                "/api/v1/carts/**"
+                                "/api/v1/orders/**"
+
                         ).permitAll()
+                        .requestMatchers("/api/cart/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(e -> e

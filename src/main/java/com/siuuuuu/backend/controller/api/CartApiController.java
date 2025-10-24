@@ -7,6 +7,7 @@ import com.siuuuuu.backend.entity.CartDetail;
 import com.siuuuuu.backend.service.CartApiService;
 import com.siuuuuu.backend.service.CartDetailService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
@@ -17,6 +18,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.method.P;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -50,9 +52,9 @@ public class CartApiController {
     }
 
     /** Thêm sản phẩm vào giỏ (service trả về CartResponse) */
-    @PostMapping("/items")
-    public ResponseEntity<CartResponse> addItem(@Valid @RequestBody CreateItemCartRequest request) {
-        CartResponse res = cartApiService.addProductToCartByEmail(request);
+    @PostMapping("/{email}/add_item")
+    public ResponseEntity<CartResponse> addItem(@PathVariable String email, @Valid @RequestBody CreateItemCartRequest request) {
+        CartResponse res = cartApiService.addProductToCartByEmail(email, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(res);
     }
 
@@ -111,7 +113,7 @@ public class CartApiController {
 
     @Data
     public static class UpdateQuantityRequest {
-        @jakarta.validation.constraints.Min(value = 1, message = "Số lượng phải >= 1")
+        @Min(value = 1, message = "chọn số lượng sản phẩm phù hợp")
         private int quantity;
     }
 

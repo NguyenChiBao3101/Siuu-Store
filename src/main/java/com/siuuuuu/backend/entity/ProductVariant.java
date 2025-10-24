@@ -39,7 +39,7 @@ public class ProductVariant {
     private Size size;
 
     @Column(name = "quantity", nullable = false)
-    private int quantity = 0;
+    private int quantity;
 
     @CreatedDate
     @Column(updatable = false)

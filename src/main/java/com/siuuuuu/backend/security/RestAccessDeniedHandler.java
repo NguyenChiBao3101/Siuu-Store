@@ -15,7 +15,7 @@ public class RestAccessDeniedHandler implements AccessDeniedHandler {
         response.setStatus(HttpServletResponse.SC_FORBIDDEN); // 403
         response.setContentType("application/json;charset=UTF-8");
         response.getWriter().write("""
-        {"status":403,"error":"FORBIDDEN","message":"Access denied"}
+        {"status":403,"error":"FORBIDDEN","message":"Từ chối truy cập"}
         """);
     }
 }

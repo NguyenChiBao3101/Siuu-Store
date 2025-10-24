@@ -18,11 +18,10 @@ import org.springframework.web.bind.annotation.*;
 public class AuthApiController {
 
     private final AuthService authService;
-    private final VerificationTokenService tokenService;
 
     @PostMapping("/register")
     public ResponseEntity<SignUpDto> register(@Valid @RequestBody SignUpDto signUpDto) {
-        authService.signUp(signUpDto); // trả về UserResponse hoặc info tối thiểu
+        authService.signUp(signUpDto);
         return ResponseEntity.ok(signUpDto);
     }
 

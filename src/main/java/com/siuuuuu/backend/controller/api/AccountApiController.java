@@ -60,7 +60,7 @@ public class AccountApiController {
     }
 
     @PutMapping("/{email}/profile")
-//    @PreAuthorize("#email == authentication.name")
+    @PreAuthorize("#email == authentication.name")
     public ResponseEntity<ProfileDtoResponse> updateProfile(
             @PathVariable String email,
             @Valid @RequestBody UpdateProfileDto updateProfileDto
@@ -79,13 +79,12 @@ public class AccountApiController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @PutMapping("/{email}/roles")
+    @PutMapping("/roles")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<AccountDtoResponse> updateRoles(
-            @PathVariable String email,
             @RequestBody UpdateRolesRequest roles
             ) {
-        AccountDtoResponse updatedAccount = accountService.updateRoles(email, roles.getRoles());
+        AccountDtoResponse updatedAccount = accountService.updateRoles(roles);
         return ResponseEntity.ok(updatedAccount);
     }
 

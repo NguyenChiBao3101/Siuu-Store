@@ -9,7 +9,6 @@ import com.siuuuuu.backend.entity.CartDetail;
 import com.siuuuuu.backend.entity.ProductVariant;
 import com.siuuuuu.backend.repository.AccountRepository;
 import com.siuuuuu.backend.repository.CartDetailRepository;
-import com.siuuuuu.backend.repository.CartRepository;
 import com.siuuuuu.backend.repository.ProductVariantRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -29,9 +28,10 @@ public class CartApiService {
     AccountService accountService;
     CartDetailRepository cartDetailRepository;
     ProductVariantRepository productVariantRepository;
+    ProductVariantService productVariantService;
     CartDetailService cartDetailService;
 
-    private static final int MAX_PER_LINE = 5;
+    private static final int MAX_PER_LINE = 50;
 
 
     private Account getAccountOrThrow(String email) {
@@ -94,17 +94,17 @@ public class CartApiService {
      * Nếu dòng đã tồn tại => cộng dồn quantity; nếu chưa => tạo mới.
      */
     @Transactional
-    public CartResponse addProductToCartByEmail(CreateItemCartRequest request) {
+    public CartResponse addProductToCartByEmail(String email, CreateItemCartRequest request) {
         if (request.getQuantity() < 1) {
-            throw new IllegalArgumentException("quantity phải >= 1");
+            throw new IllegalArgumentException("bạn chưa chọn số lượng sản phẩm");
         }
 
         if (request.getQuantity() > MAX_PER_LINE) {
             throw new IllegalArgumentException("Mỗi lần thêm tối đa " + MAX_PER_LINE + " sản phẩm.");
         }
-        Account account = getAccountOrThrow(request.getEmail());
+        Account account = getAccountOrThrow(email);
         Cart cart = account.getCart();
-        ProductVariant variant = getVariantOrThrow(request.getProductVariant().getId());
+        ProductVariant variant = getVariantOrThrow(request.getProductVariantId());
 
         // Tìm dòng có sẵn theo variant
         CartDetail existed = null;
@@ -118,14 +118,26 @@ public class CartApiService {
             }
         }
 
+        int adding = request.getQuantity();
         if (existed != null) {
-            existed.setQuantity(existed.getQuantity() + request.getQuantity());
+            int newQty = existed.getQuantity() + adding;
+            if (newQty > MAX_PER_LINE) {
+                throw new IllegalArgumentException("Vượt giới hạn " + MAX_PER_LINE + " cho mỗi sản phẩm. "
+                        + "Hiện có " + existed.getQuantity() + ", yêu cầu thêm " + adding);
+            }
+            // (tuỳ chọn) check kho
+            // if (newQty > variant.getQuantity()) throw new IllegalArgumentException("Không đủ hàng trong kho");
+            existed.setQuantity(newQty);
             cartDetailRepository.save(existed);
         } else {
+            if (adding > MAX_PER_LINE) {
+                throw new IllegalArgumentException("Vượt giới hạn " + MAX_PER_LINE + " cho mỗi sản phẩm.");
+            }
+            // if (adding > variant.getQuantity()) throw new IllegalArgumentException("Không đủ hàng trong kho");
             CartDetail newDetail = new CartDetail();
             newDetail.setCart(cart);
             newDetail.setProductVariant(variant);
-            newDetail.setQuantity(request.getQuantity());
+            newDetail.setQuantity(adding);
             cartDetailRepository.save(newDetail);
         }
         return mapToDto(cart);

@@ -44,7 +44,7 @@ public class Product {
     private Brand brand;
 
     @Column(name = "quantity", nullable = false)
-    private int quantity;
+    private int quantity = 0;
 
     @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
     private List<ProductVariant> productVariants;
