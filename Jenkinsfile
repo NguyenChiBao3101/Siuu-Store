@@ -68,7 +68,7 @@ pipeline {
             steps {
                 bat """
                     curl -x http://127.0.0.1:8090 ^
-                         -X http://127.0.0.1:8080/api/v1/
+                         -X http://localhost:8080/api/v1/
                     """
             }
         }
@@ -82,7 +82,7 @@ pipeline {
         stage('Check Vulnerable') {
             steps {
                 script {
-                    def logPath = "access.log"
+                    def logPath = "access_log.txt"
                     if (!fileExists(logPath)) {
                         echo "Log file not found: ${logPath}. Proceeding without vulnerability check."
                     } else {
