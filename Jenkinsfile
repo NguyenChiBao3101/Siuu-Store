@@ -40,28 +40,13 @@ pipeline {
                     string(credentialsId: 'RSA_PUBLIC_KEY', variable: 'RSA_PUBLIC_KEY')
                 ]) {
                     powershell """
-                        # Create a new process environment with vars (ensures inheritance)
-                        \$envVars = @{}
-                        \$envVars['DB_URL'] = '${DB_URL}'
-                        \$envVars['DB_PASSWORD'] = '${DB_PASSWORD}'
-                        \$envVars['DB_USERNAME'] = '${DB_USERNAME}'
-                        \$envVars['EMAIL_PASSWORD'] = '${EMAIL_PASSWORD}'
-                        \$envVars['EMAIL_USERNAME'] = '${EMAIL_USERNAME}'
-                        \$envVars['GOOGLE_CLIENT_ID'] = '${GOOGLE_CLIENT_ID}'
-                        \$envVars['GOOGLE_CLIENT_SECRET'] = '${GOOGLE_CLIENT_SECRET}'
-                        \$envVars['JASYPT_ENCRYPTOR_PASSWORD'] = '${JASYPT_ENCRYPTOR_PASSWORD}'
-                        \$envVars['RECAPTCHA_SECRET_KEY'] = '${RECAPTCHA_SECRET_KEY}'
-                        \$envVars['RECAPTCHA_SITE_KEY'] = '${RECAPTCHA_SITE_KEY}'
-                        \$envVars['RSA_PRIVATE_KEY'] = @'
-${RSA_PRIVATE_KEY}
-'@
-                        \$envVars['RSA_PUBLIC_KEY'] = '${RSA_PUBLIC_KEY}'
+                        # Env vars are auto-injected by Jenkins and inherited by child process (no explicit set needed to avoid interpolation)
 
-                        # Start with custom env
-                        Start-Process -FilePath "java" -ArgumentList @('-jar', '${BACKEND_JAR}') -WindowStyle Hidden -EnvironmentVariables \$envVars
+                        # Start app (background, hidden, inherits env)
+                        Start-Process -FilePath "java" -ArgumentList @('-jar', '${BACKEND_JAR}') -WindowStyle Hidden -PassThru | Out-Null
                     """
                 }
-                sleep time: 90, unit: 'SECONDS'  // Tăng thời gian chờ để app init đầy đủ (DB + JWT)
+                sleep time: 90, unit: 'SECONDS'
             }
         }
 
