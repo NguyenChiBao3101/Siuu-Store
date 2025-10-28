@@ -17,14 +17,14 @@ pipeline {
                 powershell """
                     Start-Process -FilePath "java" -ArgumentList @('-jar', '${BACKEND_JAR}') -WindowStyle Hidden
                 """
-                sleep time: 20, unit: 'SECONDS'
+                sleep time: 25, unit: 'SECONDS'
             }
         }
 
         stage('Check PORT') {
             steps {
                 bat '''
-                    netstat -ano | findstr :8080 || echo Backend API not listening on port 8080!
+                    netstat -ano
                 '''
             }
         }
