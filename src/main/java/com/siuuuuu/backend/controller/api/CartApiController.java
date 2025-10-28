@@ -1,12 +1,14 @@
 package com.siuuuuu.backend.controller.api;
 
 import com.siuuuuu.backend.dto.request.CreateItemCartRequest;
+import com.siuuuuu.backend.dto.request.UpdateQuantityRequest;
 import com.siuuuuu.backend.dto.response.CartDetailResponse;
 import com.siuuuuu.backend.dto.response.CartResponse;
 import com.siuuuuu.backend.entity.CartDetail;
 import com.siuuuuu.backend.service.CartApiService;
 import com.siuuuuu.backend.service.CartDetailService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -52,25 +54,27 @@ public class CartApiController {
     }
 
     /** Thêm sản phẩm vào giỏ (service trả về CartResponse) */
-    @PostMapping("/{email}/add_item")
+    @PostMapping("/{email}/add")
+    @PreAuthorize("#email == authentication.name or hasAnyAuthority('ADMIN')")
     public ResponseEntity<CartResponse> addItem(@PathVariable String email, @Valid @RequestBody CreateItemCartRequest request) {
         CartResponse res = cartApiService.addProductToCartByEmail(email, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(res);
     }
 
     /** Cập nhật số lượng 1 dòng giỏ hàng */
-    @PatchMapping("/{email}/items/{cartDetailId}")
+    @PatchMapping("/{email}/quantity")
+    @PreAuthorize("#email == authentication.name or hasAnyAuthority('ADMIN')")
     public CartDetailResponse updateQuantity(
-            @PathVariable String cartDetailId,
             @PathVariable String email,
             @Valid @RequestBody UpdateQuantityRequest request
     ) {
-        cartApiService.updateProductQuantityInCart(cartDetailId, request.getQuantity(),email);
-        return cartApiService.getCartDetailById(cartDetailId, email);
+        cartApiService.updateProductQuantityInCart(email, request);
+        return cartApiService.getCartDetailById(request.getCartDetailId(), email);
     }
 
     /** Xoá 1 dòng giỏ hàng */
     @DeleteMapping("/{email}/items/{cartDetailId}")
+    @PreAuthorize("#email == authentication.name or hasAnyAuthority('ADMIN')")
     public MessageResponse removeItem(@PathVariable String cartDetailId,
                                       @PathVariable String email) {
         cartApiService.removeProductFromCart(cartDetailId,email);
@@ -79,6 +83,7 @@ public class CartApiController {
 
     /** Xoá nhiều dòng giỏ hàng (bulk) */
     @DeleteMapping("/{email}/items")
+    @PreAuthorize("#email == authentication.name or hasAnyAuthority('ADMIN')")
     public MessageResponse removeItems(@Valid @RequestBody RemoveItemsRequest request,
                                        @PathVariable String email) {
         cartApiService.removeItemsFromCart(email, request.getCartDetailIds());
@@ -87,6 +92,7 @@ public class CartApiController {
 
     /** Xoá sạch giỏ hàng theo email */
     @DeleteMapping("/{email}/clear")
+    @PreAuthorize("#email == authentication.name or hasAnyAuthority('ADMIN')")
     public MessageResponse clearCart(@PathVariable String email) {
         List<String> ids = cartApiService.getCartDetailsByEmail(email)
                 .stream()
@@ -102,19 +108,6 @@ public class CartApiController {
     @AllArgsConstructor
     public static class MessageResponse {
         private String message;
-    }
-
-    @Data
-    @AllArgsConstructor
-    public static class QuantityResponse {
-        private int quantity; // tổng quantity
-    }
-
-
-    @Data
-    public static class UpdateQuantityRequest {
-        @Min(value = 1, message = "chọn số lượng sản phẩm phù hợp")
-        private int quantity;
     }
 
     @Data

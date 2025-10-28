@@ -36,6 +36,6 @@ public class AuthApiController {
             throw new BadCredentialsException("Token không hợp lệ");
         }
         String expiredAccessToken = auth.substring(7);
-        return ResponseEntity.ok(authService.refresh(expiredAccessToken));
+        return ResponseEntity.ok(authService.refreshToken(expiredAccessToken));
     }
 }

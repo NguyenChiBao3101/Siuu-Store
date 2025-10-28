@@ -14,18 +14,11 @@ import java.util.List;
 public class CreateOrderRequest {
     @NotBlank
     private String name;
-    @Email
-    @NotBlank
-    private String email;
     @NotBlank
     private String address;
     @NotBlank
     private String phone;
     private String note;
-
-    @NotNull
-    @Positive
-    private int totalPrice;
 
     private  List<@NotBlank String> cartDetailIds;
 

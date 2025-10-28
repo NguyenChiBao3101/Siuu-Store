@@ -1,14 +1,17 @@
 package com.siuuuuu.backend.service;
 
 import com.siuuuuu.backend.dto.request.CreateItemCartRequest;
+import com.siuuuuu.backend.dto.request.UpdateQuantityRequest;
 import com.siuuuuu.backend.dto.response.CartDetailResponse;
 import com.siuuuuu.backend.dto.response.CartResponse;
 import com.siuuuuu.backend.entity.Account;
 import com.siuuuuu.backend.entity.Cart;
 import com.siuuuuu.backend.entity.CartDetail;
 import com.siuuuuu.backend.entity.ProductVariant;
+import com.siuuuuu.backend.exception.TooManyRequestsException;
 import com.siuuuuu.backend.repository.AccountRepository;
 import com.siuuuuu.backend.repository.CartDetailRepository;
+import com.siuuuuu.backend.repository.CartRepository;
 import com.siuuuuu.backend.repository.ProductVariantRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -28,11 +31,8 @@ public class CartApiService {
     AccountService accountService;
     CartDetailRepository cartDetailRepository;
     ProductVariantRepository productVariantRepository;
-    ProductVariantService productVariantService;
+    CartRepository cartRepository;
     CartDetailService cartDetailService;
-
-    private static final int MAX_PER_LINE = 50;
-
 
     private Account getAccountOrThrow(String email) {
         Account acc = accountRepository.findByEmail(email);
@@ -95,13 +95,6 @@ public class CartApiService {
      */
     @Transactional
     public CartResponse addProductToCartByEmail(String email, CreateItemCartRequest request) {
-        if (request.getQuantity() < 1) {
-            throw new IllegalArgumentException("bạn chưa chọn số lượng sản phẩm");
-        }
-
-        if (request.getQuantity() > MAX_PER_LINE) {
-            throw new IllegalArgumentException("Mỗi lần thêm tối đa " + MAX_PER_LINE + " sản phẩm.");
-        }
         Account account = getAccountOrThrow(email);
         Cart cart = account.getCart();
         ProductVariant variant = getVariantOrThrow(request.getProductVariantId());
@@ -121,47 +114,35 @@ public class CartApiService {
         int adding = request.getQuantity();
         if (existed != null) {
             int newQty = existed.getQuantity() + adding;
-            if (newQty > MAX_PER_LINE) {
-                throw new IllegalArgumentException("Vượt giới hạn " + MAX_PER_LINE + " cho mỗi sản phẩm. "
-                        + "Hiện có " + existed.getQuantity() + ", yêu cầu thêm " + adding);
-            }
-            // (tuỳ chọn) check kho
-            // if (newQty > variant.getQuantity()) throw new IllegalArgumentException("Không đủ hàng trong kho");
+            //check kho
+            if (newQty > variant.getQuantity()) throw new TooManyRequestsException("Không đủ hàng trong kho", 30L);
             existed.setQuantity(newQty);
-            cartDetailRepository.save(existed);
         } else {
-            if (adding > MAX_PER_LINE) {
-                throw new IllegalArgumentException("Vượt giới hạn " + MAX_PER_LINE + " cho mỗi sản phẩm.");
+            if (adding > variant.getQuantity()) {
+                throw new TooManyRequestsException("Không đủ hàng trong kho", 30L);
             }
-            // if (adding > variant.getQuantity()) throw new IllegalArgumentException("Không đủ hàng trong kho");
             CartDetail newDetail = new CartDetail();
             newDetail.setCart(cart);
             newDetail.setProductVariant(variant);
             newDetail.setQuantity(adding);
-            cartDetailRepository.save(newDetail);
+
+            cart.addDetail(newDetail);
         }
+        cartRepository.save(cart);
         return mapToDto(cart);
     }
 
-    /** Xoá 1 dòng giỏ hàng theo cartDetailId */
-
     /** Cập nhật quantity 1 dòng giỏ hàng theo cartDetailId */
     @Transactional
-    public void updateProductQuantityInCart(String cartDetailId, int quantity, String email) {
-        if (quantity < 1) {
-            throw new IllegalArgumentException("Số lượng phải >= 1");
-        }
-        if (quantity > MAX_PER_LINE) {
-            throw new IllegalArgumentException("Số lượng tối đa cho mỗi sản phẩm là " + MAX_PER_LINE);
-        }
-        CartDetail d = cartDetailRepository.findById(cartDetailId)
-                .orElseThrow(() -> new NoSuchElementException("CartDetail không tồn tại: " + cartDetailId));
+    public void updateProductQuantityInCart(String email, UpdateQuantityRequest request) {
+        CartDetail d = cartDetailRepository.findById(request.getCartDetailId())
+                .orElseThrow(() -> new NoSuchElementException("CartDetail không tồn tại: " + request.getCartDetailId()));
         assertOwnership(d, email);
-        d.setQuantity(quantity);
+        d.setQuantity(request.getQuantity());
         cartDetailRepository.save(d);
     }
 
-    /** Xoá nhiều dòng giỏ hàng */
+    /** Xoá 1 dòng giỏ hàng theo cartDetailId */
     @Transactional
     public void removeProductFromCart(String cartDetailId, String email) {
         CartDetail d = cartDetailRepository.findById(cartDetailId)
@@ -169,7 +150,7 @@ public class CartApiService {
         assertOwnership(d, email);
         cartDetailRepository.delete(d);
     }
-
+    /** Xoá nhiều dòng giỏ hàng */
     @Transactional
     public void removeItemsFromCart(String email, List<String> cartDetailIds) {
         if (cartDetailIds == null || cartDetailIds.isEmpty()) return;

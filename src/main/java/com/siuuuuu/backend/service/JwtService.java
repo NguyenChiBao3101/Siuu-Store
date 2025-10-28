@@ -28,7 +28,7 @@ public class JwtService {
     public JwtService(
             @Value("${app.jwt.private-key}") String privateKeyPem,
             @Value("${app.jwt.public-key}") String publicKeyPem,
-            @Value("${app.jwt.access-ttl-ms}") long accessTtlMs,        // 10m
+            @Value("${app.jwt.access-ttl-ms}") long accessTtlMs,        // 1m
             @Value("${app.jwt.refresh-grace-ms}") long refreshGraceMs   //30m
 
     ) throws Exception {

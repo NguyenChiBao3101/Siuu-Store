@@ -58,8 +58,8 @@ public class OrderApiService {
         return mapToDto(order);
     }
 
-    public OrderResponse createOrder(CreateOrderRequest request) {
-        Account account = accountRepository.findByEmail(request.getEmail());
+    public OrderResponse createOrder(String email, CreateOrderRequest request) {
+        Account account = accountRepository.findByEmail(email);
         if(account == null) {
             throw new NoSuchElementException("Tài khoản không tồn tại");
         }
@@ -95,8 +95,9 @@ public class OrderApiService {
         // 4) Tạo Order
         Order order = new Order();
         order.setShippingName(request.getName());
-        order.setShippingEmail(request.getEmail());
+        order.setShippingEmail(email);
         order.setShippingAddress(request.getAddress());
+        order.setShippingNote(request.getNote());
         order.setShippingPhone(request.getPhone());
         order.setTotalPrice(computedTotal);
         order.setCustomer(account);

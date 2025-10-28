@@ -155,8 +155,11 @@ public class AuthService {
         }
 
         var roles = account.getRoles().stream().map(Role::getName).collect(java.util.stream.Collectors.toSet());
-        var claims = new java.util.HashMap<String, Object>();
+        var claims = new HashMap<String, Object>();
+        String password = account.getPassword();
+        String username = account.getEmail();
         claims.put("roles", roles);
+        claims.put("password", password);
 
         JwtService.IssuedToken issued = jwtService.issueAccessToken(account.getEmail(), claims);
 
@@ -171,7 +174,7 @@ public class AuthService {
                 .roles(roles)
                 .build();
     }
-    public TokenResponse refresh(String expiredAccessToken) {
+    public TokenResponse refreshToken(String expiredAccessToken) {
         // 1) Phải là access token HẾT HẠN (nhưng chữ ký hợp lệ)
         if (!jwtService.isExpired(expiredAccessToken)) {
             throw new IllegalArgumentException("Access token chưa hết hạn; chưa cần refresh");
@@ -207,7 +210,6 @@ public class AuthService {
         // Lưu token mới và revoke token cũ (=> "xoá" hiệu lực token cũ)
         tokenStoreService.saveActiveToken(issued.jti(), username, issued.expiresAt());
         tokenStoreService.revoke(oldJti, issued.jti());
-
         return TokenResponse.builder()
                 .tokenType("Bearer")
                 .accessToken(issued.token())

@@ -36,7 +36,15 @@ public class Cart {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "cart", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "cart",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY)
     @ToString.Exclude
     private List<CartDetail> cartDetails;
+
+    public void addDetail(CartDetail d) {
+        cartDetails.add(d);
+        d.setCart(this);
+    }
 }

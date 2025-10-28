@@ -1,11 +1,15 @@
 package com.siuuuuu.backend.controller.api;
 
 import com.siuuuuu.backend.exception.DuplicateEmailException;
+import com.siuuuuu.backend.exception.TooManyRequestsException;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -36,6 +40,24 @@ public class GlobalApiExceptionHandler {
                 .body(body);
     }
 
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<?> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
+        String message = ex.getBindingResult()
+                .getAllErrors()
+                .stream()
+                .map(DefaultMessageSourceResolvable::getDefaultMessage) // chính là message trong @Min/@Max/@NotNull...
+                .filter(msg -> msg != null && !msg.isBlank())
+                .findFirst()
+                .orElse("Validation failed");
+
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("success", false);
+        body.put("message", message);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(body);
+    }
     @ExceptionHandler(BadCredentialsException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ResponseEntity<?> handleBadCredentials(BadCredentialsException ex) {
@@ -75,6 +97,26 @@ public class GlobalApiExceptionHandler {
         body.put("success", false);
         body.put("message", ex.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(body);
+    }
+
+    @ExceptionHandler(TooManyRequestsException.class)
+    @ResponseStatus(HttpStatus.TOO_MANY_REQUESTS)
+    public ResponseEntity<?> handleTooManyRequests(TooManyRequestsException ex) {
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("success", false);
+        body.put("message", ex.getMessage() != null
+                ? ex.getMessage()
+                : "Too many requests. Please try again later.");
+
+        HttpHeaders headers = new HttpHeaders();
+        if (ex.getRetryAfterSeconds() != null && ex.getRetryAfterSeconds() > 0) {
+            headers.set(HttpHeaders.RETRY_AFTER, String.valueOf(ex.getRetryAfterSeconds()));
+        }
+
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+                .headers(headers)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(body);
     }

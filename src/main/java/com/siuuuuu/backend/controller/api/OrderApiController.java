@@ -46,9 +46,10 @@ public class OrderApiController {
         return ResponseEntity.ok(orderHistoryService.mapToListDto(histories));
     }
 
-    @PostMapping
-    public ResponseEntity<OrderResponse> create(@Valid @RequestBody CreateOrderRequest req) {
-        OrderResponse created = orderApiService.createOrder(req);
+    @PostMapping("/{email}/create")
+    @PreAuthorize("#email == authentication.name")
+    public ResponseEntity<OrderResponse> createOrder(@PathVariable String email,@Valid @RequestBody CreateOrderRequest req) {
+        OrderResponse created = orderApiService.createOrder(email, req);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
     // STATUS TRANSITIONS
@@ -63,6 +64,7 @@ public class OrderApiController {
 
     /** POST /api/orders/{id}/shipping */
     @PostMapping("/{id}/shipping")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<OrderResponse> shipping(@PathVariable String id) {
         orderApiService.shippingOrder(id);
         OrderResponse response = orderApiService.getOrderById(id);
@@ -71,6 +73,7 @@ public class OrderApiController {
 
     /** POST /api/orders/{id}/complete */
     @PostMapping("/{id}/complete")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<OrderResponse> complete(@PathVariable String id) {
         orderApiService.completeOrder(id);
         OrderResponse response = orderApiService.getOrderById(id);
@@ -79,6 +82,7 @@ public class OrderApiController {
 
     /** POST /api/orders/{id}/cancel */
     @PostMapping("/{id}/cancel")
+    @PreAuthorize("#email == authentication.name or hasAnyAuthority('ADMIN')")
     public ResponseEntity<OrderResponse> cancel(@PathVariable String id) {
         orderApiService.cancelOrder(id);
         OrderResponse response = orderApiService.getOrderById(id);

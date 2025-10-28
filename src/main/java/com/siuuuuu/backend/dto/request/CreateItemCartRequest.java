@@ -1,11 +1,6 @@
 package com.siuuuuu.backend.dto.request;
 
-import com.siuuuuu.backend.dto.response.ProductVariantResponse;
-
-import com.siuuuuu.backend.entity.ProductVariant;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,7 +11,7 @@ import lombok.NoArgsConstructor;
 public class CreateItemCartRequest {
     @NotBlank(message = "productVariantId là bắt buộc")
     private String productVariantId;
-    @Positive
-    @NotNull
+    @Min(value = 1, message = "chọn số lượng sản phẩm tối thiểu là 1")
+    @Max(value = 10, message = "Số lượng tối đa cho mỗi sản phẩm là 10")
     private int quantity;
 }
