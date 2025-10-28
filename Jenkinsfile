@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        BACKEND_JAR = 'target\\Siuu-Store-0.0.1-SNAPSHOT.jar'
+        BACKEND_JAR = 'target\\siuushop-0.0.1-SNAPSHOT.jar'
     }
 
     stages {
@@ -17,14 +17,13 @@ pipeline {
                 powershell """
                     Start-Process -FilePath "java" -ArgumentList @('-jar', '${BACKEND_JAR}') -WindowStyle Hidden
                 """
-                sleep time: 60, unit: 'SECONDS'
+                sleep time: 20, unit: 'SECONDS'
             }
         }
 
         stage('Check PORT') {
             steps {
                 bat '''
-                    echo === Checking if Backend API (port 8080) is running ===
                     netstat -ano | findstr :8080 || echo Backend API not listening on port 8080!
                 '''
             }
