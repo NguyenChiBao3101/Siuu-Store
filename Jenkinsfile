@@ -46,7 +46,7 @@ pipeline {
                         Start-Process -FilePath "java" -ArgumentList @('-jar', '${BACKEND_JAR}') -WindowStyle Hidden -PassThru | Out-Null
                     """
                 }
-                sleep time: 90, unit: 'SECONDS'
+                sleep time: 30, unit: 'SECONDS'
             }
         }
 
