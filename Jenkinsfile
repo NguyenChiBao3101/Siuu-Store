@@ -40,7 +40,7 @@ pipeline {
                     string(credentialsId: 'RSA_PUBLIC_KEY', variable: 'RSA_PUBLIC_KEY')
                 ]) {
                     powershell """
-                        & java -jar '${BACKEND_JAR}'
+                        Start-Process -FilePath "java" -ArgumentList @('-jar', '${BACKEND_JAR}') -WindowStyle Hidden
                     """
                 }
                 sleep time: 30, unit: 'SECONDS'
