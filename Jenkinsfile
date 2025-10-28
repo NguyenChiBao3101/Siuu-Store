@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        BACKEND_JAR = 'Identity-Service\\target\\IdentityService-0.0.1-SNAPSHOT.jar'
+        BACKEND_JAR = 'target\\Siuu-Store-0.0.1-SNAPSHOT.jar'
     }
 
     stages {
