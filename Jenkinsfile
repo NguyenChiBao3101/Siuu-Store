@@ -8,9 +8,7 @@ pipeline {
     stages {
         stage('Build Project') {
             steps {
-                dir('Identity-Service') {
-                    bat 'mvnw.cmd clean package -DskipTests'
-                }
+                bat 'mvnw.cmd clean package -DskipTests'
             }
         }
 
@@ -37,7 +35,7 @@ pipeline {
         always {
             // Optional: Stop the backend process
             bat '''
-                for /f "tokens=5" %%a in (\'netstat -ano ^| findstr :8080\') do taskkill /PID %%a /F >nul 2>&1 || echo No process to kill
+                for /f "tokens=5" %%a in ('netstat -ano ^| findstr :8080') do taskkill /PID %%a /F >nul 2>&1 || echo No process to kill
             '''
         }
     }
