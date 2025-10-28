@@ -101,7 +101,7 @@ pipeline {
     post {
         always {
             publishHTML(target: [
-                reportFiles: "access.log",
+                reportFiles: "access_log.txt",
                 reportName: 'Scan Report',
                 keepAll: true
             ])
