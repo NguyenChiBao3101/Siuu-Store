@@ -40,10 +40,7 @@ pipeline {
                     string(credentialsId: 'RSA_PUBLIC_KEY', variable: 'RSA_PUBLIC_KEY')
                 ]) {
                     powershell """
-                        # Env vars are auto-injected by Jenkins and inherited by child process (no explicit set needed to avoid interpolation)
-
-                        # Start app (background, hidden, inherits env)
-                        Start-Process -FilePath "java" -ArgumentList @('-jar', '${BACKEND_JAR}') -WindowStyle Hidden -PassThru | Out-Null
+                        & java -jar '${BACKEND_JAR}'
                     """
                 }
                 sleep time: 30, unit: 'SECONDS'
@@ -54,7 +51,7 @@ pipeline {
             steps {
                 bat '''
                     echo === Checking if Backend API (port 8080) is running ===
-                    netstat -ano | findstr :8080 || echo PORT 8080 is not ready
+                    netstat -ano | findstr :8080 || echo PORT 8080 is not read
                 '''
             }
         }
