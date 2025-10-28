@@ -40,13 +40,28 @@ pipeline {
                     string(credentialsId: 'RSA_PUBLIC_KEY', variable: 'RSA_PUBLIC_KEY')
                 ]) {
                     powershell """
-                        # Jenkins env vars are auto-injected
-                        
-                        # Start app without redirect (output to console)
-                        Start-Process -FilePath "java" -ArgumentList @('-jar', '${BACKEND_JAR}') -WindowStyle Hidden
+                        # Create a new process environment with vars (ensures inheritance)
+                        \$envVars = @{}
+                        \$envVars['DB_URL'] = '${DB_URL}'
+                        \$envVars['DB_PASSWORD'] = '${DB_PASSWORD}'
+                        \$envVars['DB_USERNAME'] = '${DB_USERNAME}'
+                        \$envVars['EMAIL_PASSWORD'] = '${EMAIL_PASSWORD}'
+                        \$envVars['EMAIL_USERNAME'] = '${EMAIL_USERNAME}'
+                        \$envVars['GOOGLE_CLIENT_ID'] = '${GOOGLE_CLIENT_ID}'
+                        \$envVars['GOOGLE_CLIENT_SECRET'] = '${GOOGLE_CLIENT_SECRET}'
+                        \$envVars['JASYPT_ENCRYPTOR_PASSWORD'] = '${JASYPT_ENCRYPTOR_PASSWORD}'
+                        \$envVars['RECAPTCHA_SECRET_KEY'] = '${RECAPTCHA_SECRET_KEY}'
+                        \$envVars['RECAPTCHA_SITE_KEY'] = '${RECAPTCHA_SITE_KEY}'
+                        \$envVars['RSA_PRIVATE_KEY'] = @'
+${RSA_PRIVATE_KEY}
+'@
+                        \$envVars['RSA_PUBLIC_KEY'] = '${RSA_PUBLIC_KEY}'
+
+                        # Start with custom env
+                        Start-Process -FilePath "java" -ArgumentList @('-jar', '${BACKEND_JAR}') -WindowStyle Hidden -EnvironmentVariables \$envVars
                     """
                 }
-                sleep time: 60, unit: 'SECONDS'
+                sleep time: 90, unit: 'SECONDS'  // Tăng thời gian chờ để app init đầy đủ (DB + JWT)
             }
         }
 
@@ -57,6 +72,7 @@ pipeline {
                     netstat -ano | findstr :8080 >nul 2>&1
                     if %errorlevel% neq 0 (
                         echo Backend API not listening on port 8080!
+                        echo Possible reasons: Startup failed (check console for output), port conflict, or config issue.
                         exit /b 1
                     ) else (
                         echo Backend API is listening on port 8080 - SUCCESS!
@@ -70,21 +86,15 @@ pipeline {
         always {
             bat '''
                 echo === Stopping backend process ===
-                for /f "tokens=5" %%a in ('netstat -ano ^| findstr :8080') do (
-                    taskkill /PID %%a /F >nul 2>&1
-                    if !errorlevel! neq 0 (
-                        echo Failed to kill PID %%a (may not exist)
-                    ) else (
-                        echo Killed PID %%a
-                    )
-                )
+                for /f "tokens=5" %%a in ('netstat -ano ^| findstr :8080') do taskkill /PID %%a /F >nul 2>&1
+                echo Process cleanup complete (no output if none found).
             '''
         }
         success {
             echo 'Pipeline completed successfully! App started on 8080 with default profile.'
         }
         failure {
-            echo 'Pipeline failed - check console for app output (no log file).'
+            echo 'Pipeline failed - increase sleep time or check app config/env vars for startup issues.'
         }
     }
 }
