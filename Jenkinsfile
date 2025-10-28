@@ -68,31 +68,21 @@ pipeline {
             steps {
                 bat """
                     curl -x http://127.0.0.1:8090 ^
-                         -X POST http://127.0.0.1:8080/api/v1/auth/register ^
-                         -H "Content-Type: application/json" ^
-                         -d "{\"first_name\": \"Test\",\"last_name\": \"User\",\"date_of_birth\": \"2003-01-31\",\"email\": \"test@duplicate.com\",\"phone_number\": \"0334067567\",\"password\": \"Pass123@\",\"confirm_password\": \"Pass123@\"}"
-                """
-                sleep time: 5, unit: 'SECONDS'
-                bat """
-                    curl -x http://127.0.0.1:8090 ^
-                         -X POST http://127.0.0.1:8080/api/v1/auth/register ^
-                         -H "Content-Type: application/json" ^
-                         -d "{\"first_name\": \"Test2\",\"last_name\": \"User2\",\"date_of_birth\": \"2003-01-31\",\"email\": \"test@duplicate.com\",\"phone_number\": \"0334067568\",\"password\": \"Pass456@\",\"confirm_password\": \"Pass456@\"}"
-                """
+                         -X http://127.0.0.1:8080/api/v1/
+                    """
             }
         }
         stage('Append log vào workspace') {
             steps {
                 bat '''
-                    mkdir zap\\zap-reports 2>nul
-                    copy /Y "${ZAP_HOME}\\zap-reports\\access.log" "zap\\zap-reports\\access.log" >nul 2>&1 || echo Log file may not exist yet, continuing...
-                '''
+                    copy /Y "C:\\User\\slytherin\\Desktop\\access_log.txt" "access_log.txt"
+                    '''
             }
         }
         stage('Check Vulnerable') {
             steps {
                 script {
-                    def logPath = "zap/zap-reports/access.log"
+                    def logPath = "access.log"
                     if (!fileExists(logPath)) {
                         echo "Log file not found: ${logPath}. Proceeding without vulnerability check."
                     } else {
@@ -110,17 +100,9 @@ pipeline {
     }
     post {
         always {
-            bat '''
-                echo === Stopping backend process ===
-                for /f "tokens=5" %%a in ('netstat -ano ^| findstr :8080') do taskkill /PID %%a /F >nul 2>&1
-                echo === Stopping ZAP process ===
-                for /f "tokens=5" %%a in ('netstat -ano ^| findstr :8090') do taskkill /PID %%a /F >nul 2>&1
-                echo Process cleanup complete.
-            '''
             publishHTML(target: [
-                reportDir: "zap\\zap-reports",
                 reportFiles: "access.log",
-                reportName: 'ZAP Duplicate Signup Report',
+                reportName: 'Scan Report',
                 keepAll: true
             ])
         }
