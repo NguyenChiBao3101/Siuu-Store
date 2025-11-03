@@ -101,43 +101,58 @@ pipeline {
     }
     post {
         always {
-            // Archive raw log (backup, không NPE)
-            archiveArtifacts artifacts: 'access_log.txt', allowEmptyArchive: true
+            // Archive raw log (luôn an toàn)
+            archiveArtifacts artifacts: 'access_log.txt', allowEmptyArchive: true, fingerprint: true
 
-            // Generate HTML report từ log (fix NPE cho publishHTML)
+            // Generate & publish HTML với try-catch (fix NPE)
             script {
-                if (fileExists('access_log.txt')) {
-                    def content = readFile('access_log.txt')
-                    // Escape nội dung log để an toàn HTML (tránh < > gây parse error)
+                try {
+                    def htmlFile = 'scan_report.html'
+                    def logExists = fileExists('access_log.txt')
+                    def content = logExists ? readFile('access_log.txt') : 'No log generated - ZAP script may not have triggered.'
+
+                    // Escape cho HTML
                     def escapedContent = content.replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('\n', '<br>')
+                    def vulnSummary = content.contains("*** VULNERABILITY DETECTED") ? "VULNERABILITY DETECTED!" : "No vulnerabilities detected."
                     def htmlContent = """
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <title>Duplicate Signup Scan Report</title>
-                        <style> pre { white-space: pre-wrap; font-family: monospace; background: #f4f4f4; padding: 10px; border: 1px solid #ddd; } </style>
-                    </head>
-                    <body>
-                        <h1>Access Log Report - Build #${BUILD_NUMBER}</h1>
-                        <p><strong>Summary:</strong> No Duplicate Signup vulnerabilities detected (based on log analysis).</p>
-                        <h2>Full Log:</h2>
-                        <pre>${escapedContent}</pre>
-                        <p>Generated: ${new Date().format('yyyy-MM-dd HH:mm:ss')}</p>
-                    </body>
-                    </html>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Duplicate Signup Scan Report - Build #${BUILD_NUMBER}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        pre { background: #f4f4f4; padding: 15px; border: 1px solid #ddd; white-space: pre-wrap; font-family: monospace; }
+        .summary { background: #e8f5e8; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>Access Log Report - Build #${BUILD_NUMBER}</h1>
+    <div class="summary">
+        <strong>Summary:</strong> ${vulnSummary} (Based on log analysis.)
+    </div>
+    <h2>Full Log:</h2>
+    <pre>${escapedContent}</pre>
+    <p><em>Generated: ${new Date().format('yyyy-MM-dd HH:mm:ss')}</em></p>
+</body>
+</html>
                     """
-                    writeFile file: 'scan_report.html', text: htmlContent
-                    // Publish HTML (bây giờ valid, no NPE)
-                    publishHTML(target: [
-                        reportFiles: 'scan_report.html',
+                    writeFile file: htmlFile, text: htmlContent
+                    echo "HTML report generated: ${htmlFile} (size: ${new File(htmlFile).length()} bytes)"
+
+                    // Publish với allowMissing: true (ignore nếu file issue)
+                    publishHTML([
+                        allowMissing: true,  // FIX: Không crash nếu file missing
+                        alwaysLinkToLastBuild: false,
+                        keepAll: true,
+                        reportDir: '.',
+                        reportFiles: htmlFile,
                         reportName: 'Scan Report',
-                        keepAll: true
+                        reportTitles: ''
                     ])
-                } else {
-                    echo "No log file - skipping HTML report."
-                    // Tạo HTML placeholder nếu không có log
-                    writeFile file: 'scan_report.html', text: '<h1>No Log Available</h1><p>Run ZAP script manually to generate log.</p>'
-                    publishHTML(target: [reportFiles: 'scan_report.html', reportName: 'Scan Report', keepAll: true])
+                    echo "HTML published successfully."
+                } catch (Exception e) {
+                    echo "ERROR in HTML generation/publish: ${e.message}. Falling back to archive only."
+                    // Không throw để tránh fail post
                 }
             }
         }
