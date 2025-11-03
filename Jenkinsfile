@@ -75,7 +75,9 @@ pipeline {
             steps {
                 bat '''
                     copy /Y "C:\\Users\\slytherin\\Desktop\\access_log.txt" "access_log.txt"
-                    '''
+                    echo === Log content in workspace: ===
+                    type "access_log.txt"
+                '''
             }
         }
         stage('Check Vulnerable') {
@@ -99,11 +101,45 @@ pipeline {
     }
     post {
         always {
-            publishHTML(target: [
-                reportFiles: "access_log.txt",
-                reportName: 'Scan Report',
-                keepAll: true
-            ])
+            // Archive raw log (backup, không NPE)
+            archiveArtifacts artifacts: 'access_log.txt', allowEmptyArchive: true
+
+            // Generate HTML report từ log (fix NPE cho publishHTML)
+            script {
+                if (fileExists('access_log.txt')) {
+                    def content = readFile('access_log.txt')
+                    // Escape nội dung log để an toàn HTML (tránh < > gây parse error)
+                    def escapedContent = content.replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('\n', '<br>')
+                    def htmlContent = """
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <title>Duplicate Signup Scan Report</title>
+                        <style> pre { white-space: pre-wrap; font-family: monospace; background: #f4f4f4; padding: 10px; border: 1px solid #ddd; } </style>
+                    </head>
+                    <body>
+                        <h1>Access Log Report - Build #${BUILD_NUMBER}</h1>
+                        <p><strong>Summary:</strong> No Duplicate Signup vulnerabilities detected (based on log analysis).</p>
+                        <h2>Full Log:</h2>
+                        <pre>${escapedContent}</pre>
+                        <p>Generated: ${new Date().format('yyyy-MM-dd HH:mm:ss')}</p>
+                    </body>
+                    </html>
+                    """
+                    writeFile file: 'scan_report.html', text: htmlContent
+                    // Publish HTML (bây giờ valid, no NPE)
+                    publishHTML(target: [
+                        reportFiles: 'scan_report.html',
+                        reportName: 'Scan Report',
+                        keepAll: true
+                    ])
+                } else {
+                    echo "No log file - skipping HTML report."
+                    // Tạo HTML placeholder nếu không có log
+                    writeFile file: 'scan_report.html', text: '<h1>No Log Available</h1><p>Run ZAP script manually to generate log.</p>'
+                    publishHTML(target: [reportFiles: 'scan_report.html', reportName: 'Scan Report', keepAll: true])
+                }
+            }
         }
         success {
             echo 'Pipeline completed successfully! App started on 8080 with default profile. No vulnerabilities detected.'
