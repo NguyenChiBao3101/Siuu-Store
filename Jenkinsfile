@@ -67,8 +67,7 @@ pipeline {
         stage('Test Duplicate Signup Vulnerability') {
             steps {
                 bat """
-                    curl -x http://127.0.0.1:8090 ^
-                         -X http://localhost:8080/api/v1/
+                    curl -x http://127.0.0.1:8090 -X http://localhost:8080/api/v1/products/nike-air-zoom-pegasus-40
                     """
             }
         }
