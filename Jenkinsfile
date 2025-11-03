@@ -74,7 +74,7 @@ pipeline {
         stage('Append log vào workspace') {
             steps {
                 bat '''
-                    copy /Y "C:\\User\\slytherin\\Desktop\\access_log.txt" "access_log.txt"
+                    copy /Y "C:\\Users\\slytherin\\Desktop\\access_log.txt" "access_log.txt"
                     '''
             }
         }
