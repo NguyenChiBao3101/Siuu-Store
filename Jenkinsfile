@@ -104,7 +104,7 @@ pipeline {
             // Archive raw log (luôn an toàn)
             archiveArtifacts artifacts: 'access_log.txt', allowEmptyArchive: true, fingerprint: true
 
-            // Generate & publish HTML với try-catch (fix NPE)
+            // Generate & publish HTML với try-catch (fix NPE & security)
             script {
                 try {
                     def htmlFile = 'scan_report.html'
@@ -115,33 +115,33 @@ pipeline {
                     def escapedContent = content.replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('\n', '<br>')
                     def vulnSummary = content.contains("*** VULNERABILITY DETECTED") ? "VULNERABILITY DETECTED!" : "No vulnerabilities detected."
                     def htmlContent = """
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Duplicate Signup Scan Report - Build #${BUILD_NUMBER}</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        pre { background: #f4f4f4; padding: 15px; border: 1px solid #ddd; white-space: pre-wrap; font-family: monospace; }
-        .summary { background: #e8f5e8; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
-    </style>
-</head>
-<body>
-    <h1>Access Log Report - Build #${BUILD_NUMBER}</h1>
-    <div class="summary">
-        <strong>Summary:</strong> ${vulnSummary} (Based on log analysis.)
-    </div>
-    <h2>Full Log:</h2>
-    <pre>${escapedContent}</pre>
-    <p><em>Generated: ${new Date().format('yyyy-MM-dd HH:mm:ss')}</em></p>
-</body>
-</html>
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Duplicate Signup Scan Report - Build #${BUILD_NUMBER}</title>
+        <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            pre { background: #f4f4f4; padding: 15px; border: 1px solid #ddd; white-space: pre-wrap; font-family: monospace; }
+            .summary { background: #e8f5e8; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        </style>
+    </head>
+    <body>
+        <h1>Access Log Report - Build #${BUILD_NUMBER}</h1>
+        <div class="summary">
+            <strong>Summary:</strong> ${vulnSummary} (Based on log analysis.)
+        </div>
+        <h2>Full Log:</h2>
+        <pre>${escapedContent}</pre>
+        <p><em>Generated: ${new Date().format('yyyy-MM-dd HH:mm:ss')}</em></p>
+    </body>
+    </html>
                     """
                     writeFile file: htmlFile, text: htmlContent
-                    echo "HTML report generated: ${htmlFile} (size: ${new File(htmlFile).length()} bytes)"
+                    echo "HTML report generated: ${htmlFile}"  // FIX: Xóa new File().length() để tránh security block
 
-                    // Publish với allowMissing: true (ignore nếu file issue)
+                    // Publish với allowMissing: true
                     publishHTML([
-                        allowMissing: true,  // FIX: Không crash nếu file missing
+                        allowMissing: true,
                         alwaysLinkToLastBuild: false,
                         keepAll: true,
                         reportDir: '.',
@@ -152,7 +152,6 @@ pipeline {
                     echo "HTML published successfully."
                 } catch (Exception e) {
                     echo "ERROR in HTML generation/publish: ${e.message}. Falling back to archive only."
-                    // Không throw để tránh fail post
                 }
             }
         }
