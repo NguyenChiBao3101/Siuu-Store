@@ -114,13 +114,16 @@ public class CartApiService {
         int adding = request.getQuantity();
         if (existed != null) {
             int newQty = existed.getQuantity() + adding;
-            //check kho
-            if (newQty > variant.getQuantity()) throw new TooManyRequestsException("Không đủ hàng trong kho", 30L);
+            //check kho so với tổng số lượng sau khi thêm
+//            if (newQty > variant.getQuantity()) {
+//                throw new TooManyRequestsException("Không đủ hàng trong kho", 30L);
+//            }
             existed.setQuantity(newQty);
         } else {
-            if (adding > variant.getQuantity()) {
-                throw new TooManyRequestsException("Không đủ hàng trong kho", 30L);
-            }
+            //kiểm tra số lượng thêm
+//            if (adding > variant.getQuantity()) {
+//                throw new TooManyRequestsException("Không đủ hàng trong kho", 30L);
+//            }
             CartDetail newDetail = new CartDetail();
             newDetail.setCart(cart);
             newDetail.setProductVariant(variant);

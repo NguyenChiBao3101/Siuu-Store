@@ -27,7 +27,7 @@ public class OrderApiController {
     private final OrderApiService orderApiService;
     private final OrderHistoryService orderHistoryService;
     @GetMapping("/all")
-    @PreAuthorize("hasAnyAuthority('ADMIN')")
+//    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<List<OrderResponse>> getAllOrders() {
         List<OrderResponse> list = orderApiService.getAllOrders();
         return ResponseEntity.ok(list);
@@ -47,7 +47,7 @@ public class OrderApiController {
     }
 
     @PostMapping("/{email}/create")
-    @PreAuthorize("#email == authentication.name")
+//    @PreAuthorize("#email == authentication.name")
     public ResponseEntity<OrderResponse> createOrder(@PathVariable String email,@Valid @RequestBody CreateOrderRequest req) {
         OrderResponse created = orderApiService.createOrder(email, req);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
@@ -55,32 +55,29 @@ public class OrderApiController {
     // STATUS TRANSITIONS
 
     @PostMapping("/{id}/confirm")
-    @PreAuthorize("hasAnyAuthority('ADMIN')")
+//    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<OrderResponse> confirm(@PathVariable String id) {
         orderApiService.confirmOrder(id);
         OrderResponse response = orderApiService.getOrderById(id);
         return ResponseEntity.ok(response);
     }
 
-    /** POST /api/orders/{id}/shipping */
     @PostMapping("/{id}/shipping")
-    @PreAuthorize("hasAnyAuthority('ADMIN')")
+//    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<OrderResponse> shipping(@PathVariable String id) {
         orderApiService.shippingOrder(id);
         OrderResponse response = orderApiService.getOrderById(id);
         return ResponseEntity.ok(response);
     }
 
-    /** POST /api/orders/{id}/complete */
     @PostMapping("/{id}/complete")
-    @PreAuthorize("hasAnyAuthority('ADMIN')")
+//    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<OrderResponse> complete(@PathVariable String id) {
         orderApiService.completeOrder(id);
         OrderResponse response = orderApiService.getOrderById(id);
         return ResponseEntity.ok(response);
     }
 
-    /** POST /api/orders/{id}/cancel */
     @PostMapping("/{id}/cancel")
     @PreAuthorize("#email == authentication.name or hasAnyAuthority('ADMIN')")
     public ResponseEntity<OrderResponse> cancel(@PathVariable String id) {
@@ -88,22 +85,6 @@ public class OrderApiController {
         OrderResponse response = orderApiService.getOrderById(id);
         return ResponseEntity.ok(response);
     }
-
-//     //PAYMENT
-//
-//    /** POST /api/orders/{id}/payment/success  body: {"transactionId":"..."} */
-//    @PostMapping("/{id}/payment/success")
-//    public ResponseEntity<OrderResponse> paymentSuccess(@PathVariable String id, @Valid @RequestBody PaymentSuccessRequest req) {
-//        Order updated = orderApiService.updateOrderWhenPaymentSuccess(id, req.getTransactionId());
-//        return ResponseEntity.ok(orderMapper.toResponse(updated));
-//    }
-//
-//    /** POST /api/orders/{id}/payment/fail */
-//    @PostMapping("/{id}/payment/fail")
-//    public ResponseEntity<Void> paymentFail(@PathVariable String id) {
-//        orderApiService.updateOrderWhenPaymentFailed(id);
-//        return ResponseEntity.noContent().build();
-//    }
 
 }
 

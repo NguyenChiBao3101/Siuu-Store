@@ -60,7 +60,7 @@ public class AccountApiController {
     }
 
     @PutMapping("/{email}/profile")
-    @PreAuthorize("#email == authentication.name")
+//    @PreAuthorize("#email == authentication.name")
     public ResponseEntity<ProfileDtoResponse> updateProfile(
             @PathVariable String email,
             @Valid @RequestBody UpdateProfileDto updateProfileDto

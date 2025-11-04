@@ -73,9 +73,9 @@ public class AuthService {
 
     @Transactional
     public void signUp(SignUpDto signUpDto) {
-        if(accountRepository.existsByEmail(signUpDto.getEmail())) {
-            throw new DuplicateEmailException("Đã tồn tại tài khoản với địa chỉ email: " + signUpDto.getEmail());
-        }
+//        if(accountRepository.existsByEmail(signUpDto.getEmail())) {
+//            throw new DuplicateEmailException("Đã tồn tại tài khoản với địa chỉ email: " + signUpDto.getEmail());
+//        }
         // Tạo tài khoản mới
         Account account = new Account();
         account.setEmail(signUpDto.getEmail());
@@ -187,9 +187,9 @@ public class AuthService {
         Instant expAt   = claims.getExpiration().toInstant();
 
         // 3) Kiểm tra token cũ: chưa bị revoke và còn trong 'grace window'
-        if (tokenStoreService.isRevoked(oldJti)) {
-            throw new BadCredentialsException("Token đã bị thu hồi hoặc không hợp lệ");
-        }
+//        if (tokenStoreService.isRevoked(oldJti)) {
+//            throw new BadCredentialsException("Token đã bị thu hồi hoặc không hợp lệ");
+//        }
         if (!jwtService.withinRefreshGrace(expAt)) {
             throw new BadCredentialsException("Token đã hết hạn quá lâu, vui lòng đăng nhập lại");
         }
@@ -209,7 +209,7 @@ public class AuthService {
 
         // Lưu token mới và revoke token cũ (=> "xoá" hiệu lực token cũ)
         tokenStoreService.saveActiveToken(issued.jti(), username, issued.expiresAt());
-        tokenStoreService.revoke(oldJti, issued.jti());
+//        tokenStoreService.revoke(oldJti, issued.jti());
         return TokenResponse.builder()
                 .tokenType("Bearer")
                 .accessToken(issued.token())

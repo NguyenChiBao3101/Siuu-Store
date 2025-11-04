@@ -11,7 +11,7 @@ public class UpdateQuantityRequest {
     private String cartDetailId;
 
     @NotNull
-    @Min(value = 1, message = "chọn số lượng sản phẩm tối thiểu là 1")
-    @Max(value = 10, message = "Số lượng tối đa cho mỗi sản phẩm là 10")
+//    @Min(value = 1, message = "chọn số lượng sản phẩm tối thiểu là 1")
+//    @Max(value = 10, message = "Số lượng tối đa cho mỗi sản phẩm là 10")
     private int quantity;
 }
