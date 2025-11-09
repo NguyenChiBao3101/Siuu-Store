@@ -55,7 +55,7 @@ public class CartApiController {
 
     /** Thêm sản phẩm vào giỏ (service trả về CartResponse) */
     @PostMapping("/{email}/add")
-//    @PreAuthorize("#email == authentication.name or hasAnyAuthority('ADMIN')")
+    @PreAuthorize("#email == authentication.name or hasAnyAuthority('ADMIN')")
     public ResponseEntity<CartResponse> addItem(@PathVariable String email, @Valid @RequestBody CreateItemCartRequest request) {
         CartResponse res = cartApiService.addProductToCartByEmail(email, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(res);
