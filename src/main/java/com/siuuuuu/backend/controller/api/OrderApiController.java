@@ -27,7 +27,7 @@ public class OrderApiController {
     private final OrderApiService orderApiService;
     private final OrderHistoryService orderHistoryService;
     @GetMapping("/all")
-    @PreAuthorize("hasAnyAuthority('ADMIN')")
+//    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<List<OrderResponse>> getAllOrders() {
         List<OrderResponse> list = orderApiService.getAllOrders();
         return ResponseEntity.ok(list);

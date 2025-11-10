@@ -73,9 +73,9 @@ public class AuthService {
 
     @Transactional
     public void signUp(SignUpDto signUpDto) {
-//        if(accountRepository.existsByEmail(signUpDto.getEmail())) {
-//            throw new DuplicateEmailException("Đã tồn tại tài khoản với địa chỉ email: " + signUpDto.getEmail());
-//        }
+        if(accountRepository.existsByEmail(signUpDto.getEmail())) {
+            throw new DuplicateEmailException("Đã tồn tại tài khoản với địa chỉ email: " + signUpDto.getEmail());
+        }
         // Tạo tài khoản mới
         Account account = new Account();
         account.setEmail(signUpDto.getEmail());
